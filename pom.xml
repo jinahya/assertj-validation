@@ -63,17 +63,17 @@
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <version.animal-sniffer>1.23</version.animal-sniffer>
-    <version.checkstyle>10.12.1</version.checkstyle>
+    <version.checkstyle>10.12.2</version.checkstyle>
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
     <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
-    <version.logback-classic>1.4.8</version.logback-classic>
+    <version.logback-classic>1.4.11</version.logback-classic>
     <version.maven-failsafe>${version.maven-surefire}</version.maven-failsafe>
     <version.maven-surefire>3.1.2</version.maven-surefire>
     <version.org.apache.bval>2.0.6</version.org.apache.bval>
     <version.org.assertj>3.24.2</version.org.assertj>
     <version.org.eclipse.transformer>0.5.0</version.org.eclipse.transformer>
-    <version.org.junit>5.10.0-M1</version.org.junit>
-    <version.org.mockito>5.4.0</version.org.mockito>
+    <version.org.junit>5.10.0</version.org.junit>
+    <version.org.mockito>5.5.0</version.org.mockito>
     <version.org.mockito-inline>5.2.0</version.org.mockito-inline>
     <version.org.projectlombok>1.18.28</version.org.projectlombok>
   </properties>

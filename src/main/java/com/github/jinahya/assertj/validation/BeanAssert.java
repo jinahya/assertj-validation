@@ -103,7 +103,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
     SELF isNotValid();
 
     /**
-     * Verified that no constraint violations populated while validating all constraints placed on the property of
+     * Verifies that no constraint violations populated while validating all constraints placed on the property of
      * specified name of the {@code actual} value, while accepts the set of constraint violations which may be empty to
      * specified consumer.
      *
@@ -122,7 +122,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
     SELF hasValidProperty(final String propertyName, final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer);
 
     /**
-     * Verified that no constraint violations populated while validating all constraints placed on the property of
+     * Verifies that no constraint violations populated while validating all constraints placed on the property of
      * specified name of the {@code actual} value.
      * <p>
      * {@snippet lang = "java" id = "example":
@@ -163,7 +163,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
     }
 
     /**
-     * Verified that any constraint violation populated while validating all constraints placed on the property of
+     * Verifies that any constraint violation populated while validating all constraints placed on the property of
      * specified name of the {@code actual} value.
      * <p>
      * {@snippet lang = "java" id = "example":

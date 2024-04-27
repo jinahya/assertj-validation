@@ -21,10 +21,12 @@ package com.github.jinahya.assertj.validation;
  */
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractCharacterAssert;
 import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectArrayAssert;
 import org.assertj.core.api.ObjectAssertFactory;
@@ -42,6 +44,9 @@ import java.util.function.Function;
  * @param <ACTUAL> actual type parameter
  * @param <T>      root bean type parameter
  */
+@SuppressWarnings({
+        "java:S119" // <SELF ...>
+})
 public interface ConstraintViolationAssert<
         SELF extends ConstraintViolationAssert<SELF, ACTUAL, T>, ACTUAL extends ConstraintViolation<T>, T>
         extends Assert<SELF, ACTUAL> {
@@ -208,6 +213,9 @@ public interface ConstraintViolationAssert<
     default SELF doesNotHaveLeafBean() {
         return hasLeafBean(null);
     }
+
+    // --------------------------------------------------------------------------------------------------------- message
+    SELF hasMessage(final String expectedMessage);
 
     // ---------------------------------------------------------------------------------------------------- propertyPath
     <ASSERT extends AbstractPathAssert<?, ? extends AbstractPathAssert.AbstractNodeAssert<?>>> ASSERT extractingPropertyPath(

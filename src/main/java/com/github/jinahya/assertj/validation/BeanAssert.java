@@ -99,11 +99,21 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
      *}
      *
      * @return this assertion object.
-     * @throws AssertionError when the {@code actual} is {@code null} or invalid.
+     * @throws AssertionError when the {@code actual} is {@code null} or <em>valid</em>.
      * @see #isValid(Consumer)
      * @see #isValid()
      */
     SELF isNotValid();
+
+    /**
+     * Verifies that the {@code actual} value is <em>not valid</em>, while accepts a set of constraint violations, which
+     * should be not empty, to specified consumer.
+     *
+     * @return this assertion object.
+     * @throws AssertionError when the {@code actual} is {@code null} or <em>valid</em>.
+     * @see #isNotValid()
+     */
+    SELF isNotValid(final Consumer<Set<ConstraintViolation<ACTUAL>>> consumer);
 
     /**
      * Verifies that no constraint violations populated while validating all constraints placed on the property of

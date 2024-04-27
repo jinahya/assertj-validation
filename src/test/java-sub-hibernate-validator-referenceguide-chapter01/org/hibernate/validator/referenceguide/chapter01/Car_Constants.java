@@ -20,7 +20,7 @@ package org.hibernate.validator.referenceguide.chapter01;
  * #L%
  */
 
-final class CarConstants {
+final class Car_Constants {
 
     static final String PROPERTY_MANUFACTURER = "manufacturer";
 
@@ -28,7 +28,7 @@ final class CarConstants {
 
     static final String PROPERTY_SEAT_COUNT = "seatCount";
 
-    private CarConstants() {
+    private Car_Constants() {
         throw new AssertionError("instantiation is not allowed");
     }
 }

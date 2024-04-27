@@ -103,6 +103,28 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
     }
 
     @Override
+    public SELF isNotValid(final Consumer<Set<ConstraintViolation<ACTUAL>>> consumer) {
+        Objects.requireNonNull(consumer, "consumer is null");
+        isNotNull();
+        final Validator validator = delegate.getValidator();
+        final Class<?>[] groups = delegate.getGroups();
+        delegate.setViolations(validator.validate(actual, groups));
+        final Set<ConstraintViolation<ACTUAL>> violations = delegate.getViolations();
+        assertThat(violations)
+                .as("%nThe set of constraint violations resulted while validating%n"
+                    + "\tactual: %s%n"
+                    + "targeting%n"
+                    + "\tgroups: %s%n",
+                    actual,
+                    Arrays.asList(groups)
+                )
+                .withFailMessage("%nexpected to be not empty but empty")
+                .isNotEmpty();
+        consumer.accept(violations);
+        return myself;
+    }
+
+    @Override
     public final SELF hasValidProperty(final String propertyName,
                                        final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(propertyName, "propertyName is null");

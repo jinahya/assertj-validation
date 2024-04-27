@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_LICENSE_PLATE;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_MANUFACTURER;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_SEAT_COUNT;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_LICENSE_PLATE;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_MANUFACTURER;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_SEAT_COUNT;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.carOf;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.validLicensePlate;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.validManufacturer;

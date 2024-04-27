@@ -25,6 +25,7 @@ import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectAssertFactory;
 
 import javax.validation.ConstraintViolation;
@@ -104,6 +105,16 @@ public abstract class AbstractConstraintViolationAssert<
     public Assert<?, ?> extractingLeafBean() {
         return isNotNull()
                 .extracting(ConstraintViolation::getLeafBean, new ObjectAssertFactory<>());
+    }
+
+    // --------------------------------------------------------------------------------------------------------- message
+
+    @Override
+    public SELF hasMessage(final String expectedMessage) {
+        isNotNull()
+                .extracting(ConstraintViolation::getMessage, InstanceOfAssertFactories.STRING)
+                .isEqualTo(expectedMessage);
+        return (SELF) this;
     }
 
     // ---------------------------------------------------------------------------------------------------- propertyPath

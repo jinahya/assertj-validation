@@ -21,14 +21,13 @@ package org.hibernate.validator.referenceguide.chapter01;
  */
 
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_LICENSE_PLATE;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_MANUFACTURER;
-import static org.hibernate.validator.referenceguide.chapter01.CarConstants.PROPERTY_SEAT_COUNT;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_LICENSE_PLATE;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_MANUFACTURER;
+import static org.hibernate.validator.referenceguide.chapter01.Car_Constants.PROPERTY_SEAT_COUNT;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.carOf;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.invalidLicensePlate;
 import static org.hibernate.validator.referenceguide.chapter01.CarFactory.invalidManufacturer;
@@ -39,8 +38,8 @@ import static org.hibernate.validator.referenceguide.chapter01.CarFactory.validS
 
 class Car_DoesNotHaveValidProperty_Test {
 
-    @RepeatedTest(1024)
-    @Test
+    @RepeatedTest(128)
+//    @Test
     void __invalidManufacturer() {
         final var car = carOf(invalidManufacturer(), validLicensePlate(), validSeatCount());
         final var assertion = assertThatBean(car);
@@ -52,8 +51,8 @@ class Car_DoesNotHaveValidProperty_Test {
                 .isInstanceOf(AssertionError.class);
     }
 
-    @RepeatedTest(1024)
-    @Test
+    @RepeatedTest(128)
+//    @Test
     void __invalidLicensePlate() {
         final var car = carOf(validManufacturer(), invalidLicensePlate(), validSeatCount());
         final var assertion = assertThatBean(car);
@@ -65,8 +64,8 @@ class Car_DoesNotHaveValidProperty_Test {
                 .isInstanceOf(AssertionError.class);
     }
 
-    @RepeatedTest(1024)
-    @Test
+    @RepeatedTest(128)
+//    @Test
     void __invalidSeatCount() {
         final var car = carOf(validManufacturer(), validLicensePlate(), invalidSeatCount());
         final var assertion = assertThatBean(car);

@@ -63,19 +63,19 @@
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <version.animal-sniffer>1.23</version.animal-sniffer>
-    <version.checkstyle>10.12.3</version.checkstyle>
+    <version.checkstyle>10.15.0</version.checkstyle>
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
     <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
-    <version.logback-classic>1.4.11</version.logback-classic>
+    <version.logback-classic>1.5.6</version.logback-classic>
     <version.maven-failsafe>${version.maven-surefire}</version.maven-failsafe>
     <version.maven-surefire>3.1.2</version.maven-surefire>
-    <version.org.apache.bval>2.0.6</version.org.apache.bval>
-    <version.org.assertj>3.24.2</version.org.assertj>
+    <version.org.apache.bval>3.0.0</version.org.apache.bval>
+    <version.org.assertj>3.25.3</version.org.assertj>
     <version.org.eclipse.transformer>0.5.0</version.org.eclipse.transformer>
-    <version.org.junit>5.10.0</version.org.junit>
-    <version.org.mockito>5.5.0</version.org.mockito>
+    <version.org.junit>5.11.0-M1</version.org.junit>
+    <version.org.mockito>5.11.0</version.org.mockito>
     <version.org.mockito-inline>5.2.0</version.org.mockito-inline>
-    <version.org.projectlombok>1.18.28</version.org.projectlombok>
+    <version.org.projectlombok>1.18.32</version.org.projectlombok>
   </properties>
 
   <dependencyManagement>
@@ -173,7 +173,7 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>4.7.3.5</version>
+          <version>4.8.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -190,7 +190,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.13.0</version>
           <configuration>
             <annotationProcessorPaths>
               <path>
@@ -314,7 +314,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
           <configuration>
             <archive>
               <manifestEntries>
@@ -351,12 +351,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>license-maven-plugin</artifactId>
-          <version>2.2.0</version>
+          <version>2.4.0</version>
           <configuration>
             <licenseName>apache_v2</licenseName>
           </configuration>
@@ -608,6 +608,32 @@
                   <outputDirectory>${project.build.outputDirectory}-release-17-jakarta</outputDirectory>
                 </configuration>
               </execution>
+              <execution>
+                <id>release-21</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <target>21</target>
+                  <release>21</release>
+                  <fork>true</fork>
+                  <outputDirectory>${project.build.outputDirectory}-release-21</outputDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>release-21-jakarta</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <target>21</target>
+                  <release>21</release>
+                  <fork>true</fork>
+                  <outputDirectory>${project.build.outputDirectory}-release-21-jakarta</outputDirectory>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -669,6 +695,28 @@
                   <classifier>release-17-jakarta</classifier>
                 </configuration>
               </execution>
+              <execution>
+                <id>jar-release-21</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.outputDirectory}-release-21</classesDirectory>
+                  <classifier>release-21</classifier>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jar-release-21-jakarta</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.outputDirectory}-release-21-jakarta</classesDirectory>
+                  <classifier>release-21-jakarta</classifier>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -679,6 +727,13 @@
                 <jakartaDefaults>true</jakartaDefaults>
               </rules>
             </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>biz.aQute.bndlib</artifactId>
+                <version>7.0.0</version>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <id>jakarta</id>
@@ -708,6 +763,16 @@
                 </goals>
                 <configuration>
                   <transformDirectory>${project.build.outputDirectory}-release-17-jakarta</transformDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>transform-release-21-jakarta</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>transform</goal>
+                </goals>
+                <configuration>
+                  <transformDirectory>${project.build.outputDirectory}-release-21-jakarta</transformDirectory>
                 </configuration>
               </execution>
             </executions>

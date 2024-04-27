@@ -40,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see Validator#validateValue(Class, String, Object, Class[])
  */
 @SuppressWarnings({
+        "java:S119", // <SELF ...>
         "java:S2160" // override equals/hashCode
 })
 public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, ACTUAL>, ACTUAL>

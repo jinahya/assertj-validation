@@ -45,6 +45,9 @@ import java.util.function.Supplier;
  * @param <ACTUAL> actual type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@SuppressWarnings({
+        "java:S119" // <SELF ...>
+})
 public interface ValidationAssert<SELF extends ValidationAssert<SELF, ACTUAL>, ACTUAL>
         extends Assert<SELF, ACTUAL> {
 

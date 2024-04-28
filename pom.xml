@@ -846,7 +846,7 @@
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-base</artifactId>
           <version>11.0.2</version>
-<!--          <scope>compile</scope>-->
+          <!--          <scope>compile</scope>-->
           <scope>provided</scope>
         </dependency>
         <dependency>
@@ -855,12 +855,12 @@
           <version>4.13.1</version>
           <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--          <groupId>org.assertj</groupId>-->
-<!--          <artifactId>assertj-core</artifactId>-->
-<!--          <version>3.8.0</version>-->
-<!--          <scope>test</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--          <groupId>org.assertj</groupId>-->
+        <!--          <artifactId>assertj-core</artifactId>-->
+        <!--          <version>3.8.0</version>-->
+        <!--          <scope>test</scope>-->
+        <!--        </dependency>-->
         <dependency>
           <groupId>jakarta.annotation</groupId>
           <artifactId>jakarta.annotation-api</artifactId>
@@ -894,9 +894,11 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <source>src/test/java-sub-hibernate-validator-referenceguide-chapter01</source>
+                    <!--                    <source>src/test/java-sub-hibernate-validator-referenceguide-chapter01</source>-->
+                    <!--                    <source>src/test/java-sub-hibernate-validator-referenceguide-chapter01</source>-->
                     <!--                    <source>sub/hibernate-validator/documentation/src/test/java/org/hibernate/validator/referenceguide/chapter01</source>-->
-                    <source>sub/hibernate-validator/documentation/src/test/java/org</source>
+                    <source>src/test/java-sub-hibernate-validator-referenceguide</source>
+                    <source>sub/hibernate-validator/documentation/src/test/java</source>
                   </sources>
                 </configuration>
               </execution>

@@ -1,8 +1,13 @@
 package org.hibernate.validator.referenceguide.chapter01;
 
+import com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.ConstraintViolation;
+
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * .
@@ -20,9 +25,17 @@ class CarTest_Test {
     void manufacturerIsNull__() {
         final var car = new Car(null, "DD-AB-123", 4);
         assertThatBean(car)
-                .isNotValid()
+                .isNotValid(s -> {
+                    assertThat(s)
+                            .isNotEmpty()
+//                            .first(new InstanceOfAssertFactory<ConstraintViolation, AbstractConstraintViolationAssert>(ConstraintViolation.class, cv -> {
+//                                return null;
+//                            }));
+                    ;
+                })
                 .doesNotHaveValidProperty(Car_Constants.PROPERTY_MANUFACTURER)
                 .hasValidProperty(Car_Constants.PROPERTY_LICENSE_PLATE)
+                .hasValidProperty(Car_Constants.PROPERTY_SEAT_COUNT)
         ;
     }
 

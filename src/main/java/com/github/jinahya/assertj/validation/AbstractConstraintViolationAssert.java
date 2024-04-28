@@ -119,7 +119,8 @@ public abstract class AbstractConstraintViolationAssert<
 
     // ---------------------------------------------------------------------------------------------------- propertyPath
     @Override
-    public <ASSERT extends AbstractPathAssert<?, ? extends AbstractPathAssert.AbstractNodeAssert<?>>> ASSERT extractingPropertyPath(final AssertFactory<? super Path, ? extends ASSERT> assertFactory) {
+    public <ASSERT extends AbstractPathAssert<?, ? extends AbstractPathAssert.AbstractNodeAssert<?>>>
+    ASSERT extractingPropertyPath(final AssertFactory<? super Path, ? extends ASSERT> assertFactory) {
         return isNotNull()
                 .extracting(ConstraintViolation::getPropertyPath, assertFactory::createAssert);
     }

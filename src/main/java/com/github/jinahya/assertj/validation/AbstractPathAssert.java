@@ -53,6 +53,10 @@ public abstract class AbstractPathAssert<
         extends AbstractIterableAssert<SELF, Path, Path.Node, NODE_ASSERT>
         implements PathAssert<SELF> {
 
+    // -----------------------------------------------------------------------------------------------------------------
+    @SuppressWarnings({
+            "java:S101" // class _Abstract...
+    })
     abstract static class _AbstractNodeAssert<
             SELF extends _AbstractNodeAssert<SELF, ACTUAL>, ACTUAL extends Path.Node>
             extends AbstractAssert<SELF, ACTUAL>
@@ -285,10 +289,12 @@ public abstract class AbstractPathAssert<
         return node.as(nodeType);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     protected AbstractPathAssert(final Path actual, final Class<?> selfType) {
         super(actual, selfType);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     @Override
     public <A extends _AbstractNodeAssert<? extends A, ? extends N>, N extends Path.Node> A extractingNode(
             final int index, final Class<N> nodeType, final AssertFactory<? super N, ? extends A> factory) {

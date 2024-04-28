@@ -47,6 +47,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         extends AbstractPropertyAssert<SELF, ACTUAL>
         implements BeanAssert<SELF, ACTUAL> {
 
+    // ---------------------------------------------------------------------------------------------------- CONSTRUCTORS
+
     /**
      * Creates a new instance for verifying specified actual value.
      *
@@ -57,6 +59,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         super(actual, selfType);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     @Override
     public final SELF isValid(final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
@@ -85,6 +88,10 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
 
     @Override
     public final SELF isNotValid() {
+        if (true) {
+            return isNotValid(s -> {
+            });
+        }
         isNotNull();
         final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
@@ -109,8 +116,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
         delegate.setViolations(validator.validate(actual, groups));
-        final Set<ConstraintViolation<ACTUAL>> violations = delegate.getViolations();
-        assertThat(violations)
+        assertThat(delegate.getViolations())
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "targeting%n"
@@ -120,7 +126,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
                 )
                 .withFailMessage("%nexpected to be not empty but empty")
                 .isNotEmpty();
-        consumer.accept(violations);
+        consumer.accept(delegate.getViolations());
         return myself;
     }
 
@@ -132,9 +138,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         isNotNull();
         final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
-        final Set<ConstraintViolation<ACTUAL>> violations = validator.validateProperty(actual, propertyName, groups);
-        delegate.acceptViolations(consumer);
-        assertThat(violations)
+        delegate.setViolations(validator.validateProperty(actual, propertyName, groups));
+        assertThat(delegate.getViolations())
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "for its%n"
@@ -148,10 +153,11 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
                 .withFailMessage(() -> String.format(
                         "%nexpected to be empty but contains %1$d element(s)%n"
                         + "%2$s",
-                        violations.size(),
-                        ValidationAssertMessages.format(violations)
+                        delegate.getViolations().size(),
+                        ValidationAssertMessages.format(delegate.getViolations())
                 ))
                 .isEmpty();
+        consumer.accept(delegate.getViolations());
         return myself;
     }
 

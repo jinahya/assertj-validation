@@ -49,6 +49,9 @@ import java.util.function.Function;
  * @param <SELF> self type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@SuppressWarnings({
+        "java:S119" // <SELF ...>
+})
 public interface PathAssert<SELF extends PathAssert<SELF>>
         extends Assert<SELF, Path>,
                 EnumerableAssert<SELF, Path.Node> {
@@ -248,6 +251,25 @@ public interface PathAssert<SELF extends PathAssert<SELF>>
         // --------------------------------------------------------------------------------------------------------- key
 
         /**
+         * Returns a new assertion for verifying {@link Path.Node#getKey()} actual.key} value.
+         *
+         * @param factory an assertion factory.
+         * @return an assert for verifying {@link Path.Node#getKey() actual.key} value.
+         * @see #extractingKey()
+         */
+        default <KEY, ASSERT extends AbstractObjectAssert<ASSERT, ? extends KEY>>
+        ASSERT extractingKey(AssertFactory<? super KEY, ? extends ASSERT> factory) {
+            return extractingKey(
+                    a -> {
+                        @SuppressWarnings({"unchecked"})
+                        final KEY key = (KEY) a.getKey();
+                        return key;
+                    },
+                    factory
+            );
+        }
+
+        /**
          * Returns an assert for verifying {@link Path.Node#getKey()} actual.key} value.
          *
          * @param extractor a function for extracting {@link Path.Node#getKey() actual.key} value.
@@ -295,6 +317,18 @@ public interface PathAssert<SELF extends PathAssert<SELF>>
          */
         default SELF hasKey(final Object expectedKey) {
             return hasKeySatisfying(a -> a.isEqualTo(expectedKey));
+        }
+
+        /**
+         * Verifies that {@link Path.Node#getKey() actual.key} is {@code null}.
+         *
+         * @return this assertion object.
+         * @implSpec The default implementation invokes the {@link #hasKey(Object)} method with {@code null}, and
+         * returns the result.
+         * @see #hasKey(Object)
+         */
+        default SELF doesNotHaveKey() {
+            return hasKey(null);
         }
 
         // -------------------------------------------------------------------------------------------------------- kind

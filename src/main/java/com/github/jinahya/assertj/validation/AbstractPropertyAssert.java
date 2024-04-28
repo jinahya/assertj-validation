@@ -29,6 +29,9 @@ import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings({
+        "java:S119" // <SELF ...>
+})
 public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert<SELF, ACTUAL>, ACTUAL>
         extends AbstractValidationAssert<SELF, ACTUAL>
         implements PropertyAssert<SELF, ACTUAL> {

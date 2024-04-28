@@ -86,11 +86,11 @@
         <artifactId>checkstyle</artifactId>
         <version>${version.checkstyle}</version>
       </dependency>
-      <dependency> <!-- only for the javadoc -->
-        <groupId>jakarta.validation</groupId>
-        <artifactId>jakarta.validation-api</artifactId>
-        <version>${version.jakarta.validation-api}</version>
-      </dependency>
+      <!--      <dependency> &lt;!&ndash; only for the javadoc &ndash;&gt;-->
+      <!--        <groupId>jakarta.validation</groupId>-->
+      <!--        <artifactId>jakarta.validation-api</artifactId>-->
+      <!--        <version>${version.jakarta.validation-api}</version>-->
+      <!--      </dependency>-->
       <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
@@ -129,11 +129,11 @@
       <version>${version.logback-classic}</version>
       <scope>test</scope>
     </dependency>
-    <dependency> <!-- only for the javadoc -->
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!--    <dependency> &lt;!&ndash; only for the javadoc &ndash;&gt;-->
+    <!--      <groupId>jakarta.validation</groupId>-->
+    <!--      <artifactId>jakarta.validation-api</artifactId>-->
+    <!--      <scope>provided</scope>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -897,6 +897,20 @@
                     <source>src/test/java-sub-hibernate-validator-referenceguide</source>
                     <source>sub/hibernate-validator/documentation/src/test/java</source>
                   </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>add-test-resource</id>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>add-test-resource</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>sub/hibernate-validator/documentation/src/test/resources</directory>
+                    </resource>
+                  </resources>
                 </configuration>
               </execution>
             </executions>

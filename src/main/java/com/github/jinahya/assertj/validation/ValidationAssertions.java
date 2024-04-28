@@ -61,19 +61,18 @@ public final class ValidationAssertions {
     /**
      * Creates a new assertion object for verifying specified constraint violation value.
      *
-     * @param <T>    actual type parameter
      * @param actual the constraint violation value to verify.
      * @return a new assertion instance for {@code actual}.
      */
-    public static <T> ConstraintViolationAssert<?, ConstraintViolation<T>, T> assertThatConstraintViolation(
-            final ConstraintViolation<T> actual) {
-        return new DefaultConstraintViolationAssert<>(actual);
+    public static AbstractConstraintViolationAssert<?>
+    assertThatConstraintViolation(final ConstraintViolation<?> actual) {
+        return new DefaultConstraintViolationAssert(actual);
     }
 
-    static <T> AbstractIterableOfConstraintViolationsAssert<?, T> assertThatIterableOfConstraintViolations(
-            final Iterable<? extends ConstraintViolation<T>> actual) {
-        return new IterableOfConstraintViolationsAssert<>(actual);
-    }
+//    static <T> AbstractIterableOfConstraintViolationsAssert<?, T> assertThatIterableOfConstraintViolations(
+//            final Iterable<? extends ConstraintViolation<T>> actual) {
+//        return new IterableOfConstraintViolationsAssert<>(actual);
+//    }
 
 //    /**
 //     * Creates a new assertion object for verifying specified path value.

@@ -22,15 +22,15 @@ package com.github.jinahya.assertj.validation;
 
 import javax.validation.ConstraintViolation;
 
-class DefaultConstraintViolationAssert<T>
-        extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert<T>, ConstraintViolation<T>, T> {
+public class DefaultConstraintViolationAssert
+        extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    DefaultConstraintViolationAssert(final ConstraintViolation<T> actual) {
+    DefaultConstraintViolationAssert(final ConstraintViolation<?> actual) {
         super(actual, DefaultConstraintViolationAssert.class);
     }
 }

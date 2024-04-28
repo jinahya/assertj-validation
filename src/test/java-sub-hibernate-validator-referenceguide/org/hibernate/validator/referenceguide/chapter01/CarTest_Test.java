@@ -1,6 +1,7 @@
 package org.hibernate.validator.referenceguide.chapter01;
 
 import com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert;
+import com.github.jinahya.assertj.validation.ValidationAssertions;
 import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.Test;
 
@@ -28,9 +29,9 @@ class CarTest_Test {
                 .isNotValid(s -> {
                     assertThat(s)
                             .isNotEmpty()
-//                            .first(new InstanceOfAssertFactory<ConstraintViolation, AbstractConstraintViolationAssert>(ConstraintViolation.class, cv -> {
-//                                return null;
-//                            }));
+                            .first(new InstanceOfAssertFactory<ConstraintViolation, AbstractConstraintViolationAssert>(ConstraintViolation.class, cv -> {
+                                return (AbstractConstraintViolationAssert) ValidationAssertions.assertThatConstraintViolation(cv);
+                            }))
                     ;
                 })
                 .doesNotHaveValidProperty(Car_Constants.PROPERTY_MANUFACTURER)

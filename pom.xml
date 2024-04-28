@@ -894,9 +894,6 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <!--                    <source>src/test/java-sub-hibernate-validator-referenceguide-chapter01</source>-->
-                    <!--                    <source>src/test/java-sub-hibernate-validator-referenceguide-chapter01</source>-->
-                    <!--                    <source>sub/hibernate-validator/documentation/src/test/java/org/hibernate/validator/referenceguide/chapter01</source>-->
                     <source>src/test/java-sub-hibernate-validator-referenceguide</source>
                     <source>sub/hibernate-validator/documentation/src/test/java</source>
                   </sources>

@@ -37,9 +37,18 @@ import org.assertj.core.api.EnumerableAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssertFactory;
-import org.assertj.core.internal.Failures;
-import org.assertj.core.internal.Iterables;
+import org.assertj.core.error.ShouldBeEmpty;
+import org.assertj.core.error.ShouldBeNullOrEmpty;
+import org.assertj.core.error.ShouldHaveSameSizeAs;
+import org.assertj.core.error.ShouldHaveSize;
+import org.assertj.core.error.ShouldHaveSizeBetween;
+import org.assertj.core.error.ShouldHaveSizeGreaterThan;
+import org.assertj.core.error.ShouldHaveSizeGreaterThanOrEqualTo;
+import org.assertj.core.error.ShouldHaveSizeLessThan;
+import org.assertj.core.error.ShouldHaveSizeLessThanOrEqualTo;
+import org.assertj.core.error.ShouldNotBeEmpty;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -1124,7 +1133,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         if (expected == null || node.getKind() == expected) {
             return;
         }
-        throw Failures.instance().failure(String.format(
+        throw new AssertionError(String.format(
                 "%nExpecting %1$s%n"
                 + "  <%2$s>%n"
                 + "to be of kind%n"
@@ -1566,65 +1575,112 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     @Override
     public void isNullOrEmpty() {
-        iterables.assertNullOrEmpty(info, actual);
+        if (actual != null && size() != 0) {
+            throwAssertionError(ShouldBeNullOrEmpty.shouldBeNullOrEmpty(actual));
+        }
     }
 
     @Override
     public void isEmpty() {
-        iterables.assertEmpty(info, actual);
+        if (sizeOfNonNull() != 0) {
+            throwAssertionError(ShouldBeEmpty.shouldBeEmpty(actual));
+        }
     }
 
     @Override
     public SELF isNotEmpty() {
-        iterables.assertNotEmpty(info, actual);
+        if (sizeOfNonNull() == 0) {
+            throwAssertionError(ShouldNotBeEmpty.shouldNotBeEmpty());
+        }
         return myself;
     }
 
     @Override
     public SELF hasSize(final int expected) {
-        iterables.assertHasSize(info, actual, expected);
+        final int size = sizeOfNonNull();
+        if (size != expected) {
+            throwAssertionError(ShouldHaveSize.shouldHaveSize(actual, size, expected));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSizeGreaterThan(final int boundary) {
-        iterables.assertHasSizeGreaterThan(info, actual, boundary);
+        final int size = sizeOfNonNull();
+        if (size <= boundary) {
+            throwAssertionError(ShouldHaveSizeGreaterThan.shouldHaveSizeGreaterThan(actual, size, boundary));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSizeGreaterThanOrEqualTo(final int boundary) {
-        iterables.assertHasSizeGreaterThanOrEqualTo(info, actual, boundary);
+        final int size = sizeOfNonNull();
+        if (size < boundary) {
+            throwAssertionError(
+                    ShouldHaveSizeGreaterThanOrEqualTo.shouldHaveSizeGreaterThanOrEqualTo(actual, size, boundary));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSizeLessThan(final int boundary) {
-        iterables.assertHasSizeLessThan(info, actual, boundary);
+        final int size = sizeOfNonNull();
+        if (size >= boundary) {
+            throwAssertionError(ShouldHaveSizeLessThan.shouldHaveSizeLessThan(actual, size, boundary));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSizeLessThanOrEqualTo(final int boundary) {
-        iterables.assertHasSizeLessThanOrEqualTo(info, actual, boundary);
+        final int size = sizeOfNonNull();
+        if (size > boundary) {
+            throwAssertionError(
+                    ShouldHaveSizeLessThanOrEqualTo.shouldHaveSizeLessThanOrEqualTo(actual, size, boundary));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSizeBetween(final int lowerBoundary, final int higherBoundary) {
-        iterables.assertHasSizeBetween(info, actual, lowerBoundary, higherBoundary);
+        if (higherBoundary < lowerBoundary) {
+            throw new IllegalArgumentException(String.format(
+                    "The higher boundary <%1$s> must be greater than the lower boundary <%2$s>.",
+                    higherBoundary, lowerBoundary));
+        }
+        final int size = sizeOfNonNull();
+        if (size < lowerBoundary || size > higherBoundary) {
+            throwAssertionError(
+                    ShouldHaveSizeBetween.shouldHaveSizeBetween(actual, size, lowerBoundary, higherBoundary));
+        }
         return myself;
     }
 
     @Override
     public SELF hasSameSizeAs(final Iterable<?> other) {
-        iterables.assertHasSameSizeAs(info, actual, other);
-        return myself;
+        Objects.requireNonNull(other, "The Iterable to compare actual size with should not be null");
+        int otherSize = 0;
+        for (final Object ignored : other) {
+            otherSize++;
+        }
+        return hasSameSizeAs(other, otherSize);
     }
 
     @Override
     public SELF hasSameSizeAs(final Object other) {
-        iterables.assertHasSameSizeAs(info, actual, other);
+        Objects.requireNonNull(other, "The array to compare actual size with should not be null");
+        if (!other.getClass().isArray()) {
+            throw new IllegalArgumentException(String.format("The argument should be an array but was: <%1$s>", other));
+        }
+        return hasSameSizeAs(other, Array.getLength(other));
+    }
+
+    private SELF hasSameSizeAs(final Object other, final int otherSize) {
+        final int size = sizeOfNonNull();
+        if (size != otherSize) {
+            throwAssertionError(ShouldHaveSameSizeAs.shouldHaveSameSizeAs(actual, other, size, otherSize));
+        }
         return myself;
     }
 
@@ -1658,5 +1714,27 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private final Iterables iterables = Iterables.instance();
+
+    /**
+     * Returns the number of nodes in the {@code actual} path, which must be not {@code null}.
+     *
+     * @return the number of nodes in the {@code actual} path.
+     */
+    private int size() {
+        int size = 0;
+        for (final Path.Node ignored : actual) {
+            size++;
+        }
+        return size;
+    }
+
+    /**
+     * Verifies that the {@code actual} path is not {@code null}, and returns the number of its nodes.
+     *
+     * @return the number of nodes in the {@code actual} path.
+     */
+    private int sizeOfNonNull() {
+        isNotNull();
+        return size();
+    }
 }

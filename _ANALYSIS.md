@@ -248,11 +248,15 @@ try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
 }
 ```
 
-The factory is closed before the `Validator` it produced is ever used. The Jakarta Validation specification
-says nothing about a `Validator` outliving its factory, and `ValidatorFactory.close()` is defined as releasing
-the resources the factory allocated. It works with Hibernate Validator today — the 64 tests prove that much —
-but it is unspecified behaviour, and an engine that pooled or cached anything factory-scoped would be within
-its rights to fail or leak.
+The factory is closed before the `Validator` it produced is ever used.
+
+**Correction.** This section originally read that the specification "says nothing about a `Validator`
+outliving its factory". That is wrong. `ValidatorFactory.close()` is specified as: *"After the
+`ValidatorFactory` instance is closed, calling the following methods is not allowed: methods of this
+`ValidatorFactory` instance; **methods of `Validator` instances created by this `ValidatorFactory`**."* So
+this is an explicit spec violation on every assertion, not unspecified behaviour. It passes only because
+Hibernate Validator 9.1.4 does not enforce `close()` at all — even `validate()` after close succeeds, as a
+probe confirmed.
 
 A second, quieter cost: the supplier is invoked per `getValidator()` call, so every assertion bootstraps a
 fresh `ValidatorFactory`. Factory construction scans the classpath and parses `META-INF/validation.xml`; it is

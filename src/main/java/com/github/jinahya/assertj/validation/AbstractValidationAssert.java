@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.assertj.core.api.AbstractAssert;
 
 import java.util.Optional;
@@ -70,6 +71,27 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
         return usingValidatorSuppliedBy(
                 Optional.ofNullable(validator)
                         .<Supplier<Validator>>map(v -> () -> v)
+                        .orElse(null)
+        );
+    }
+
+    /**
+     * Configures this assertion object to use validators obtained from specified validator factory.
+     * <p>
+     * The factory is <em>not</em> closed by this assertion object &mdash; the caller supplied the instance, so the
+     * caller owns its lifecycle. {@link ValidatorFactory#getValidator()} is invoked once per assertion rather than
+     * cached, so a factory reconfigured between assertions takes effect, and the factory remains free to return a
+     * validator of its own choosing.
+     *
+     * @param factory the validator factory to obtain validators from; {@code null} to reset.
+     * @return this assertion object.
+     * @see #usingValidator(Validator)
+     * @see ValidatorFactory#getValidator()
+     */
+    public final SELF usingValidatorFactory(final ValidatorFactory factory) {
+        return usingValidatorSuppliedBy(
+                Optional.ofNullable(factory)
+                        .<Supplier<Validator>>map(f -> f::getValidator)
                         .orElse(null)
         );
     }

@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 113 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -29,6 +29,39 @@ Second cost: the supplier runs per `getValidator()` call, so **every assertion b
 `ValidatorFactory`** — classpath scan plus `META-INF/validation.xml` parse, the expensive part of the API.
 
 - [ ] Build the factory once, hold it, let the `Validator` live as long as it does.
+
+**Measured** (50 warmed iterations): bootstrap **1.20 ms** vs reuse **0.0072 ms** — **165x**, paid on every one
+of the 8 `delegate.getValidator()` call sites, i.e. once per assertion.
+
+**Stronger than §2.4 states.** That section says the spec "says nothing about a `Validator` outliving its
+factory". It says the opposite — `ValidatorFactory.close()` is specified as: *"After the `ValidatorFactory`
+instance is closed, calling the following methods is not allowed: methods of this `ValidatorFactory`
+instance; methods of `Validator` instances created by this `ValidatorFactory`."* So the current default is an
+explicit spec violation on every assertion, not merely unspecified. Hibernate Validator 9.1.4 does not enforce
+`close()` at all — even `validate()` after close succeeds — which is why the suite passes.
+
+**Do not make disposal the default.** Eight methods touch the validator and all return `SELF`, so the call
+scope is closed; but the values they produce escape it — `delegate.setViolations(...)` retains the set, the
+`Consumer<Set<ConstraintViolation>>` overloads hand it to callers, and from a violation a caller reaches
+`ConstraintDescriptor`, `Path` and all nine node assertions. Disposing per assertion would invalidate objects
+already handed out. A cached, never-closed factory is safe by construction.
+
+### 1.1b `usingValidatorFactorySuppliedBy(Supplier, Consumer)` — deferred
+
+A post-assertion hook: acquire a factory, run the assertion, hand the factory to the disposer in a `finally`
+so it runs on pass *and* on fail. AssertJ offers nothing to build this on — `AbstractAssert` has no
+`AutoCloseable`, no completion callback; `AfterAssertionErrorCollected` and `assertAll()` are soft-assertion
+only, and `setDescriptionConsumer` fires from `describedAs`, not from an assertion. So the hook must be ours,
+inside each assertion method, which means `Validator getValidator()` has to become scoped
+(`<R> R applyValidator(Function<Validator, R>)`) — you cannot both return a bare `Validator` and dispose its
+factory afterwards.
+
+- [ ] Decide first whether the disposer is factory-specific or a general post-assertion callback.
+- [ ] Document that anything reachable from the resulting violations may die with the factory.
+- [ ] The disposer must not mask a failing assertion: `AssertionError` wins, disposer failure is suppressed.
+
+~~`usingValidatorFactory(ValidatorFactory)`~~ — **done**. Needed no delegate change: the caller owns the
+instance, so it is never closed, and it is simply `usingValidatorSuppliedBy(factory::getValidator)`.
 
 ### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3
 

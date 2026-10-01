@@ -66,6 +66,13 @@ public final class ValidationAssertions {
         return new DefaultPropertyAssert<>(actual);
     }
 
+    /**
+     * Creates a new assertion object for verifying specified constraint descriptor.
+     *
+     * @param <T>    constraint annotation type parameter
+     * @param actual the constraint descriptor to verify.
+     * @return a new assertion instance for {@code actual}.
+     */
     public static <T extends Annotation> AbstractConstraintDescriptorAssert<?, ?, T> assertThatConstraintDescriptor(
             final ConstraintDescriptor<T> actual) {
         return new DefaultConstraintDescriptorAssert<>(actual);
@@ -93,7 +100,7 @@ public final class ValidationAssertions {
      */
     public static <T> AbstractIterableOfConstraintViolationsAssert<?, T> assertThatIterableOfConstraintViolations(
             final Iterable<? extends ConstraintViolation<T>> actual) {
-        return new IterableOfConstraintViolationsAssert<>(actual);
+        return new DefaultIterableOfConstraintViolationsAssert<>(actual);
     }
 
     /**

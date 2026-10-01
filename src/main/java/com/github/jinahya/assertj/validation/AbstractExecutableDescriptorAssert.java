@@ -44,6 +44,12 @@ public abstract class AbstractExecutableDescriptorAssert<
         SELF extends AbstractExecutableDescriptorAssert<SELF, ACTUAL>, ACTUAL extends ExecutableDescriptor>
         extends AbstractElementDescriptorAssert<SELF, ACTUAL> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractExecutableDescriptorAssert(final ACTUAL actual, final Class<?> selfType) {
         super(actual, selfType);
     }

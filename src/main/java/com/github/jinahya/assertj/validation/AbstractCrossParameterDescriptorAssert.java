@@ -34,6 +34,12 @@ import jakarta.validation.metadata.CrossParameterDescriptor;
 public abstract class AbstractCrossParameterDescriptorAssert<SELF extends AbstractCrossParameterDescriptorAssert<SELF>>
         extends AbstractElementDescriptorAssert<SELF, CrossParameterDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractCrossParameterDescriptorAssert(final CrossParameterDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

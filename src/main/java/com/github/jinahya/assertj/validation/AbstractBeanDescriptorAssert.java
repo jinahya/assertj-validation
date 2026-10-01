@@ -46,6 +46,12 @@ import java.util.Objects;
 public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDescriptorAssert<SELF>>
         extends AbstractElementDescriptorAssert<SELF, BeanDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractBeanDescriptorAssert(final BeanDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

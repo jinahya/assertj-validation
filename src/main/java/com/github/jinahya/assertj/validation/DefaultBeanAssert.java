@@ -28,7 +28,7 @@ package com.github.jinahya.assertj.validation;
 @SuppressWarnings({
         "java:S119" // <ACTUAL>
 })
-class DefaultBeanAssert<ACTUAL>
+public class DefaultBeanAssert<ACTUAL>
         extends AbstractBeanAssert<DefaultBeanAssert<ACTUAL>, ACTUAL> {
 
     /**

@@ -53,6 +53,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractConstructorAssert<SELF extends AbstractConstructorAssert<SELF, T>, T>
         extends AbstractValidationAssert<SELF, Constructor<? extends T>> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractConstructorAssert(final Constructor<? extends T> actual, final Class<?> selfType) {
         super(actual, selfType);
     }

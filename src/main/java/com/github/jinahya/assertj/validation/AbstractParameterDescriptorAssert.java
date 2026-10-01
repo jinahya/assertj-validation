@@ -37,6 +37,12 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractParameterDescriptorAssert<SELF>>
         extends AbstractCascadableContainerDescriptorAssert<SELF, ParameterDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractParameterDescriptorAssert(final ParameterDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

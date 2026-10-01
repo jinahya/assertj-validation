@@ -22,6 +22,11 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
+/**
+ * An abstract assertion class for verifying {@code DefaultConstraintViolation} values.
+ *
+ * @param <T> root bean type parameter
+ */
 public class DefaultConstraintViolationAssert<T>
         extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert<T>, ConstraintViolation<T>, T> {
 

@@ -34,6 +34,12 @@ import jakarta.validation.metadata.ReturnValueDescriptor;
 public abstract class AbstractReturnValueDescriptorAssert<SELF extends AbstractReturnValueDescriptorAssert<SELF>>
         extends AbstractCascadableContainerDescriptorAssert<SELF, ReturnValueDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractReturnValueDescriptorAssert(final ReturnValueDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

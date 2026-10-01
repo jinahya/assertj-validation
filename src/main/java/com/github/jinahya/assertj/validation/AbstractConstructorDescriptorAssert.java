@@ -34,6 +34,12 @@ import jakarta.validation.metadata.ConstructorDescriptor;
 public abstract class AbstractConstructorDescriptorAssert<SELF extends AbstractConstructorDescriptorAssert<SELF>>
         extends AbstractExecutableDescriptorAssert<SELF, ConstructorDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractConstructorDescriptorAssert(final ConstructorDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

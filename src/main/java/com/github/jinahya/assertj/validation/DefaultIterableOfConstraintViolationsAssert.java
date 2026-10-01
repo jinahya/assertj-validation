@@ -22,11 +22,21 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
-public class IterableOfConstraintViolationsAssert<T>
-        extends AbstractIterableOfConstraintViolationsAssert<IterableOfConstraintViolationsAssert<T>, T> {
+/**
+ * An abstract assertion class for verifying {@code DefaultIterableOfConstraintViolations} values.
+ *
+ * @param <T> root bean type parameter
+ */
+public class DefaultIterableOfConstraintViolationsAssert<T>
+        extends AbstractIterableOfConstraintViolationsAssert<DefaultIterableOfConstraintViolationsAssert<T>, T> {
 
-    public IterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
-        super(actual, IterableOfConstraintViolationsAssert.class);
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     */
+    public DefaultIterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
+        super(actual, DefaultIterableOfConstraintViolationsAssert.class);
     }
 
     @Override
@@ -36,8 +46,8 @@ public class IterableOfConstraintViolationsAssert<T>
     }
 
     @Override
-    protected IterableOfConstraintViolationsAssert<T> newAbstractIterableAssert(
+    protected DefaultIterableOfConstraintViolationsAssert<T> newAbstractIterableAssert(
             final Iterable<? extends ConstraintViolation<T>> iterable) {
-        return new IterableOfConstraintViolationsAssert<>(iterable);
+        return new DefaultIterableOfConstraintViolationsAssert<>(iterable);
     }
 }

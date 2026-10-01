@@ -52,6 +52,12 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
         ACTUAL extends ElementDescriptor & CascadableDescriptor & ContainerDescriptor>
         extends AbstractElementDescriptorAssert<SELF, ACTUAL> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractCascadableContainerDescriptorAssert(final ACTUAL actual, final Class<?> selfType) {
         super(actual, selfType);
     }

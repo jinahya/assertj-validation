@@ -508,12 +508,10 @@ exist) or demote it back to a local.
 - **A JPMS `module-info`.** The jar carries only `Automatic-Module-Name`. At release 17 a real module
   descriptor is available, and both dependencies (`jakarta.validation`, `org.assertj.core`) are already
   named modules.
-- **100 javadoc warnings** (missing `@param`, undocumented public members) now that `<doclint>none</doclint>`
-  is gone. They do not fail the build. `AbstractConstraintDescriptorAssert` and `AbstractConstraintViolationAssert` account
-  for most of them.
+- ~~**100 javadoc warnings**~~ — fixed in §8.7; the build now reports zero.
 - **`package-info.java` carries its license header *after* the package declaration.** Legal, since it is just a
   comment, but it is the only file in the module that does this.
-- **`ValidationAssertions.assertThatConstraintDescriptor` has no javadoc**, alone among the public entry points.
+- ~~**`ValidationAssertions.assertThatConstraintDescriptor` has no javadoc**~~ — fixed in §8.7.
 
 ---
 
@@ -749,6 +747,34 @@ and by a static entry point, and has an `InstanceOfAssertFactory`.**
 
 `mvn verify`: 113 tests, 0 failures. `javadoc:javadoc` reports no diagnostic.
 
+### 8.7 Visibility audit and javadoc (applied)
+
+A census of all 62 main types against a single rule — *abstract and concrete assertion types are public with
+`protected` and `public` constructors respectively; only genuine internals are package-private* — found four
+deviations, three of them mine:
+
+- `DefaultBeanAssert`, `DefaultPropertyAssert` and `DefaultConstraintDescriptorAssert` were package-private
+  while the other 22 concrete assertions were public; two of the three carried a `public` constructor on a
+  package-private class, which does nothing. Now public, so they can serve as `AssertFactory` targets
+  (`DefaultBeanAssert::new`) in the two-argument `extracting` overloads, as the others already could.
+- `_AbstractNodeAssert`'s constructor was package-private where every other abstract assertion's is
+  `protected`.
+
+Deliberately left package-private: `_AbstractNodeAssert` (internal base; javadoc inlines its members into the
+nine public node assertions, so nothing is hidden from the docs), `ValidationAssertDelegate`, and the four
+empty placeholders of §4.1. No public member names a package-private type — checked mechanically.
+
+`IterableOfConstraintViolationsAssert` was the only concrete assertion without the `Default` prefix; renamed
+to `DefaultIterableOfConstraintViolationsAssert`. It was package-private until §8.2, so nothing external
+depended on the old name.
+
+**Javadoc.** The audit also exposed a reporting error on my part: §6.6's 100 warnings were reported as fixed
+earlier in this pass, but that reading came from a `javadoc:javadoc` run that had skipped regeneration. The
+real count was still 100. All 100 are now fixed — 96 undocumented members plus four missing `@param` tags —
+and `mvn clean javadoc:javadoc` reports **zero** warnings, verified from a clean target.
+
+`mvn verify`: 113 tests, 0 failures.
+
 ---
 
 ## 9. Priorities
@@ -769,4 +795,5 @@ and by a static entry point, and has an `InstanceOfAssertFactory`.**
 | ~~12~~ | ~~Cover the metadata API~~ — done | 8.3 |
 | ~~13~~ | ~~Cover executable validation~~ — done | 8.4 |
 | 14 | An assertion for `ConstraintViolationException` | 8.5 |
+| ~~16~~ | ~~Visibility census and the 100 javadoc warnings~~ — done | 8.7 |
 | ~~15~~ | ~~Node entry points and the full factory set~~ — done | 8.6 |

@@ -34,6 +34,12 @@ import jakarta.validation.metadata.MethodDescriptor;
 public abstract class AbstractMethodDescriptorAssert<SELF extends AbstractMethodDescriptorAssert<SELF>>
         extends AbstractExecutableDescriptorAssert<SELF, MethodDescriptor> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractMethodDescriptorAssert(final MethodDescriptor actual, final Class<?> selfType) {
         super(actual, selfType);
     }

@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 110 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -100,8 +100,9 @@ import and no commented-out code**.
 The suite grew 64 → 105, and the metadata, executable-validation, node-navigation, message-template and
 descriptor-member areas are now covered. What remains:
 
-- [ ] **`ValidationAssertMessages` has no direct test** — the class that renders every failure message this
-      library produces, and the reason §2.3 (literal `%n`) survived to be found by inspection. §5
+- [x] ~~**`ValidationAssertMessages` has no direct test**~~ — **done**. Eight tests cover both `format`
+      overloads, the null/empty guards and non-instantiability, and two of them pin the §2.3 regression
+      directly: no literal `%n` survives, and entries are joined on `System.lineSeparator()`.
 - [ ] **Assert on failure-message text.** The library's whole value is its failure output, and nothing
       asserts a single character of it. §5
 - [ ] **`DefaultPathAssert.newAbstractIterableAssert`** — untested, and item 1.2 above lives there.
@@ -170,17 +171,21 @@ which keeps the failure text. Worth having only if the collection form is wanted
 
 ### 5.4 Smaller items — §6.6
 
-- [ ] **`acceptViolations` wraps too broadly**: any `Exception` from a caller's consumer is re-wrapped in a
-      bare `RuntimeException`. `AssertionError` is an `Error` and passes through — the case that matters — but
-      everything else loses its type at the boundary.
-- [ ] **`getViolations()` allocates a new `HashSet` per call**, and `isValid` calls it three times per
-      assertion.
+- [x] ~~**`acceptViolations` wraps too broadly**~~ — **done**. The `catch` is removed, not narrowed:
+      `Consumer.accept` declares no checked exception, so it could only ever re-wrap an unchecked one and
+      lose its type, and the throwable that matters — an `AssertionError` from an assertion inside the
+      consumer — is an `Error` and was never caught anyway.
+- [x] ~~**`getViolations()` allocates a new `HashSet` per call**~~ — **done**, by deletion. The method went
+      with the `violations` field (§8.14); each assertion now holds one precisely-typed local.
 - [ ] **A JPMS `module-info`.** The jar carries only `Automatic-Module-Name`. At release 17 a real descriptor
       is available, and both dependencies are already named modules.
-- [ ] **`package-info.java` carries its license header after the package declaration** (line 100), the only
-      file in the module that does. Legal, since it is just a comment.
-- [ ] **README does not mention the metadata or executable-validation assertions**, nor the public
-      set-of-violations entry point.
+- [x] ~~**`package-info.java` carries its license header after the package declaration**~~ — **not a
+      defect**; the item was based on a misreading. Every file in the module puts `package` first and the
+      license block after it, and `package-info` does the same (package at 100, license at 101). What
+      precedes its package declaration is the package javadoc, which Java requires to go there.
+- [x] ~~**README does not mention the metadata or executable-validation assertions**~~ — **done**, in
+      `package-info`, which is where the README's "Usages" section points. It now groups the 26 entry points
+      into running validation, inspecting what validation produced, and inspecting metadata.
 
 ---
 

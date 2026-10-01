@@ -1033,6 +1033,28 @@ Also removed: two imports left unused by §8.14's inlining, and the last comment
 (`extractingAs`). The module now has **no unreferenced type, no unused import and no commented-out code** —
 verified mechanically, not by eye.
 
+### 8.16 The obvious remainder (applied)
+
+Four of §6.6's smaller items, plus the first of §5's coverage gaps.
+
+- **`acceptViolations` wrapped too broadly** — the `catch` is removed rather than narrowed.
+  `Consumer.accept` declares no checked exception, so it could only ever re-wrap an unchecked one and lose
+  its type; and the throwable that matters here, an `AssertionError` from an assertion made inside the
+  consumer, is an `Error` and was never caught anyway.
+- **`getViolations()` allocating per call** — already gone with the `violations` field in §8.14.
+- **`ValidationAssertMessages` had no test** — now eight, covering both `format` overloads, the null and
+  empty guards, and non-instantiability. Two pin §2.3 directly: no literal `%n` survives the formatting, and
+  entries are joined on `System.lineSeparator()`. That is the class whose single bug lived unnoticed because
+  nothing exercised it.
+- **The new assertions were undocumented** — `package-info`, which the README's "Usages" section points at,
+  now groups the 26 entry points into running validation, inspecting what validation produced, and
+  inspecting metadata.
+
+One item was **withdrawn rather than fixed**: §6.6 claimed `package-info.java` is "the only file in the
+module" to put its license header after the package declaration. Checking, every file does that — `package`
+first, licence block after — and `package-info` is no different. What precedes *its* package declaration is
+the package javadoc, which Java requires to go there. The item was a misreading.
+
 ---
 
 ## 9. Priorities

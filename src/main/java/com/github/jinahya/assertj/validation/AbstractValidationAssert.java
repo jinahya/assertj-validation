@@ -190,14 +190,14 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * @param consumer   the consumer; must be not {@code null}.
      * @param violations the violations to accept.
      * @param <T>        root bean type parameter
+     * @implNote Anything the consumer throws propagates unchanged. {@link Consumer#accept(Object)} declares no
+     * checked exception, so wrapping could only ever re-wrap an unchecked one and lose its type &mdash; and the
+     * throwable that matters most here, an {@link AssertionError} from an assertion made inside the consumer, is
+     * an {@link Error} and was never caught anyway.
      */
     protected final <T> void acceptViolations(final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                                               final Set<ConstraintViolation<T>> violations) {
-        try {
-            consumer.accept(unmodifiableSet(violations));
-        } catch (final Exception e) {
-            throw new RuntimeException("failed to accept violations to [" + consumer + "]", e);
-        }
+        consumer.accept(unmodifiableSet(violations));
     }
 
     // -----------------------------------------------------------------------------------------------------------

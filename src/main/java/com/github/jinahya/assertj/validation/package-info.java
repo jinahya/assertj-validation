@@ -94,6 +94,35 @@
  * // @end
  * // @end
  *}
+ * <p>
+ * The entry points in {@link com.github.jinahya.assertj.validation.ValidationAssertions} cover the Jakarta
+ * Validation API in three groups.
+ * <ul>
+ *   <li><b>Running validation</b> &mdash;
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object) assertThatBean},
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatProperty(Object)
+ *       assertThatProperty} and
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstructor(java.lang.reflect.Constructor)
+ *       assertThatConstructor}. Method and return-value validation hang off the bean assertion as
+ *       {@code hasValidParameters} and {@code hasValidReturnValue}.</li>
+ *   <li><b>Inspecting what validation produced</b> &mdash;
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolations(java.util.Set)
+ *       assertThatConstraintViolations} for the set
+ *       {@link jakarta.validation.Validator#validate(Object, Class[]) validate} returns, and
+ *       {@code assertThatConstraintViolation}, {@code assertThatConstraintDescriptor},
+ *       {@code assertThatPath} and {@code assertThatNode} with a typed variant for each of the nine
+ *       {@link jakarta.validation.Path.Node} kinds.</li>
+ *   <li><b>Inspecting metadata</b> &mdash; {@code assertThatBeanDescriptor} for
+ *       {@link jakarta.validation.Validator#getConstraintsForClass(Class) getConstraintsForClass}, and one
+ *       entry point for each of the other descriptors: property, method, constructor, parameter, return
+ *       value, cross parameter, container element type and group conversion.</li>
+ * </ul>
+ * <p>
+ * Every assertion is reachable three ways: by navigation from a related assertion, by a static entry point,
+ * and through an {@link org.assertj.core.api.InstanceOfAssertFactory} in
+ * {@link com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories}, for use with
+ * {@link org.assertj.core.api.AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)
+ * asInstanceOf}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */

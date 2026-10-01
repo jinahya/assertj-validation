@@ -46,22 +46,9 @@ scope is closed; but the values they produce escape it — `delegate.setViolatio
 `ConstraintDescriptor`, `Path` and all nine node assertions. Disposing per assertion would invalidate objects
 already handed out. A cached, never-closed factory is safe by construction.
 
-### 1.1b `usingValidatorFactorySuppliedBy(Supplier, Consumer)` — deferred
-
-A post-assertion hook: acquire a factory, run the assertion, hand the factory to the disposer in a `finally`
-so it runs on pass *and* on fail. AssertJ offers nothing to build this on — `AbstractAssert` has no
-`AutoCloseable`, no completion callback; `AfterAssertionErrorCollected` and `assertAll()` are soft-assertion
-only, and `setDescriptionConsumer` fires from `describedAs`, not from an assertion. So the hook must be ours,
-inside each assertion method, which means `Validator getValidator()` has to become scoped
-(`<R> R applyValidator(Function<Validator, R>)`) — you cannot both return a bare `Validator` and dispose its
-factory afterwards.
-
-- [ ] Decide first whether the disposer is factory-specific or a general post-assertion callback.
-- [ ] Document that anything reachable from the resulting violations may die with the factory.
-- [ ] The disposer must not mask a failing assertion: `AssertionError` wins, disposer failure is suppressed.
-
 ~~`usingValidatorFactory(ValidatorFactory)`~~ — **done**. Needed no delegate change: the caller owns the
-instance, so it is never closed, and it is simply `usingValidatorSuppliedBy(factory::getValidator)`.
+instance, so it is never closed, and it is simply `usingValidatorSuppliedBy(factory::getValidator)`. The
+`Supplier` variant is **not** being added; see §6.
 
 ### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3
 
@@ -194,6 +181,31 @@ scratch local promoted to state, which also makes an assert object non-reentrant
 ## 6. Deliberately not doing
 
 Recorded so they are not re-litigated:
+
+- **`usingValidatorFactorySuppliedBy(Supplier<? extends ValidatorFactory>)`, in any disposing form** — not
+  added, and not to be added until there is a mechanism that cannot be used wrongly. Four things make the
+  obvious designs error-prone:
+  - **AssertJ has no post-assertion hook to hang it on.** `AbstractAssert` is not `AutoCloseable` and has no
+    completion callback; `AfterAssertionErrorCollected` and `assertAll()` are soft-assertion only, and
+    `setDescriptionConsumer` fires from `describedAs`, not from an assertion. The hook would have to be ours,
+    inside all 8 validator-using methods, forcing `getValidator()` to become scoped.
+  - **The scope would be one assertion, not one chain** — there is no end-of-chain event, so
+    `assertThatBean(u).isValid().hasValidProperty("name")` would acquire and dispose twice. Anyone writing
+    `usingValidatorFactorySuppliedBy(() -> sharedFactory)` would have their shared factory closed on the
+    first assertion.
+  - **Disposal would invalidate values already handed out.** The 8 methods return `SELF`, but the
+    `ConstraintViolation` set escapes — retained in `delegate.violations`, passed to the `Consumer` overloads,
+    and from there reachable to `ConstraintDescriptor`, `Path` and all nine node assertions. Closing the
+    factory ends the life of its `Validator` by specification, and says nothing about those value objects.
+  - **The failure mode is silent.** Hibernate Validator 9.1.4 does not enforce `close()` at all — a probe
+    showed even `validate()` succeeds afterwards — so a misuse would pass locally and break only on a stricter
+    provider.
+
+  The bar for reconsidering: a design where the factory's lifetime is *syntactically visible* and cannot
+  outlive the values derived from it. A scoped callback would clear it, because the lifetime is the block —
+  something shaped like `assertThatBean(u).withValidatorFactory(supplier, a -> { a.isValid(); ... })`, closing
+  once on exit. A fluent `usingValidatorFactorySuppliedBy(...)` cannot clear it, because nothing in the syntax
+  marks where the factory stops being needed. §1.1 / §1.1b
 
 - **`Validator.unwrap(Class)`** — a provider escape hatch for reaching implementation-specific types. Yields
   nothing a test would assert on. This is the 1 of 68 uncovered API members. §8.5

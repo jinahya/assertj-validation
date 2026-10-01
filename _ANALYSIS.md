@@ -779,6 +779,26 @@ and `mvn clean javadoc:javadoc` reports **zero** warnings, verified from a clean
 
 `mvn verify`: 113 tests, 0 failures.
 
+### 8.8 Validator lifecycle: what was added, and what was refused (applied)
+
+`usingValidatorFactory(ValidatorFactory)` was added. It needed no change to the delegate: the caller supplies
+the instance, so the caller owns the lifecycle, the assertion never closes it, and the method is just
+`usingValidatorSuppliedBy(factory::getValidator)`. The javadoc states the ownership contract four times — in
+the description, a `{@snippet}`, the `@param` and an `@apiNote` — because the body is one line, so the
+documentation *is* the API.
+
+A `Supplier<? extends ValidatorFactory>` variant that disposes the factory was **refused**, not deferred. The
+reasoning is recorded in `_TODO.md` §6; in short, every fluent form of it is error-prone, because assertj has
+no post-assertion hook, the scope would be one assertion rather than one chain, disposal would invalidate
+`ConstraintViolation` values already handed to the caller and to the rest of this library, and Hibernate
+Validator does not enforce `close()` — so the misuse would be silent.
+
+It will be reconsidered only for a design whose factory lifetime is syntactically visible, such as a scoped
+callback. A fluent configuration method cannot express that, because nothing in the syntax marks where the
+factory stops being needed.
+
+---
+
 ---
 
 ## 9. Priorities
@@ -798,6 +818,8 @@ and `mvn clean javadoc:javadoc` reports **zero** warnings, verified from a clean
 | ~~11~~ | ~~Make every `Path.Node` kind reachable~~ — done | 8.2 |
 | ~~12~~ | ~~Cover the metadata API~~ — done | 8.3 |
 | ~~13~~ | ~~Cover executable validation~~ — done | 8.4 |
-| 14 | An assertion for `ConstraintViolationException` | 8.5 |
-| ~~16~~ | ~~Visibility census and the 100 javadoc warnings~~ — done | 8.7 |
-| ~~15~~ | ~~Node entry points and the full factory set~~ — done | 8.6 |
+| ~~14~~ | ~~Node entry points and the full factory set~~ — done | 8.6 |
+| ~~15~~ | ~~Visibility census and the 100 javadoc warnings~~ — done | 8.7 |
+| ~~16~~ | ~~`usingValidatorFactory(ValidatorFactory)`~~ — done | 8.8 |
+| 17 | An assertion for `ConstraintViolationException` | 8.5 |
+| — | Disposing `usingValidatorFactorySuppliedBy` — **refused**, see `_TODO.md` §6 | 8.8 |

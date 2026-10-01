@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 123 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -257,6 +257,37 @@ being assertable. Only 7 of 68 types carry a `Validator`, and only three classes
 - [ ] `AbstractConstructorAssert` duplicates `AbstractBeanAssert`'s executable-validation logic (its private
       `validating(...)` mirrors `executable(...)`). Worth a shared base or a helper, once the validator
       lifecycle (§1.1) is settled, since both sites are where a factory would be acquired.
+
+---
+
+## 5.6 Collapse the node assert hierarchy — **decision pending**
+
+The eight `Path.Node` subtypes add **four accessors** over the base, and two add nothing at all:
+
+```
+BeanNode, PropertyNode, ContainerElementNode : + getContainerClass, getTypeArgumentIndex
+MethodNode, ConstructorNode                  : + getParameterTypes
+ParameterNode                                : + getParameterIndex
+CrossParameterNode, ReturnValueNode          : + nothing
+```
+
+The library models that with **22 public types** (9 abstract node asserts, 9 concrete, 4 mixin interfaces),
+~1500 lines, 9 entry points and 8 factory constants. Two of the assert classes are empty but for a
+constructor.
+
+A second opinion (Codex) and a measurement both bear on it:
+
+- **For**: `instanceof` cannot discriminate node kinds at all (§8.18), so the typed asserts cannot be reached
+  soundly through assertj's ordinary narrowing without an explicit kind check. Much of the hierarchy's
+  apparent type safety was never real.
+- **Against**: these are *published* public types, and "we are 0.x" is permission rather than justification.
+  Abstract classes are extension points. Compile-time narrowing also drives IDE completion, and the claim
+  that test failures "surface immediately" is weak &mdash; tests can be disabled or filtered.
+
+- [ ] If collapsing: do it in stages &mdash; add the unified node assert, document it as the default,
+      `@Deprecated(forRemoval = true)` the 20 typed types delegating to it, and remove a release later with a
+      migration note. Not in a patch release.
+- [ ] Each guarded accessor must check the kind itself and never require a preceding `hasKind()`.
 
 ---
 

@@ -1103,6 +1103,52 @@ assertion, became `extractingNode(0)`. The deleted §7 interface had declared
 `Assert<SELF, Path>, EnumerableAssert<SELF, Path.Node>` — the original design was right, and
 `AbstractPathAssert` had quietly widened it.
 
+### 8.18 Node kind: `instanceof` is not a discriminator (applied)
+
+Two defects, found while reviewing whether the node assert hierarchy should collapse, and fixed independently
+of that question. Both come from the same fact, which had to be measured to be believed:
+
+**Hibernate Validator's node implements every `Path.Node` subtype at once.**
+
+```
+node kind : METHOD     impl: MaterializedNode
+  instanceof BeanNode / PropertyNode / MethodNode / ConstructorNode /
+             ParameterNode / CrossParameterNode / ReturnValueNode / ContainerElementNode   ->  all true
+  getContainerClass() on it  ->  IllegalArgumentException
+```
+
+So `Class.isInstance` accepts any node as any kind. {@code Path.Node#getKind()} is the only reliable
+discriminator &mdash; exactly as the specification says: *"The appropriate type should be checked before by
+calling `getKind()`"*, with `as(Class)` declared to throw `ClassCastException`.
+
+**Defect 1: the eight node `InstanceOfAssertFactory` constants were unsound.** Added in §8.6, they looked
+like a guard and were not one: `asInstanceOf(PROPERTY_NODE)` on a method node *succeeded*, and the next
+assertion failed with an `IllegalArgumentException` thrown from inside the provider. The `instanceof` test
+assertj performs before calling the factory cannot discriminate these types. Fixed by checking the kind in
+the factory's own delegate, which runs after that test.
+
+**Defect 2: wrong-kind navigation threw the wrong exception.** `extractingPropertyNode(0)` on a method node
+produced `ClassCastException: HV000118: Unable to cast ...` rather than an assertion failure. `nodeAt` now
+checks `getKind()` against a `Map<Class<? extends Path.Node>, ElementKind>` before calling `as`.
+
+Both now fail the same way, and say what is wrong:
+
+```
+Expecting the node at index 0
+  <go>
+to be of kind
+  <PROPERTY>
+so that it can be narrowed to <PropertyNode>, but its kind is
+  <METHOD>
+```
+
+Five tests pin it, including the premise itself &mdash; that `instanceof` accepts a `PropertyNode` when the
+kind is `METHOD` &mdash; so the reason for the kind check cannot be optimised away by a later reader.
+
+This also settles part of the open question in `_TODO.md` §5.6: typed node assertions cannot be reached
+soundly through assertj's ordinary `asInstanceOf` narrowing without this check, which weakens the case for
+keeping nine of them.
+
 ---
 
 ## 9. Priorities

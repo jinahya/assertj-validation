@@ -37,15 +37,18 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.EnumerableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Iterables;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * An abstract class for verifying {@link Path} values.
@@ -1028,6 +1031,66 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
             final N casted = (N) node;
             return casted;
         }
+        requireKindOf(node, nodeType, () -> String.format("the node at index %1$d", index));
+        return node.as(nodeType);
+    }
+
+    /**
+     * Verifies that specified node is of the {@link ElementKind} that specified node type represents, failing as
+     * an assertion rather than letting {@link Path.Node#as(Class)} throw.
+     * <p>
+     * {@link Path.Node#as(Class)} is specified to throw a {@link ClassCastException}, and says the kind
+     * &quot;should be checked before by calling {@link Path.Node#getKind()}&quot;. {@link Class#isInstance} is no
+     * substitute: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so an
+     * {@code instanceof} test accepts any node regardless of its kind. {@link Path.Node#getKind()} is the only
+     * reliable discriminator.
+     *
+     * @param node        the node to check.
+     * @param nodeType    the node type it is about to be narrowed to.
+     * @param description supplies a description of where the node came from.
+     */
+    private static void requireKindOf(final Path.Node node, final Class<? extends Path.Node> nodeType,
+                                      final Supplier<String> description) {
+        final ElementKind expected = KIND_BY_NODE_TYPE.get(nodeType);
+        if (expected == null || node.getKind() == expected) {
+            return;
+        }
+        throw Failures.instance().failure(String.format(
+                "%nExpecting %1$s%n"
+                + "  <%2$s>%n"
+                + "to be of kind%n"
+                + "  <%3$s>%n"
+                + "so that it can be narrowed to <%4$s>, but its kind is%n"
+                + "  <%5$s>",
+                description.get(), node, expected, nodeType.getSimpleName(), node.getKind()));
+    }
+
+    /**
+     * The {@link ElementKind} each {@link Path.Node} subtype represents.
+     */
+    private static final Map<Class<? extends Path.Node>, ElementKind> KIND_BY_NODE_TYPE = Map.of(
+            Path.BeanNode.class, ElementKind.BEAN,
+            Path.PropertyNode.class, ElementKind.PROPERTY,
+            Path.MethodNode.class, ElementKind.METHOD,
+            Path.ConstructorNode.class, ElementKind.CONSTRUCTOR,
+            Path.ParameterNode.class, ElementKind.PARAMETER,
+            Path.CrossParameterNode.class, ElementKind.CROSS_PARAMETER,
+            Path.ReturnValueNode.class, ElementKind.RETURN_VALUE,
+            Path.ContainerElementNode.class, ElementKind.CONTAINER_ELEMENT
+    );
+
+    /**
+     * Verifies that specified node is of the kind specified node type represents, for callers outside the
+     * positional navigation &mdash; the assertion factories in
+     * {@link ValidationInstanceOfAssertFactories}, which cannot rely on {@code instanceof}.
+     *
+     * @param node     the node to check.
+     * @param nodeType the node type it is about to be narrowed to.
+     * @param <N>      node type parameter
+     * @return {@code node}, narrowed.
+     */
+    static <N extends Path.Node> N requireKind(final Path.Node node, final Class<N> nodeType) {
+        requireKindOf(node, nodeType, () -> "the node");
         return node.as(nodeType);
     }
 

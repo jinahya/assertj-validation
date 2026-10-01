@@ -162,6 +162,19 @@ scratch local promoted to state, which also makes an assert object non-reentrant
 
 ---
 
+## 5b. Hierarchy
+
+The module has six roots under assertj's `AbstractAssert` / `AbstractIterableAssert`; there is no single
+generic parent, and that is correct — a descriptor, a path node and a bean have nothing in common beyond
+being assertable. Only 7 of 68 types carry a `Validator`, and only three classes validate anything
+(§8.10).
+
+- [ ] `AbstractConstructorAssert` duplicates `AbstractBeanAssert`'s executable-validation logic (its private
+      `validating(...)` mirrors `executable(...)`). Worth a shared base or a helper, once the validator
+      lifecycle (§1.1) is settled, since both sites are where a factory would be acquired.
+
+---
+
 ## 6. Deliberately not doing
 
 Recorded so they are not re-litigated:

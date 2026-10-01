@@ -38,6 +38,12 @@ import java.util.function.Function;
 
 /**
  * An abstract assertion class for verifying {@link ConstraintViolation} values.
+ * <p>
+ * Unlike {@link AbstractBeanAssert} and its siblings, this does <em>not</em> extend
+ * {@link AbstractValidationAssert}: a {@link ConstraintViolation} is a <em>result</em> of validation, so there is
+ * nothing left to validate and no {@link jakarta.validation.Validator} to configure. Inheriting
+ * {@code usingValidator}, {@code usingValidatorFactory} and {@code targetingGroups} here would offer three
+ * settings that could not affect anything.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -48,7 +54,7 @@ import java.util.function.Function;
 })
 public abstract class AbstractConstraintViolationAssert<
         SELF extends AbstractConstraintViolationAssert<SELF, ACTUAL, T>, ACTUAL extends ConstraintViolation<T>, T>
-        extends AbstractValidationAssert<SELF, ACTUAL> {
+        extends AbstractAssert<SELF, ACTUAL> {
 
     /**
      * Creates a new instance with specified arguments.

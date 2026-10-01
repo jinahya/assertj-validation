@@ -823,6 +823,46 @@ one validator behind a lazy holder, deliberately never closed. `usingValidatorSu
 Measured: **1.20 ms → 0.00010 ms** per `getValidator()`; the delegate shed one field, one setter and one
 import.
 
+### 8.10 Not every assertion needs a validator (applied)
+
+A hierarchy audit shows the module has **six roots**, not one generic abstract parent:
+
+```
+assertj AbstractAssert
+├─ AbstractConstraintDescriptorAssert              2 types
+├─ AbstractElementDescriptorAssert                17 types   (metadata)
+├─ AbstractGroupConversionDescriptorAssert         2 types
+├─ AbstractValidationAssert                        7 types   (the only branch with a Validator)
+└─ _AbstractNodeAssert                            19 types   (path nodes)
+assertj AbstractIterableAssert
+├─ AbstractIterableOfConstraintViolationsAssert    2 types
+└─ AbstractPathAssert                              2 types
+```
+
+Of 68 types, only **7** carry `ValidationAssertDelegate`, and counting real uses, only **three classes**
+validate anything: `AbstractBeanAssert` (34 `delegate.` uses), `AbstractPropertyAssert` (11) and
+`AbstractConstructorAssert` (11). `AbstractValidationAssert` itself has 2, both setters.
+
+**The defect this exposed.** `AbstractConstraintViolationAssert` extended `AbstractValidationAssert` and used
+the delegate **zero** times. A `ConstraintViolation` is a *result* of validation — there is nothing left to
+validate — yet it inherited three configuration methods that could not affect anything:
+
+```java
+assertThatConstraintViolation(cv)
+        .usingValidator(myValidator)      // no effect
+        .targetingGroups(Senior.class)    // no effect
+        .hasMessage("...");
+```
+
+It now extends `AbstractAssert` directly, like the descriptor and node families, with the reason recorded in
+its class javadoc. No test referenced those methods on a violation assertion, so nothing broke; the
+validator-carrying set drops from 9 types to 7.
+
+**Why this matters beyond the tidy-up.** It narrows §2.4's successor question — who owns the default
+`ValidatorFactory` — from "the library holds process state" to "three classes need a validator when the
+caller supplies none", across 8 enumerable call sites in one branch. 61 of 68 types are untouched by the
+lifecycle question entirely.
+
 ---
 
 ## 9. Priorities

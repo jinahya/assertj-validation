@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.metadata.ConstraintDescriptor;
+
 import java.lang.annotation.Annotation;
 
 class DefaultConstraintDescriptorAssert<T extends Annotation>

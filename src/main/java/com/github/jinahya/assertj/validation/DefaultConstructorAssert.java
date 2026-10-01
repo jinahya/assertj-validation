@@ -20,14 +20,23 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import java.util.Objects;
+import java.lang.reflect.Constructor;
 
-abstract class ValidationAssertTest<T extends ValidationAssert<T, ?>> {
+/**
+ * A class for verifying constructor parameters and constructor return values.
+ *
+ * @param <T> the type declaring the constructor
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
+public class DefaultConstructorAssert<T>
+        extends AbstractConstructorAssert<DefaultConstructorAssert<T>, T> {
 
-    ValidationAssertTest(final Class<T> assertionClass) {
-        super();
-        this.assertionClass = Objects.requireNonNull(assertionClass, "assertionClass is null");
+    /**
+     * Creates a new instance for verifying specified actual value.
+     *
+     * @param actual the constructor to verify.
+     */
+    public DefaultConstructorAssert(final Constructor<? extends T> actual) {
+        super(actual, DefaultConstructorAssert.class);
     }
-
-    final Class<T> assertionClass;
 }

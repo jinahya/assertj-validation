@@ -20,11 +20,11 @@ package com.github.jinahya.assertj.validation.example.user;
  * #L%
  */
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.util.function.Function;
 
 abstract class Registration {

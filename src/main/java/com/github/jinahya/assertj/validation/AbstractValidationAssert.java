@@ -20,13 +20,14 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import jakarta.validation.Validator;
 import org.assertj.core.api.AbstractAssert;
 
-import jakarta.validation.Validator;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * An abstract class for verifying a value against a specific property of a specific bean type.
+ * An abstract base class for verifying values and beans.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -35,9 +36,8 @@ import java.util.function.Supplier;
 @SuppressWarnings({
         "java:S119" // <SELF ...>
 })
-abstract class AbstractValidationAssert<SELF extends AbstractValidationAssert<SELF, ACTUAL>, ACTUAL>
-        extends AbstractAssert<SELF, ACTUAL>
-        implements ValidationAssert<SELF, ACTUAL> {
+public abstract class AbstractValidationAssert<SELF extends AbstractValidationAssert<SELF, ACTUAL>, ACTUAL>
+        extends AbstractAssert<SELF, ACTUAL> {
 
     /**
      * Creates a new assertion object for verifying specified actual value.
@@ -61,6 +61,20 @@ abstract class AbstractValidationAssert<SELF extends AbstractValidationAssert<SE
     }
 
     /**
+     * Configures this assertion object to use specified validator.
+     *
+     * @param validator the validator to use; {@code null} to reset.
+     * @return this assertion object.
+     */
+    public final SELF usingValidator(final Validator validator) {
+        return usingValidatorSuppliedBy(
+                Optional.ofNullable(validator)
+                        .<Supplier<Validator>>map(v -> () -> v)
+                        .orElse(null)
+        );
+    }
+
+    /**
      * Configures this assertion object to use validators supplied by specified supplier.
      *
      * @param validatorSupplier the supplier supplying validators; {@code null} to reset.
@@ -72,8 +86,4 @@ abstract class AbstractValidationAssert<SELF extends AbstractValidationAssert<SE
     }
 
     final ValidationAssertDelegate delegate = new ValidationAssertDelegate();
-
-//    ACTUAL actual() {
-//        return actual;
-//    }
 }

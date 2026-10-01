@@ -20,14 +20,13 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import org.assertj.core.api.AbstractIterableAssert;
-
 import jakarta.validation.ConstraintViolation;
+import org.assertj.core.api.AbstractIterableAssert;
 
 @SuppressWarnings({
         "java:S119" // <SELF>
 })
-abstract class AbstractIterableOfConstraintViolationsAssert<
+public abstract class AbstractIterableOfConstraintViolationsAssert<
         SELF extends AbstractIterableOfConstraintViolationsAssert<SELF, T>, T>
         extends AbstractIterableAssert<
         SELF, Iterable<? extends ConstraintViolation<T>>, ConstraintViolation<T>, DefaultConstraintViolationAssert<T>> {

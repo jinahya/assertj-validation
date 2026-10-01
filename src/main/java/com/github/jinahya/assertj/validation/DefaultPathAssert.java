@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.Path;
+
 import java.util.Iterator;
 
 /**
@@ -39,14 +40,6 @@ public class DefaultPathAssert
 
             DefaultBeanNodeAssert(final Path.BeanNode actual) {
                 super(actual, DefaultBeanNodeAssert.class);
-            }
-        }
-
-        static class DefaultParameterizedNodeAssert
-                extends AbstractParameterNodeAssert<DefaultParameterizedNodeAssert> {
-
-            DefaultParameterizedNodeAssert(final Path.ParameterNode actual, final Class<?> selfType) {
-                super(actual, selfType);
             }
         }
 
@@ -79,6 +72,22 @@ public class DefaultPathAssert
 
             DefaultParameterNodeAssert(final Path.ParameterNode actual) {
                 super(actual, DefaultParameterNodeAssert.class);
+            }
+        }
+
+        static class DefaultContainerElementNodeAssert
+                extends AbstractContainerElementNodeAssert<DefaultContainerElementNodeAssert> {
+
+            DefaultContainerElementNodeAssert(final Path.ContainerElementNode actual) {
+                super(actual, DefaultContainerElementNodeAssert.class);
+            }
+        }
+
+        static class DefaultReturnValueNodeAssert
+                extends AbstractReturnValueNodeAssert<DefaultReturnValueNodeAssert> {
+
+            DefaultReturnValueNodeAssert(final Path.ReturnValueNode actual) {
+                super(actual, DefaultReturnValueNodeAssert.class);
             }
         }
 

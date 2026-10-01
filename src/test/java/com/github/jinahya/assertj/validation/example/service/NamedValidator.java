@@ -1,10 +1,10 @@
-package org.hibernate.validator.referenceguide.chapter01;
+package com.github.jinahya.assertj.validation.example.service;
 
 /*-
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2023 Jinahya, Inc.
+ * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,16 @@ package org.hibernate.validator.referenceguide.chapter01;
  * #L%
  */
 
-final class Car_Constants {
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-    static final String PROPERTY_MANUFACTURER = "manufacturer";
+/**
+ * A validator for the {@link Named} constraint.
+ */
+public class NamedValidator implements ConstraintValidator<Named, Greeter> {
 
-    static final String PROPERTY_LICENSE_PLATE = "licensePlate";
-
-    static final String PROPERTY_SEAT_COUNT = "seatCount";
-
-    private Car_Constants() {
-        throw new AssertionError("instantiation is not allowed");
+    @Override
+    public boolean isValid(final Greeter value, final ConstraintValidatorContext context) {
+        return value == null || (value.getName() != null && !value.getName().isBlank());
     }
 }

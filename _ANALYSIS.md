@@ -1,11 +1,12 @@
 # assertj-validation — analysis
 
-An AssertJ extension for Jakarta Validation: ~3.3k lines of main source in one package,
-`com.github.jinahya.assertj.validation`, plus 35 test classes.
+An AssertJ extension for Jakarta Validation: ~5.6k lines of main source in one package,
+`com.github.jinahya.assertj.validation`, plus 48 test sources (34 of them `*Test`).
 
-This document records the state of the module as of 2026-10-01, the build realignment applied in this pass,
-and the problems and enhancements left open. Everything below was read against the working tree, and every
-defect marked **confirmed** was reproduced.
+This document records the state of the module as of 2026-10-01, the three changes applied in this pass — the
+build realignment, the interface-layer collapse and the API-coverage completion — and the problems and
+enhancements left open. Everything below was read against the working tree, and every defect marked
+**confirmed** was reproduced.
 
 ---
 
@@ -76,21 +77,93 @@ Concretely:
 
 `mvn javadoc:javadoc` also succeeds — after the fix in §2.1.
 
-### 1.4 Left undone — needs your hand
+### 1.4 The javax-era reference-guide build, removed
 
-The sandbox refused the deletions. These files are now orphaned and should go:
+Everything the deleted `sub-hibernate-validator-referenceguide` profile pulled in went with it:
 
-```shell
-git rm -r sub src/test/java-sub-hibernate-validator-referenceguide .mvn_hiberate_validator_referenceguide.sh
+- `sub/bval`, `sub/hibernate-validator` — git submodules, both uninitialised, referenced only by that profile.
+  Also dropped from `.gitmodules`; only `.idea/codeStyles` remains.
+- `src/test/java-sub-hibernate-validator-referenceguide/` — four test classes extending Hibernate Validator 6
+  (javax-era) reference-guide classes that lived in the submodule. They could not survive the Jakarta move.
+  Git keeps them if they are ever worth porting to the Hibernate Validator 9 reference guide.
+- `.mvn_hiberate_validator_referenceguide.sh` — driver for the profile (and a typo in its own name).
+
+An empty `sub/` directory is left on disk; git does not track directories, so it is untracked clutter rather
+than part of the tree.
+
+### 1.5 Dependency and plugin updates
+
+Driven by `versions-maven-plugin` (2.21.0, from the parent), run per profile.
+
+| | from | to | |
+|---|---|---|---|
+| `ch.qos.logback` | 1.6.3 | 1.6.5 | |
+| `org.mockito` | 5.23.0 | 5.24.0 | |
+| `org.slf4j` | 2.0.19 | 2.0.20 | surfaced only after the pre-release filter below |
+| `org.junit` | 5.14.4 | 6.1.3 | major; see note |
+| `hibernate-validator` (ee-11) | 9.1.3.Final | 9.1.4.Final | within generation 9 |
+| `hibernate-validator` (ee-10) | 8.0.3.Final | 8.0.5.Final | **never offered by the plugin** |
+
+Held back: `maven-compiler-plugin` 4.0.0-beta-5 and `slf4j` 2.1.0-alpha1 (pre-release), `jakartaee-bom` 11.0.0
+and `assertj` 4.0.0-M1 (already current — 4.0.0-M1 is deliberately a milestone and has to be bumped by hand).
+`versions:display-plugin-updates` offered nothing else: every remaining proposal requires Maven 4.
+
+#### The Jakarta axis is where a bulk update goes wrong
+
+Run against `jakarta-ee-10`, the plugin proposed:
+
+```
+${version.jakarta.jakartaee-bom} ................... 10.0.0 -> 11.0.0
+${version.org.glassfish.expressly} ................... 5.0.0 -> 6.0.0
+${version.org.hibernate.validator} ....... 8.0.3.Final -> 9.1.4.Final
 ```
 
-- `sub/bval`, `sub/hibernate-validator` — git submodules, both uninitialised, referenced only by the
-  `sub-hibernate-validator-referenceguide` profile that no longer exists. Already removed from `.gitmodules`.
-- `src/test/java-sub-hibernate-validator-referenceguide/` — four test classes that extend Hibernate Validator 6
-  (javax-era) reference-guide classes living in that submodule. They cannot survive the Jakarta move, and no
-  profile adds the source root any more, so they are dead weight rather than a build failure. Git keeps them
-  if you want to port them later.
-- `.mvn_hiberate_validator_referenceguide.sh` — driver for the deleted profile (and a typo in its own name).
+Taken, that would not have updated the profile — it would have collapsed it into a copy of `jakarta-ee-11`,
+and the two-generation matrix would have gone on reporting green while testing one generation twice. The
+plugin reads each property independently and cannot know the three move together.
+
+Meanwhile it never offered the update that generation *did* need: **8.0.3 → 8.0.5**, two patch releases, hidden
+behind the 9.x proposal.
+
+Two guards now, in the pom:
+
+1. **Per-profile major ranges** on the three axis properties — `[11,12)`/`[9,10)`/`[6,7)` under `jakarta-ee-11`,
+   `[10,11)`/`[8,9)`/`[5,6)` under `jakarta-ee-10`.
+2. **A pre-release filter** (`ignoredVersions`) on the plugin. Ranges alone are not enough: Maven orders a
+   qualifier *below* the release it precedes, so `11.0.0-RC1` still satisfies `[10,11)`. Without the filter the
+   guarded ee-10 build still proposed `jakartaee-bom → 11.0.0-RC1`, `expressly → 6.0.0-M1` and
+   `hibernate-validator → 9.0.0.CR1`.
+
+With both, `versions:display-property-updates` reports the axis as current under each profile, and moving a
+generation is a deliberate edit of four lines rather than something a bulk update does.
+
+#### JUnit 6 — tried, held at 5.14.4
+
+`junit-bom` 6.1.3 was taken and then reverted. It is not that it failed — 64/64 passed on both profiles and
+the enforcer's `dependencyConvergence` rule was satisfied. It is what made it pass:
+
+`mockito-junit-jupiter` 5.24.0 still declares `junit-jupiter-api` **5.13.4**. Under `junit-bom` 6.x the BOM
+pulls that up to 6.1.3, so Mockito's JUnit integration does not get *updated* — it gets *overridden*, and runs
+against an API two majors past the one it was built and tested on. It held here only because these tests reach
+Mockito through `Mockito.spy`/`when` in three files and never touch `MockitoExtension`, which is precisely the
+surface that would break first. A green run that depends on not exercising the risky path is not evidence the
+pairing is sound.
+
+So: **wait for Mockito.** The property is pinned at `5.14.4`, which also keeps it level with the sibling
+`jinahya-object-randomizer`. The pre-release filter deliberately does *not* suppress the 6.x proposal — the
+plugin should go on offering it. Take it once `mockito-junit-jupiter` declares `junit-jupiter-api` 6.
+
+### 1.6 Ordering
+
+`<dependencyManagement>` (5 entries), `<dependencies>` (9) and `<build><plugins>` (5) are each sorted by
+groupId, then artifactId — verified mechanically, ignoring nested `<exclusions>` and
+`<annotationProcessorPaths>`, which carry groupId/artifactId pairs of their own and are not siblings.
+
+Sorting plugins is only safe where declaration order carries no meaning. Maven falls back to POM order for
+executions bound to the **same phase**, and no two plugins here share one: compiler at compile/test-compile,
+surefire at test, jar at package, javadoc and versions with no execution at all. The relative order of those
+phases comes from the lifecycle, not the POM. Adding an execution that collides with a phase already in use
+would make the order significant — pin that pair's position then, and say why.
 
 ---
 
@@ -109,7 +182,7 @@ package-info.java:35: error: snippet link tags:
 snippets. Narrowed to `substring=".isValid()"`; javadoc now builds. This blocked any release profile that runs
 the javadoc plugin.
 
-### 2.2 `AbstractPathAssert.nodeAt` is off by one — **confirmed, open**
+### 2.2 `AbstractPathAssert.nodeAt` is off by one — **confirmed, fixed**
 
 `src/main/java/com/github/jinahya/assertj/validation/AbstractPathAssert.java:273-277`
 
@@ -134,11 +207,12 @@ Every index above 0 is wrong, which means `extractingNode(int)`, `extractingBean
 usually a perfectly valid `Path.Node` that simply belongs to a different path segment. On a path of length *n*,
 asking for the last node returns the second-to-last and never throws.
 
-Fix: `for (int i = 0; i < index; i++)`.
+Fixed: the loop now starts at `0`, so it advances `index` times past the element the initial `next()`
+already consumed. Still untested — see §5.
 
 This is the single most consequential bug in the module, and §5 explains why nothing caught it.
 
-### 2.3 Multi-violation failure messages join on a literal `%n` — **confirmed, open**
+### 2.3 Multi-violation failure messages join on a literal `%n` — **confirmed, fixed**
 
 `ValidationAssertMessages.java:53`
 
@@ -157,7 +231,7 @@ renders as one run-on line:
 	propertyPath   : age
 ```
 
-Fix: `Collectors.joining(System.lineSeparator())`. Note that the per-violation `format(ConstraintViolation)`
+Fixed: now `Collectors.joining(System.lineSeparator())`. Note that the per-violation `format(ConstraintViolation)`
 above it is correct — it goes through `String.format`, so its `%n`s do resolve. Only the join is broken, which
 is why single-violation messages look fine and the defect only shows on beans with more than one violation.
 
@@ -187,7 +261,7 @@ Fix: build the factory once, hold it, and let the `Validator` it produced live a
 
 ## 3. API design problems
 
-### 3.1 Dead branch left in `isNotValid()` — open
+### 3.1 Dead branch left in `isNotValid()` — fixed
 
 `AbstractBeanAssert.java:89-112`
 
@@ -220,7 +294,7 @@ it depends on which method you called. Nothing in the javadoc mentions the diffe
 reads better for a test library, since the violation set is most interesting precisely when the assertion is
 about to fail — and document it.
 
-### 3.3 Inconsistent variance on the consumer parameter — open
+### 3.3 Inconsistent variance on the consumer parameter — fixed
 
 ```java
 SELF isValid           (Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer);  // BeanAssert:46
@@ -229,30 +303,31 @@ SELF hasValidProperty  (String, Consumer<? super Set<…>> consumer);           
 ```
 
 `isNotValid` is the odd one out, so a `Consumer<Object>` that compiles against `isValid` is rejected by
-`isNotValid`. Add the `? super`.
+`isNotValid`. Fixed: `isNotValid` now takes `? super`, matching the other two.
 
-### 3.4 `doesNotHaveValidProperty` does not record its violations — open
+### 3.4 `doesNotHaveValidProperty` does not record its violations — fixed
 
 `AbstractBeanAssert.java:166` validates into a local variable, while the other four methods route through
 `delegate.setViolations(…)`. After a `doesNotHaveValidProperty` call the delegate still holds whatever the
 *previous* assertion left behind. Nothing public reads that state today (see §4.2), which is the only reason
 this is latent rather than a live bug.
 
-### 3.5 `hasMessage` casts instead of using `myself` — open
+### 3.5 `hasMessage` casts instead of using `myself` — fixed
 
 `AbstractConstraintViolationAssert.java:113` returns `(SELF) this` where `AbstractAssert.myself` is in scope
 and already typed. The cast is unchecked and unsuppressed; every sibling method in the same class returns
 `myself`.
 
-### 3.6 Interface and implementation disagree on the descriptor bound — open
+### 3.6 Interface and implementation disagree on the descriptor bound — fixed
 
 ```java
 interface ConstraintDescriptorAssert<SELF, ACTUAL extends ConstraintDescriptor<? extends T>, T …>
 abstract class AbstractConstraintDescriptorAssert<SELF, ACTUAL extends ConstraintDescriptor<T>, T …>
 ```
 
-The class narrows the interface's bound, so the wildcard the interface advertises is unusable through the only
-implementation. One of the two is wrong; the class's bound is the one the code actually needs.
+The class narrowed the interface's bound, so the wildcard the interface advertised was unusable through the
+only implementation. Resolved by construction in §7: the interface is gone and the class's bound — the one the
+code actually needs — is now the only declaration of it.
 
 ### 3.7 `BeanConditions.valid` swallows the assertion error — open
 
@@ -287,13 +362,13 @@ Declared `public interface` holding one `static` method. An interface cannot for
 | `ValidationAssertUtils` | empty but for a throwing private constructor |
 | `ValidationAssertConstants` | empty but for a throwing private constructor |
 | `AssertFactories` | empty; body is two commented-out method sketches |
-| `ConstraintValidatorAssert` | package-private interface, empty body, nothing implements it |
+| ~~`ConstraintValidatorAssert`~~ | ~~package-private interface, empty body, nothing implements it~~ — deleted in §7 |
 | `BeanConditions` | package-private, no caller in main or test |
 
 Roughly 180 lines that compile to nothing. Either finish them or delete them; as placeholders they cost a
-reader time on every pass.
+reader time on every pass. `ConstraintValidatorAssert` was deleted as part of §7; the other four remain.
 
-### 4.2 An entire feature is sealed off from callers
+### 4.2 An entire feature is sealed off from callers — fixed in §8.2
 
 `ValidationAssertions.assertThatIterableOfConstraintViolations` (line 72) is **package-private**, as are
 `IterableOfConstraintViolationsAssert` and `AbstractIterableOfConstraintViolationsAssert`. Every other
@@ -322,7 +397,7 @@ after a `filteredOn`/`extracting` on a path assertion degrades to a lambda's ide
 
 `AbstractValidationAssert:76-78`, `AbstractPathAssert:228-236`, `ConstraintDescriptorAssert:56-63` and `:70`,
 `AbstractConstraintDescriptorAssert` (several `// ---` section headers marking members that were never
-written). Separately, `ConstraintDescriptorAssert` has five empty section banners —
+written). Separately, `AbstractConstraintDescriptorAssert` has five empty section banners —
 `messageTemplate`, `payload`, `valueWrapping`, `reportAsSingleViolation`, `constraintValidatorClasses` — for
 `ConstraintDescriptor` members with no assertion at all. That is the descriptor API's real coverage gap, listed
 in §6.3.
@@ -348,7 +423,7 @@ package-info
 
 This is not a uniform thinness — it is concentrated exactly where the bugs are:
 
-- **`PathAssert` + `AbstractPathAssert` + `DefaultPathAssert` are 999 lines, 30% of the main source, and have
+- **`AbstractPathAssert` + `DefaultPathAssert` are 841 lines, 28% of the main source, and have
   zero direct tests.** `grep` for `extractingNode`, `nodeAt`, `extractingBeanNode` or `extractingPropertyNode`
   across `src/test` returns nothing. That is why §2.2 survived.
 - **`ValidationAssertMessages` has no test**, which is why §2.3 survived — and it is the class that renders
@@ -369,7 +444,7 @@ Highest-value additions, in order:
 
 ## 6. Enhancements
 
-### 6.1 Expose the set-of-violations assertion (highest value)
+### 6.1 Expose the set-of-violations assertion (highest value) — done in §8.2
 
 Make `assertThatIterableOfConstraintViolations` public, widen its element assert (§4.2), and add the overload
 people actually reach for:
@@ -384,18 +459,18 @@ assertThatConstraintViolations(validator.validate(bean))
 Today the only way to inspect a violation set is to pass a `Consumer` into `isValid`/`isNotValid` and assert
 inside it, which breaks the fluent chain.
 
-### 6.2 Fill in the `Validator` surface
+### 6.2 Fill in the `Validator` surface — done in §8.3 and §8.4
 
 The module wraps three of the Jakarta Validation entry points — `validate`, `validateProperty`,
 `validateValue`. `ExecutableValidator` is untouched: `validateParameters`, `validateReturnValue`,
-`validateConstructorParameters`, `validateConstructorReturnValue`. `ConstraintViolationAssert` already has
+`validateConstructorParameters`, `validateConstructorReturnValue`. `AbstractConstraintViolationAssert` already has
 `extractingExecutableParameters` and `extractingExecutableReturnValue`, so half the plumbing for method
 validation exists with no way to produce the violations it reads.
 
 Likewise `Validator.getConstraintsForClass` → `BeanDescriptor`, which would let assertions run against a bean's
 *metadata* rather than an instance.
 
-### 6.3 Finish `ConstraintDescriptorAssert`
+### 6.3 Finish `AbstractConstraintDescriptorAssert` — done in §8.2
 
 Five declared-but-empty sections (§4.4): `messageTemplate`, `payload`, `valueWrapping`,
 `reportAsSingleViolation`, `constraintValidatorClasses`. `messageTemplate` in particular is what you assert when
@@ -431,7 +506,7 @@ exist) or demote it back to a local.
   descriptor is available, and both dependencies (`jakarta.validation`, `org.assertj.core`) are already
   named modules.
 - **100 javadoc warnings** (missing `@param`, undocumented public members) now that `<doclint>none</doclint>`
-  is gone. They do not fail the build. `ConstraintDescriptorAssert` and `ConstraintViolationAssert` account
+  is gone. They do not fail the build. `AbstractConstraintDescriptorAssert` and `AbstractConstraintViolationAssert` account
   for most of them.
 - **`package-info.java` carries its license header *after* the package declaration.** Legal, since it is just a
   comment, but it is the only file in the module that does this.
@@ -439,15 +514,232 @@ exist) or demote it back to a local.
 
 ---
 
-## 7. Priorities
+## 7. The interface layer, removed (applied)
+
+### 7.1 What assertj-core actually does
+
+Checked against `assertj-core` 4.0.0-M1 — the version this module builds against, and the current release on
+Central — plus `assertj-guava` on `main` and the reference documentation's §2.6.2 *Custom Assertions*.
+
+Core's shape is uniform across all 70 of its `Abstract*` classes:
+
+```
+AbstractAssert<SELF, ACTUAL> implements Assert<SELF, ACTUAL>    ← only the root implements an interface
+  └─ AbstractXxxAssert<SELF, …>   [implements <capability mixin>]   ← all behavior
+       └─ XxxAssert extends AbstractXxxAssert<XxxAssert>            ← concrete, ~5 lines, no interface
+```
+
+Of 232 files in `org.assertj.core.api`, 29 are interfaces, and every one is either the root contract
+(`Assert`), a **capability mixin** shared by unrelated hierarchies (`NumberAssert` — 9 implementors,
+`EnumerableAssert` — 7, `ComparableAssert`, `ObjectEnumerableAssert`, `ArraySortedAssert`, `Array2DAssert`,
+`Descriptable`, `ExtensionPoints`), or SPI that is not an assertion at all (`AssertFactory`, `AssertProvider`,
+`AssertDelegateTarget`, `InstanceOfAssertFactories`, the soft-assertion providers). There is no
+`StringAssert`, `FileAssert`, `OptionalAssert` or `ListAssert` interface — not one per-concept interface
+anywhere in the library.
+
+The official extension module is flatter still. `assertj-guava` has no abstract layer either:
+
+```java
+public class MultimapAssert<K, V> extends AbstractAssert<MultimapAssert<K, V>, Multimap<K, V>>
+public class RangeAssert<T extends Comparable<T>> extends AbstractAssert<RangeAssert<T>, Range<T>>
+```
+
+and the reference guide prescribes exactly that for extensions: *"create a class inheriting from
+`AbstractAssert` and add your custom assertions methods"*, plus a static entry point. Interfaces appear
+nowhere in the extension guidance.
+
+### 7.2 Why this module's interfaces were redundant
+
+The module ran three layers per concept where core runs two and guava runs one, and four findings made the
+middle layer indefensible:
+
+1. **Every interface had exactly one implementor.** `ValidationAssert`, `PropertyAssert`, `BeanAssert`,
+   `ConstraintViolationAssert`, `ConstraintDescriptorAssert` and `PathAssert` were each implemented by one
+   `Abstract*` class with one `Default*` subclass. None was doing the mixin job that justifies core's
+   interfaces.
+2. **They were not on the public API surface.** Every entry point returns the abstract class —
+   `AbstractBeanAssert<?, ACTUAL> assertThatBean(…)`, `AbstractPathAssert<?, ?> assertThatPath(…)` — as does
+   `ValidationInstanceOfAssertFactories`. Outside their own `extends`/`implements` chain the interfaces
+   appeared in main sources exactly once, as the return type of
+   `ConstraintViolationAssert.extractingConstraintDescriptor()`, which was itself inconsistent with its
+   sibling extractors. A caller could never name these types.
+3. **The abstraction pointed the wrong way.** `ConstraintViolationAssert`'s own signatures referenced
+   `AbstractConstraintDescriptorAssert`, `AbstractObjectArrayAssert` and `AbstractAssert`. It was not a
+   boundary; it was circularly coupled to the layer it was meant to abstract.
+4. **The logic had migrated into the interfaces**, inverting core's layout: `PathAssert` was 43 default
+   methods against 1 abstract, `ConstraintViolationAssert` 18 against 2, while the `Abstract*` classes were
+   shells of `@Override` delegations. `PropertyAssert` was the opposite extreme — 1 default method, 0
+   abstract. Two parallel declarations of one contract is what allowed §3.6 to drift.
+
+### 7.3 What changed
+
+Six interfaces folded into their abstract classes and deleted: `ValidationAssert`, `PropertyAssert`,
+`BeanAssert`, `ConstraintViolationAssert`, `ConstraintDescriptorAssert`, `PathAssert`. Dead
+`ConstraintValidatorAssert` deleted outright (§4.1). Every default method moved down as a concrete method with
+its Javadoc; the `(SELF) this` unchecked casts in those bodies became `myself`, which removed nine
+`@SuppressWarnings("unchecked")` annotations along the way.
+
+`AbstractValidationAssert` was widened from package-private to `public`, so that `targetingGroups`,
+`usingValidator` and `usingValidatorSuppliedBy` keep a documented declaring type now that the public
+interface that used to carry them is gone.
+
+**Kept as interfaces:** the four node mixins, `HasContainerClass`, `HasTypeArgumentIndex`, `HasParameterTypes`
+and `HasParameterIndex`, promoted out of `PathAssert.NodeAssert` to nested types of `AbstractPathAssert`. Each
+is multiply inherited by node asserts that share no base beyond `_AbstractNodeAssert` — `HasContainerClass` by
+the bean, container-element and property nodes; `HasParameterTypes` by the constructor and method nodes — so
+Java's single class inheritance leaves no alternative. They were re-bounded self-referentially
+(`SELF extends HasContainerClass<SELF>`) the way core bounds `NumberAssert` and `EnumerableAssert`, rather
+than on the package-private `_AbstractNodeAssert`, which would have leaked an unnameable type into a public
+signature.
+
+**Also deleted:** the eight empty per-node interfaces (`BeanNodeAssert`, `ConstructorNodeAssert`,
+`ContainerElementNodeAssert`, `CrossParameterNodeAssert`, `MethodNodeAssert`, `ParameterNodeAssert`,
+`PropertyNodeAssert`, `ReturnValueNodeAssert`), each of which had an empty body and one implementor, and whose
+only content was combining `NodeAssert<SELF, X>` with mixins the implementing class can list directly.
+
+On the test side, `ValidationAssertTest`, `PropertyAssertTest`, `BeanAssertTest` and `AbstractBeanAssertTest`
+were deleted. The four mirrored the interface chain, declared no `@Test` method between them, had no concrete
+subclass, and their one `assertionClass` field was never read. Two live references were rebound:
+`ConstraintViolationAssert_$Test.assertion` now returns `AbstractConstraintViolationAssert`, and
+`User_TargetingGroups_Test`'s Javadoc link now targets `AbstractValidationAssert`. The eight `{@snippet}`
+`@link` targets in `package-info` were repointed at the abstract classes.
+
+### 7.4 Verification
+
+`mvn verify` passes: 64 tests, 0 failures, 0 errors — identical to the pre-change baseline. `javadoc:javadoc`
+builds with no unresolved reference, which exercises every `{@snippet}` `@link` target. `javap` over the built
+classes confirms every assertion method from the six deleted interfaces is still present and publicly
+reachable on the corresponding abstract class.
+
+The published API surface is now the `Abstract*Assert` classes, the four `Has*` mixins, `DefaultPathAssert`,
+`ValidationAssertions` and `ValidationInstanceOfAssertFactories` — core's shape.
+
+### 7.5 The one thing given up
+
+A third party can no longer attach these assertion contracts to a class that already extends something else.
+Since the entry points never exposed the interfaces, nothing outside this package could have been doing that.
+
+---
+
+## 8. API coverage, completed (applied)
+
+Audited against `jakarta.validation-api` 3.1.1, the artifact this build resolves, and the published
+[3.1 apidocs](https://jakarta.ee/specifications/bean-validation/3.1/apidocs/).
+
+### 8.1 What the audit found
+
+Of 88 top-level API types &mdash; 32 annotations, 9 exceptions, 7 enums, 39 interfaces and 1 class &mdash; the
+annotations, exceptions and the bootstrap/SPI interfaces are inputs or plumbing, not assertion targets. What
+remains splits into three lobes, and the module covered roughly one of them:
+
+| lobe | reached via | before | after |
+|---|---|---|---|
+| validation results | `Validator.validate` / `validateProperty` / `validateValue` | near-complete | complete |
+| metadata | `Validator.getConstraintsForClass` | 1 of 18 types | complete |
+| executable validation | `Validator.forExecutables` | 0 of 4 methods | complete |
+
+Method-level, before: `ConstraintViolation` 9/11, `ConstraintDescriptor` 5/11, `Path.Node` and its eight
+subtypes complete but mostly unreachable, `ExecutableValidator` 0/4, the metadata descriptors 0.
+
+### 8.2 Finishing work on what existed
+
+- **The set-of-violations assertion is public.** `assertThatIterableOfConstraintViolations` was
+  package-private, so the one assertion for the type `Validator.validate` actually returns could not be called
+  from outside the package. It and its chain are now public, joined by `assertThatConstraintViolations(Set)`
+  reading in the shape callers have.
+  <br>§4.2 proposed widening `ELEMENT_ASSERT` to `AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T>`.
+  That cannot compile: assertj bounds it `ELEMENT_ASSERT extends AbstractAssert<ELEMENT_ASSERT, ELEMENT>`, a
+  self-type a wildcard cannot satisfy. Resolved instead by publishing the concrete
+  `DefaultConstraintViolationAssert`, which is what assertj does with `ObjectAssert` as `ListAssert`'s element
+  assert.
+- **`ConstraintViolation` is 11/11.** Added `hasMessageTemplate` / `extractingMessageTemplate` and
+  `extractingAsUnwrapped` / `isEqualToWhenUnwrappedAs`. The template assertion matters on its own: `hasMessage`
+  asserts the *interpolated* message, so until now there was no locale-independent way to assert which
+  constraint fired.
+- **`ConstraintDescriptor` is 11/11.** The six empty section banners are filled: `attributes`,
+  `constraintValidatorClasses`, `messageTemplate`, `payload`, `valueUnwrapping` (the banner was misspelled
+  `valueWrapping`) and `reportAsSingleViolation`. The two commented-out method sketches noted in §4.4 are gone,
+  replaced by working implementations.
+- **All nine node kinds are reachable.** `AbstractPathAssert` exposed only `extractingNode`,
+  `extractingBeanNode` and `extractingPropertyNode`, so six of the eight typed node asserts had no entry point,
+  and `AbstractContainerElementNodeAssert` and `AbstractReturnValueNodeAssert` had no concrete subclass at all
+  &mdash; uninstantiable even internally. Added the six missing `extracting*Node` / `has*NodeSatisfying` pairs
+  and the two missing `Default*` classes, and deleted `DefaultParameterizedNodeAssert`, a stray duplicate of
+  `DefaultParameterNodeAssert`. The five package-private node assert classes are now public, matching the four
+  that already were.
+  <br>The generic `extractingNode(int, Class, AssertFactory)` was bound on the package-private
+  `_AbstractNodeAssert`, leaking an unnameable type into a public signature; it is now bound on
+  `AbstractAssert`, consistent with every other extractor in the module.
+
+### 8.3 The metadata lobe
+
+Thirteen new assertion classes covering the whole `jakarta.validation.metadata` tree, reached from
+`assertThatBeanDescriptor(validator.getConstraintsForClass(Foo.class))` and navigable down to properties,
+methods, constructors, parameters, return values, cross-parameters, container element types and group
+conversions.
+
+The notable design point: `CascadableDescriptor` and `ContainerDescriptor` look like a case for mixin
+interfaces, but in the spec they **always co-occur** &mdash; `PropertyDescriptor`, `ParameterDescriptor`,
+`ReturnValueDescriptor` and `ContainerElementTypeDescriptor` each extend `ElementDescriptor`,
+`CascadableDescriptor` *and* `ContainerDescriptor`, never a subset. One intersection-bounded class,
+`AbstractCascadableContainerDescriptorAssert<SELF, ACTUAL extends ElementDescriptor & CascadableDescriptor &
+ContainerDescriptor>`, covers the combination, so the metadata family needs no interface at all. This follows
+the rule §7 established: a class unless multiple inheritance makes one impossible.
+
+`ElementDescriptor.ConstraintFinder` is a builder rather than a value, so it gets no assertion class; it is
+exposed as `extractingConstraintDescriptors(UnaryOperator<ConstraintFinder>)`, which configures the finder and
+asserts on the matched set.
+
+### 8.4 Executable validation
+
+`ExecutableValidator`'s four methods, split by what the `actual` value can be:
+
+- **Method validation** hangs off `AbstractBeanAssert`, where the instance under validation is already the
+  actual: `hasValidParameters(Method, Object...)`, `hasValidReturnValue(Method, Object)`, their
+  `doesNotHave...` counterparts and consumer overloads.
+- **Constructor validation** has no instance &mdash; the object does not exist yet &mdash; so it takes the
+  `Constructor` as the actual, through the new `AbstractConstructorAssert` and
+  `assertThatConstructor(Constructor)`.
+
+One spec detail worth recording: `validateConstructorReturnValue` with a `null` created object is an
+`IllegalArgumentException` by contract, not a constraint violation, so a `@NotNull` on a constructor can never
+fail. The test fixture carries a custom `@Named` constructor constraint so the failing path is genuinely
+exercised, and a test pins that the `IllegalArgumentException` is propagated rather than reported as a failed
+assertion.
+
+### 8.5 Verification
+
+`mvn verify` passes: **105 tests, 0 failures, 0 errors**, up from 64. `javadoc:javadoc` builds with no
+unresolved reference across 53 documented types. A re-run of the method-level audit shows 67 of 68 API members
+covered.
+
+The one deliberate omission is `Validator.unwrap(Class)`, a provider escape hatch for reaching
+implementation-specific types; it yields no value a test would assert on. The bootstrap, configuration and SPI
+interfaces (`Configuration`, `ValidatorFactory`, `ValidatorContext`, `Validation`, `spi.*`, `bootstrap.*`,
+`MessageInterpolator`, `TraversableResolver`, `ParameterNameProvider`, `ClockProvider`,
+`ConstraintValidatorFactory`) remain out of scope by design: they configure validation rather than produce
+values to verify.
+
+Still uncovered and worth a later decision: `ConstraintViolationException`, whose `getConstraintViolations()`
+is the natural target when validation is triggered by a framework rather than called directly.
+
+---
+
+## 9. Priorities
 
 | | item | § |
 |---|---|---|
-| 1 | `nodeAt` off-by-one — silently returns the wrong path node | 2.2 |
-| 2 | Multi-violation messages join on a literal `%n` | 2.3 |
-| 3 | Complete the deletions the sandbox refused | 1.4 |
-| 4 | Tests for `PathAssert` and `ValidationAssertMessages` — the two uncovered areas that hold items 1 and 2 | 5 |
+| ~~1~~ | ~~`nodeAt` off-by-one~~ — fixed | 2.2 |
+| ~~2~~ | ~~Multi-violation messages join on a literal `%n`~~ — fixed | 2.3 |
+| ~~3~~ | ~~Remove the javax-era reference-guide build~~ — done | 1.4 |
+| 4 | Tests for `AbstractPathAssert` and `ValidationAssertMessages` — the two uncovered areas that hold items 1 and 2 | 5 |
 | 5 | Validator built from a closed factory, rebuilt per assertion | 2.4 |
-| 6 | `if (true)` dead branch; consumer-timing and variance inconsistencies | 3.1–3.3 |
-| 7 | Make the set-of-violations assertion public | 4.2 / 6.1 |
-| 8 | Delete the five empty placeholder classes | 4.1 |
+| 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6 fixed) | 3.2 |
+| ~~7~~ | ~~Make the set-of-violations assertion public~~ — done | 8.2 |
+| 8 | Delete the four remaining empty placeholder classes | 4.1 |
+| ~~9~~ | ~~Collapse the redundant interface layer~~ — done | 7 |
+| ~~10~~ | ~~Finish `ConstraintViolation` and `ConstraintDescriptor`~~ — done | 8.2 |
+| ~~11~~ | ~~Make every `Path.Node` kind reachable~~ — done | 8.2 |
+| ~~12~~ | ~~Cover the metadata API~~ — done | 8.3 |
+| ~~13~~ | ~~Cover executable validation~~ — done | 8.4 |
+| 14 | An assertion for `ConstraintViolationException` | 8.5 |

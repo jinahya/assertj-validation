@@ -22,7 +22,7 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
-class DefaultConstraintViolationAssert<T>
+public class DefaultConstraintViolationAssert<T>
         extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert<T>, ConstraintViolation<T>, T> {
 
     /**
@@ -30,7 +30,7 @@ class DefaultConstraintViolationAssert<T>
      *
      * @param actual the actual value to verify.
      */
-    DefaultConstraintViolationAssert(final ConstraintViolation<T> actual) {
+    public DefaultConstraintViolationAssert(final ConstraintViolation<T> actual) {
         super(actual, DefaultConstraintViolationAssert.class);
     }
 }

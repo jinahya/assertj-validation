@@ -20,10 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-abstract class BeanAssertTest<T extends BeanAssert<T, ?>>
-        extends PropertyAssertTest<T> {
+import jakarta.validation.metadata.ReturnValueDescriptor;
 
-    BeanAssertTest(final Class<T> assertionClass) {
-        super(assertionClass);
+/**
+ * A class for verifying {@link ReturnValueDescriptor} values.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
+public class DefaultReturnValueDescriptorAssert
+        extends AbstractReturnValueDescriptorAssert<DefaultReturnValueDescriptorAssert> {
+
+    /**
+     * Creates a new instance for verifying specified actual value.
+     *
+     * @param actual the actual value to verify.
+     */
+    public DefaultReturnValueDescriptorAssert(final ReturnValueDescriptor actual) {
+        super(actual, DefaultReturnValueDescriptorAssert.class);
     }
 }

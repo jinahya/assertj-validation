@@ -71,17 +71,23 @@
     <!-- https://hibernate.org/validator/releases/ -->
     <!-- https://docs.jboss.org/hibernate/validator/9.0/reference/en-US/html_single/#validator-gettingstarted-uel -->
     <!-- hibernate-validator: 9 / expressly: 6 -->
-    <version.org.hibernate.validator>9.1.3.Final</version.org.hibernate.validator>
+    <version.org.hibernate.validator>9.1.4.Final</version.org.hibernate.validator>
     <!-- https://central.sonatype.com/artifact/org.glassfish.expressly/expressly -->
     <version.org.glassfish.expressly>6.0.0</version.org.glassfish.expressly>
 
-    <version.ch.qos.logback>1.6.3</version.ch.qos.logback>
+    <version.ch.qos.logback>1.6.5</version.ch.qos.logback>
     <version.org.assertj>4.0.0-M1</version.org.assertj>
+    <!-- held at 5.x until Mockito moves. mockito-junit-jupiter 5.24.0 still declares junit-jupiter-api 5.13.4,
+         so junit-bom 6.x does not update Mockito's JUnit integration, it overrides it: the BOM pulls the API up
+         to 6.x under a Mockito artifact built and tested against 5.x. It passes here only because these tests
+         use Mockito through Mockito.spy/when and never MockitoExtension, which is the surface that would break
+         first — a thin reason to run an unsupported pairing. versions:display-property-updates goes on offering
+         6.x on purpose; take it once mockito-junit-jupiter declares junit-jupiter-api 6. -->
     <version.org.junit>5.14.4</version.org.junit>
-    <version.org.mockito>5.23.0</version.org.mockito>
+    <version.org.mockito>5.24.0</version.org.mockito>
     <!-- test-scope only, and on the annotation processor path of the test compilation alone; see <build> -->
     <version.org.projectlombok>1.18.48</version.org.projectlombok>
-    <version.org.slf4j>2.0.19</version.org.slf4j>
+    <version.org.slf4j>2.0.20</version.org.slf4j>
   </properties>
 
   <dependencyManagement>
@@ -198,7 +204,14 @@
     </dependency>
   </dependencies>
 
-  <build>
+  <build><!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
+         safe where declaration order carries no meaning, and here it carries none: Maven falls back to POM
+         order for executions bound to the SAME phase, and no two plugins below share one — compiler is at
+         compile/test-compile, surefire at test, jar at package, and javadoc and versions declare no execution
+         at all. Add an execution that collides with an existing phase and the order stops being free, so
+         pin the pair's relative position then and say why.
+         None of these carry a <version> they do not need: versions-maven-plugin and maven-javadoc-plugin
+         merge their configuration onto the parent's declaration, which already pins them. -->
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -276,6 +289,20 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <configuration>
+          <!-- Nothing here should be offered a pre-release. Two reasons, and the second is the one that
+               bites: a build does not want to track someone else's beta, and Maven orders a qualifier
+               BELOW the release it precedes, so 11.0.0-RC1 sits inside the range [10,11) that the
+               jakarta-ee-10 profile uses to stay on generation 10. Ranges alone therefore do not hold
+               the generation line; this does. -->
+          <ignoredVersions>
+            <ignoredVersion>(?i).*[-.](alpha|beta|m|rc|cr)[-.]?\d*</ignoredVersion>
+          </ignoredVersions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -289,7 +316,15 @@
          The defaults in <properties> are jakarta-ee-11's, so that profile overrides nothing, while
          jakarta-ee-10 overrides all three. Unlike the sibling builds, the API here is compiled
          against rather than merely read reflectively, so the profile also decides what the main
-         sources see: 3.1 adds no member this module uses, which is why one source tree serves both. -->
+         sources see: 3.1 adds no member this module uses, which is why one source tree serves both.
+
+         Each profile also pins its three axis properties to a MAJOR RANGE for versions-maven-plugin.
+         Left alone the plugin reads each property on its own and, under jakarta-ee-10, proposes
+         jakartaee-bom 10 -> 11, hibernate-validator 8 -> 9 and expressly 5 -> 6 — which would not
+         update that profile so much as collapse it into a copy of jakarta-ee-11. The ranges keep
+         versions:update-properties inside the generation, so it still offers the patch releases that
+         matter (8.0.3 -> 8.0.5) and never the ones that cross. Moving a generation is a deliberate
+         edit of these four lines, not something a bulk update does. -->
     <profile>
       <id>jakarta-ee-11</id>
       <!-- https://jakarta.ee/specifications/platform/11/ -->
@@ -297,6 +332,30 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <configuration>
+              <properties>
+                <property>
+                  <name>version.jakarta.jakartaee-bom</name>
+                  <version>[11,12)</version>
+                </property>
+                <property>
+                  <name>version.org.hibernate.validator</name>
+                  <version>[9,10)</version>
+                </property>
+                <property>
+                  <name>version.org.glassfish.expressly</name>
+                  <version>[6,7)</version>
+                </property>
+              </properties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>jakarta-ee-10</id>
@@ -305,9 +364,33 @@
       <properties>
         <version.jakarta.jakartaee-bom>10.0.0</version.jakarta.jakartaee-bom>
         <jakarta.validation.spec.version>3.0</jakarta.validation.spec.version>
-        <version.org.hibernate.validator>8.0.3.Final</version.org.hibernate.validator>
+        <version.org.hibernate.validator>8.0.5.Final</version.org.hibernate.validator>
         <version.org.glassfish.expressly>5.0.0</version.org.glassfish.expressly>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <configuration>
+              <properties>
+                <property>
+                  <name>version.jakarta.jakartaee-bom</name>
+                  <version>[10,11)</version>
+                </property>
+                <property>
+                  <name>version.org.hibernate.validator</name>
+                  <version>[8,9)</version>
+                </property>
+                <property>
+                  <name>version.org.glassfish.expressly</name>
+                  <version>[5,6)</version>
+                </property>
+              </properties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>

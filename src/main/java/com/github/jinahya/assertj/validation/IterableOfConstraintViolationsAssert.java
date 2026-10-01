@@ -22,10 +22,10 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
-class IterableOfConstraintViolationsAssert<T>
+public class IterableOfConstraintViolationsAssert<T>
         extends AbstractIterableOfConstraintViolationsAssert<IterableOfConstraintViolationsAssert<T>, T> {
 
-    IterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
+    public IterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
         super(actual, IterableOfConstraintViolationsAssert.class);
     }
 

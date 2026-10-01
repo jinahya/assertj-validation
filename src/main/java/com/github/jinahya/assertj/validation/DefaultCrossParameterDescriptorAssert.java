@@ -20,10 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-abstract class PropertyAssertTest<T extends PropertyAssert<T, ?>>
-        extends ValidationAssertTest<T> {
+import jakarta.validation.metadata.CrossParameterDescriptor;
 
-    PropertyAssertTest(final Class<T> assertionClass) {
-        super(assertionClass);
+/**
+ * A class for verifying {@link CrossParameterDescriptor} values.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
+public class DefaultCrossParameterDescriptorAssert
+        extends AbstractCrossParameterDescriptorAssert<DefaultCrossParameterDescriptorAssert> {
+
+    /**
+     * Creates a new instance for verifying specified actual value.
+     *
+     * @param actual the actual value to verify.
+     */
+    public DefaultCrossParameterDescriptorAssert(final CrossParameterDescriptor actual) {
+        super(actual, DefaultCrossParameterDescriptorAssert.class);
     }
 }

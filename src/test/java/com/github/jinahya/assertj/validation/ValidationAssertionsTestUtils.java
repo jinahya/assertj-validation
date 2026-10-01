@@ -20,10 +20,10 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import jakarta.validation.ConstraintViolation;
 import org.assertj.core.api.ThrowableAssert;
 import org.mockito.ArgumentCaptor;
 
-import jakarta.validation.ConstraintViolation;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;

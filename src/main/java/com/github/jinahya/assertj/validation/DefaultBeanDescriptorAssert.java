@@ -20,23 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import org.assertj.core.api.Assert;
-
-import jakarta.validation.ConstraintValidator;
-import java.lang.annotation.Annotation;
+import jakarta.validation.metadata.BeanDescriptor;
 
 /**
- * An assertion interface for verifying {@link ConstraintValidator} values.
+ * A class for verifying {@link BeanDescriptor} values.
  *
- * @param <SELF>   self type parameter
- * @param <ACTUAL> actual type parameter
- * @param <T>      root bean type parameter
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-interface ConstraintValidatorAssert<
-        SELF extends ConstraintValidatorAssert<SELF, ACTUAL, A, T>,
-        ACTUAL extends ConstraintValidator<A, T>,
-        A extends Annotation,
-        T>
-        extends Assert<SELF, ACTUAL> {
+public class DefaultBeanDescriptorAssert
+        extends AbstractBeanDescriptorAssert<DefaultBeanDescriptorAssert> {
 
+    /**
+     * Creates a new instance for verifying specified actual value.
+     *
+     * @param actual the actual value to verify.
+     */
+    public DefaultBeanDescriptorAssert(final BeanDescriptor actual) {
+        super(actual, DefaultBeanDescriptorAssert.class);
+    }
 }

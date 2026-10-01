@@ -20,9 +20,8 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import org.assertj.core.api.InstanceOfAssertFactory;
-
 import jakarta.validation.ConstraintViolation;
+import org.assertj.core.api.InstanceOfAssertFactory;
 
 public interface ValidationInstanceOfAssertFactories {
 

@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>assertj-validation</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
+  <version>0.6.1</version>
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
@@ -37,7 +37,7 @@
 
   <scm>
     <url>https://github.com/jinahya/${project.artifactId}</url>
-    <tag>HEAD</tag>
+    <tag>0.6.1</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>

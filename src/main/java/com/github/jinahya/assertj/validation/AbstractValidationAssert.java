@@ -24,8 +24,6 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.assertj.core.api.AbstractAssert;
 
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * An abstract base class for verifying values and beans.
@@ -68,7 +66,7 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * <p>
      * <strong>This assertion object never closes {@code factory}. Closing it is the caller's
      * responsibility.</strong> The caller supplied the instance, so the caller owns its lifecycle; this assertion
-     * object only borrows it for the duration of each assertion.
+     * object only takes a {@link Validator} from it.
      * {@snippet lang = "java" id = "usingValidatorFactory":
      * try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) { // @highlight substring="try"
      *     assertThatBean(user).usingValidatorFactory(factory).isValid();
@@ -76,56 +74,37 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * } // the caller closes it, here
      *}
      *
-     * @param factory the validator factory to obtain validators from, <em>not</em> closed by this assertion
-     *                object; {@code null} to reset.
+     * @param factory the validator factory to take a validator from, <em>not</em> closed by this assertion
+     *                object; {@code null} to reset to the default.
      * @return this assertion object.
      * @apiNote This assertion object does not take ownership of {@code factory} and will not call
      * {@link ValidatorFactory#close()} on it. A factory left unclosed holds whatever resources the provider
      * allocated for it, so a caller which built the factory should close it &mdash; ideally with
      * try-with-resources, since {@link ValidatorFactory} is {@link AutoCloseable}. Note that closing it also ends
-     * the life of every {@link Validator} it produced: the specification forbids using those afterwards.
-     * @implNote {@link ValidatorFactory#getValidator()} is invoked once per assertion rather than cached, so a
-     * factory reconfigured between assertions takes effect, and the factory remains free to return a validator of
-     * its own choosing.
+     * the life of the {@link Validator} taken from it: the specification forbids using that afterwards.
+     * @implNote {@link ValidatorFactory#getValidator()} is invoked once, here, and the resulting validator is
+     * kept. A {@link ValidatorFactory} exposes no mutator, so it cannot be reconfigured after the fact and there
+     * is nothing to re-read per assertion. To assert with a customized validator, build one from
+     * {@link ValidatorFactory#usingContext()} and pass it to {@link #usingValidator(Validator)}.
      * @see #usingValidator(Validator)
      * @see ValidatorFactory#getValidator()
      * @see ValidatorFactory#close()
      */
     public final SELF usingValidatorFactory(final ValidatorFactory factory) {
-        return usingValidatorSuppliedBy(
-                Optional.ofNullable(factory)
-                        .<Supplier<Validator>>map(f -> f::getValidator)
-                        .orElse(null)
-        );
+        return usingValidator(factory == null ? null : factory.getValidator());
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Configures this assertion object to use specified validator.
      *
-     * @param validator the validator to use; {@code null} to reset.
+     * @param validator the validator to use; {@code null} to reset to the default.
      * @return this assertion object.
+     * @see #usingValidatorFactory(ValidatorFactory)
      */
     public final SELF usingValidator(final Validator validator) {
-        return usingValidatorSuppliedBy(
-                Optional.ofNullable(validator)
-                        .<Supplier<Validator>>map(v -> () -> v)
-                        .orElse(null)
-        );
-    }
-
-    /**
-     * Configures this assertion object to use validators supplied by specified supplier.
-     *
-     * @param validatorSupplier the supplier supplying validators; {@code null} to reset.
-     * @return this assertion object.
-     */
-    public final SELF usingValidatorSuppliedBy(final Supplier<? extends Validator> validatorSupplier) {
-        delegate.setValidatorSupplier(validatorSupplier);
+        delegate.setValidator(validator);
         return myself;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
     final ValidationAssertDelegate delegate = new ValidationAssertDelegate();
 }

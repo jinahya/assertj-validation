@@ -30,17 +30,32 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableSet;
 
 final class ValidationAssertDelegate {
 
-    private static final Supplier<? extends Validator> DEFAULT_VALIDATOR_SUPPLIER = () -> {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator();
+    /**
+     * Holds the default {@link Validator}, and the factory it came from.
+     * <p>
+     * The factory is deliberately <em>never</em> closed. {@link ValidatorFactory#close()} forbids any further use
+     * of the validators it produced, so a factory whose validator outlives it must not be closed; and rebuilding
+     * one per assertion costs a classpath scan plus a {@code META-INF/validation.xml} parse. For a test-scoped
+     * library, holding one for the life of the JVM is the right trade &mdash; process exit reclaims it.
+     * <p>
+     * Initialization is deferred to first use of the default: a suite which always supplies its own validator
+     * never builds one. Class initialization makes that lazy and thread-safe without locking.
+     */
+    private static final class DefaultValidatorHolder {
+
+        private static final ValidatorFactory FACTORY = Validation.buildDefaultValidatorFactory();
+
+        private static final Validator INSTANCE = FACTORY.getValidator();
+
+        private DefaultValidatorHolder() {
+            throw new AssertionError("instantiation is not allowed");
         }
-    };
+    }
 
     /**
      * Returns groups targeted.
@@ -87,29 +102,27 @@ final class ValidationAssertDelegate {
         }
     }
 
+    /**
+     * Returns the validator to assert with: the one configured on this delegate, or the shared default.
+     *
+     * @return a validator; never {@code null}.
+     */
     Validator getValidator() {
-        return Objects.requireNonNull(validatorSupplier.get(), "null supplied by " + validatorSupplier);
+        return validator != null ? validator : DefaultValidatorHolder.INSTANCE;
     }
 
+    /**
+     * Configures the validator to assert with.
+     *
+     * @param validator the validator; {@code null} to fall back to the shared default.
+     */
     void setValidator(final Validator validator) {
-        if (validator != null) {
-            validatorSupplier = () -> validator;
-            return;
-        }
-        validatorSupplier = DEFAULT_VALIDATOR_SUPPLIER;
-    }
-
-    void setValidatorSupplier(final Supplier<? extends Validator> validatorSupplier) {
-        if (validatorSupplier != null) {
-            this.validatorSupplier = validatorSupplier;
-            return;
-        }
-        this.validatorSupplier = DEFAULT_VALIDATOR_SUPPLIER;
+        this.validator = validator;
     }
 
     final Set<Class<?>> groups = new HashSet<>();
 
     final Set<ConstraintViolation<?>> violations = new HashSet<>();
 
-    private Supplier<? extends Validator> validatorSupplier = DEFAULT_VALIDATOR_SUPPLIER;
+    private Validator validator;
 }

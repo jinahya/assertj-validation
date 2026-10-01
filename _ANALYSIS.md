@@ -238,7 +238,7 @@ Fixed: now `Collectors.joining(System.lineSeparator())`. Note that the per-viola
 above it is correct — it goes through `String.format`, so its `%n`s do resolve. Only the join is broken, which
 is why single-violation messages look fine and the defect only shows on beans with more than one violation.
 
-### 2.4 The default validator comes from a closed factory — open
+### 2.4 The default validator comes from a closed factory — **fixed**
 
 `ValidationAssertDelegate.java:38-42`
 
@@ -799,6 +799,30 @@ factory stops being needed.
 
 ---
 
+### 8.9 Validator plumbing collapsed (applied)
+
+§2.4's defect was not that the default needed a better supplier — it was that a supplier was the wrong shape
+to begin with.
+
+`ValidationAssertDelegate` held a `Supplier<? extends Validator>`, invoked on every `getValidator()`. Its
+default built a `ValidatorFactory`, closed it in a try-with-resources, and returned the validator the dead
+factory had produced. A logging proxy confirms the order: `getValidator()`, `close()`, *then* return — so
+every assertion in the library called a method the specification forbids, on a validator whose factory was
+already closed. It passes only because Hibernate Validator does not enforce `close()`.
+
+The supplier earned nothing. A `ValidatorFactory` exposes no mutator — only getters, `usingContext()`,
+`unwrap()` and `close()` — so it cannot be reconfigured, and there is nothing for a per-assertion
+`getValidator()` to pick up. An earlier `@implNote` on `usingValidatorFactory` claimed the opposite
+("a factory reconfigured between assertions takes effect"); that was wrong and is corrected.
+
+So the field is now a plain `Validator`, null meaning "use the default", and the default is one factory and
+one validator behind a lazy holder, deliberately never closed. `usingValidatorSuppliedBy(Supplier)` is
+**removed** — a breaking change, taken because the method could only ever wrap a value the caller already had.
+`usingValidatorFactory(f)` is now `usingValidator(f.getValidator())`, resolved once.
+
+Measured: **1.20 ms → 0.00010 ms** per `getValidator()`; the delegate shed one field, one setter and one
+import.
+
 ---
 
 ## 9. Priorities
@@ -809,7 +833,7 @@ factory stops being needed.
 | ~~2~~ | ~~Multi-violation messages join on a literal `%n`~~ — fixed | 2.3 |
 | ~~3~~ | ~~Remove the javax-era reference-guide build~~ — done | 1.4 |
 | 4 | Tests for `AbstractPathAssert` and `ValidationAssertMessages` — the two uncovered areas that hold items 1 and 2 | 5 |
-| 5 | Validator built from a closed factory, rebuilt per assertion | 2.4 |
+| ~~5~~ | ~~Validator built from a closed factory, rebuilt per assertion~~ — fixed | 2.4 / 8.9 |
 | 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6, §3.8 fixed) | 3.2 |
 | ~~7~~ | ~~Make the set-of-violations assertion public~~ — done | 8.2 |
 | 8 | Delete the four remaining empty placeholder classes | 4.1 |

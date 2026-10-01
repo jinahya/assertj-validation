@@ -62,9 +62,9 @@ class User_UsingValidatorFactory_Test {
         }
     }
 
-    @DisplayName("getValidator() is invoked once per assertion, not cached")
+    @DisplayName("getValidator() is invoked once, at configuration time")
     @Test
-    void __OneGetValidatorPerAssertion() {
+    void __OneGetValidatorPerConfiguration() {
         try (ValidatorFactory delegate = Validation.buildDefaultValidatorFactory()) {
             final var count = new AtomicInteger();
             final ValidatorFactory counting = (ValidatorFactory) java.lang.reflect.Proxy.newProxyInstance(
@@ -77,9 +77,11 @@ class User_UsingValidatorFactory_Test {
                         return method.invoke(delegate, args);
                     });
             final var assertion = assertThatBean(newValidUser()).usingValidatorFactory(counting);
+            assertThat(count).as("taken eagerly, when the factory is supplied").hasValue(1);
             assertion.isValid();
             assertion.isValid();
-            assertThat(count).hasValue(2);
+            assertThat(count).as("a ValidatorFactory has no mutator, so there is nothing to re-read")
+                    .hasValue(1);
         }
     }
 

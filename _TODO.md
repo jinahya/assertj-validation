@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 116 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -13,63 +13,26 @@ static entry point and an `InstanceOfAssertFactory`; the visibility census repor
 |---|---|
 | `usingValidatorFactory(ValidatorFactory)` — caller supplies and owns the factory | **done** |
 | `usingValidatorFactorySuppliedBy(Supplier, ...)` — any disposing form | **refused** (§6) |
-| the **default** validator, built from a factory that is closed before use | **open** (§1.1) |
+| the **default** validator, built from a factory that was closed before use | **done** (§1.1) |
+| `usingValidatorSuppliedBy(Supplier<Validator>)` | **removed** — see §1.1 |
 
-The first two are settled. The defect is the third, and it is untouched.
+All settled.
 
 ---
 
 ## 1. Correctness
 
-### 1.1 The default validator comes from a closed factory — §2.4 — **OPEN**
+### 1.1 ~~The default validator comes from a closed factory~~ — §2.4 — **DONE**
 
-Nothing done here yet. `usingValidatorFactory(ValidatorFactory)` shipped (see the end of this section), but
-that is a *new way for callers to supply a factory* — it does not touch the default, which is the actual
-defect.
+Fixed by collapsing the validator plumbing rather than patching the default. `ValidationAssertDelegate` held a
+`Supplier<? extends Validator>`, whose default built a factory, closed it, and returned the now-orphaned
+validator — a use-after-close on every assertion, and a factory bootstrap per call.
 
-`ValidationAssertDelegate`
+A `ValidatorFactory` exposes no mutator, so there was nothing a supplier could usefully re-read. The field is
+now a plain `Validator`, the default a single held factory and validator behind a lazy holder, never closed by
+design. `usingValidatorSuppliedBy` is gone; `usingValidatorFactory(f)` is `usingValidator(f.getValidator())`.
 
-```java
-private static final Supplier<? extends Validator> DEFAULT_VALIDATOR_SUPPLIER = () -> {
-    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-        return factory.getValidator();   // factory closed before the Validator is ever used
-    }
-};
-```
-
-**This is a specification violation, not merely unspecified.** `ValidatorFactory.close()` is defined as:
-*"After the `ValidatorFactory` instance is closed, calling the following methods is not allowed: methods of
-this `ValidatorFactory` instance; **methods of `Validator` instances created by this `ValidatorFactory`**."*
-Every assertion in the library then calls a method on exactly such a validator. It passes only because
-Hibernate Validator 9.1.4 does not enforce `close()` at all — a probe confirmed even `validate()` succeeds
-afterwards.
-
-**And it is slow.** The supplier runs on every `getValidator()` call, so each assertion bootstraps a fresh
-factory — a classpath scan plus a `META-INF/validation.xml` parse. Measured over 50 warmed iterations:
-
-| | per call |
-|---|---|
-| `buildDefaultValidatorFactory()` + `getValidator()` | **1.20 ms** |
-| `getValidator()` on a held factory | **0.0072 ms** |
-| | **165x** |
-
-paid at each of the 8 `delegate.getValidator()` call sites, once per assertion.
-
-- [ ] Hold one lazily-built factory for the life of the JVM and take the validator from it.
-
-**The fix must not dispose.** Eight methods touch the validator and all return `SELF`, so the *call* scope is
-closed — but the values they produce escape it: `delegate.setViolations(...)` retains the set, the
-`Consumer<Set<ConstraintViolation>>` overloads hand it to callers, and from a violation a caller reaches
-`ConstraintDescriptor`, `Path` and all nine node assertions. A cached, never-closed factory is safe by
-construction; a disposing one would invalidate objects already handed out. Not closing is a deliberate choice
-to be commented, not an oversight — for a test-scoped library, process exit reclaims it.
-
-**Related, already settled:**
-
-- ~~`usingValidatorFactory(ValidatorFactory)`~~ — **done** (`b8f8add`, `4795219`). Needed no delegate change:
-  the caller owns the instance, so it is never closed, and the method is just
-  `usingValidatorSuppliedBy(factory::getValidator)`.
-- `usingValidatorFactorySuppliedBy(Supplier, ...)` in any disposing form — **refused**, see §6.
+Measured: **1.20 ms → 0.00010 ms** per `getValidator()`.
 
 ### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3
 

@@ -236,6 +236,107 @@ public final class ValidationAssertions {
         return new DefaultGroupConversionDescriptorAssert(actual);
     }
 
+    // --------------------------------------------------------------------------------------------------- nodes
+
+    /**
+     * Creates a new assertion object for verifying specified node.
+     *
+     * @param actual the node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingNode(int)
+     */
+    public static AbstractPathAssert.AbstractNodeAssert<?> assertThatNode(final Path.Node actual) {
+        return new DefaultPathAssert.DefaultNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified bean node.
+     *
+     * @param actual the bean node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingBeanNode(int)
+     */
+    public static AbstractPathAssert.AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultBeanNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified constructor node.
+     *
+     * @param actual the constructor node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingConstructorNode(int)
+     */
+    public static AbstractPathAssert.AbstractConstructorNodeAssert<?> assertThatConstructorNode(final Path.ConstructorNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultConstructorNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified container element node.
+     *
+     * @param actual the container element node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingContainerElementNode(int)
+     */
+    public static AbstractPathAssert.AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(final Path.ContainerElementNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultContainerElementNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified cross parameter node.
+     *
+     * @param actual the cross parameter node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingCrossParameterNode(int)
+     */
+    public static AbstractPathAssert.AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(final Path.CrossParameterNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultCrossParameterNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified method node.
+     *
+     * @param actual the method node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingMethodNode(int)
+     */
+    public static AbstractPathAssert.AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultMethodNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified parameter node.
+     *
+     * @param actual the parameter node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingParameterNode(int)
+     */
+    public static AbstractPathAssert.AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultParameterNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified property node.
+     *
+     * @param actual the property node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingPropertyNode(int)
+     */
+    public static AbstractPathAssert.AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultPropertyNodeAssert(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified return value node.
+     *
+     * @param actual the return value node to verify.
+     * @return a new assertion instance for {@code actual}.
+     * @see AbstractPathAssert#extractingReturnValueNode(int)
+     */
+    public static AbstractPathAssert.AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(final Path.ReturnValueNode actual) {
+        return new DefaultPathAssert.DefaultNodeAssert.DefaultReturnValueNodeAssert(actual);
+    }
+
     /**
      * Creates a new instance.
      */

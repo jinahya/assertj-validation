@@ -347,12 +347,12 @@ An empty catch with a named-but-unused variable. As a `Condition` the boolean is
 condition reports nothing in its place. Either set a description from `ae.getMessage()` or add a comment
 saying the message is deliberately dropped. The class is unused anyway (§4.1).
 
-### 3.8 `ValidationInstanceOfAssertFactories` is a constant interface — open
+### 3.8 `ValidationInstanceOfAssertFactories` is a constant interface — fixed
 
 Declared `public interface` holding one `static` method. An interface cannot forbid instantiation and *can* be
-`implements`-ed, which is the constant-interface antipattern; the module's four other factory/utility holders
-(`AssertFactories`, `ValidationAssertConstants`, `ValidationAssertUtils`, `ValidationAssertions`) are all
-`final class` with a throwing private constructor. Make it match.
+`implements`-ed, which is the constant-interface antipattern. Converted to a `final class` with a throwing
+private constructor, matching the module's four other factory/utility holders, and filled out at the same
+time — see §8.6.
 
 ---
 
@@ -726,6 +726,29 @@ values to verify.
 Still uncovered and worth a later decision: `ConstraintViolationException`, whose `getConstraintViolations()`
 is the natural target when validation is triggered by a framework rather than called directly.
 
+### 8.6 Every assertion is reachable two ways (applied)
+
+A follow-up audit of `ValidationAssertions` found the entry points complete for every family except
+`Path.Node`: all nine node assertions could only be reached by navigating from a `Path` by index. Since `Path`
+is `Iterable<Node>`, holding a bare node — from a `forEach`, a stream, an `allSatisfy` — is ordinary, and
+there was no way to assert on one.
+
+Behind that sat a visibility inconsistency introduced in §8.2: the node `Abstract*` classes were made public
+but only two of the nine `Default*` ones were, because nothing forced the rest. The metadata family generated
+in §8.3 had it right. Both are the same defect.
+
+- Nine `assertThatNode` / `assertThat*Node` entry points added; `ValidationAssertions` now exposes 26.
+- The seven remaining node `Default*` classes and their constructors are public.
+- `ValidationInstanceOfAssertFactories` (§3.8) converted from a constant interface to a `final class`, and
+  grown from one factory to 21: two methods for the generic types (`constraintViolation()`,
+  `constraintDescriptor()`) and 19 constants for the rest, following assertj-core's own
+  `InstanceOfAssertFactories` convention of constants for non-generic types and methods for generic ones.
+
+The invariant now holds and is checked by a test: **every concrete assertion is reachable both by navigation
+and by a static entry point, and has an `InstanceOfAssertFactory`.**
+
+`mvn verify`: 113 tests, 0 failures. `javadoc:javadoc` reports no diagnostic.
+
 ---
 
 ## 9. Priorities
@@ -737,7 +760,7 @@ is the natural target when validation is triggered by a framework rather than ca
 | ~~3~~ | ~~Remove the javax-era reference-guide build~~ — done | 1.4 |
 | 4 | Tests for `AbstractPathAssert` and `ValidationAssertMessages` — the two uncovered areas that hold items 1 and 2 | 5 |
 | 5 | Validator built from a closed factory, rebuilt per assertion | 2.4 |
-| 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6 fixed) | 3.2 |
+| 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6, §3.8 fixed) | 3.2 |
 | ~~7~~ | ~~Make the set-of-violations assertion public~~ — done | 8.2 |
 | 8 | Delete the four remaining empty placeholder classes | 4.1 |
 | ~~9~~ | ~~Collapse the redundant interface layer~~ — done | 7 |
@@ -746,3 +769,4 @@ is the natural target when validation is triggered by a framework rather than ca
 | ~~12~~ | ~~Cover the metadata API~~ — done | 8.3 |
 | ~~13~~ | ~~Cover executable validation~~ — done | 8.4 |
 | 14 | An assertion for `ConstraintViolationException` | 8.5 |
+| ~~15~~ | ~~Node entry points and the full factory set~~ — done | 8.6 |

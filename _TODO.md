@@ -3,8 +3,9 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 105 tests, 0 failures; `javadoc:javadoc` builds with no warning and no
-unresolved reference; 67 of 68 Jakarta Validation 3.1 API members are covered.
+Current state: `mvn verify` passes with 113 tests, 0 failures; `javadoc:javadoc` builds with no diagnostic;
+67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
+static entry point and an `InstanceOfAssertFactory`.
 
 ---
 
@@ -62,19 +63,7 @@ inherited the "after" shape, so they need the same decision applied.
 - [ ] Pick one — "before" reads better for a test library, since the violation set matters most exactly when
       the assertion is about to fail — apply it everywhere, and document it.
 
-### 2.2 `ValidationInstanceOfAssertFactories` is a constant interface, and nearly empty — §3.8
-
-Declared `public interface` holding one `static` method. An interface cannot forbid instantiation and *can* be
-`implements`-ed. The module's other factory/utility holders are all `final class` with a throwing private
-constructor.
-
-It also still offers a factory for `ConstraintViolation` alone, while the module now has assertions for ~20
-types. Anyone using `asInstanceOf(...)` with a path, a descriptor or a metadata type has nothing to reach for.
-
-- [ ] Convert to `final class`.
-- [ ] Add factories for `Path`, `ConstraintDescriptor`, `BeanDescriptor` and the rest of the metadata family.
-
-### 2.3 `assertThatConstraintDescriptor` has no javadoc — §6.6
+### 2.2 `assertThatConstraintDescriptor` has no javadoc — §6.6
 
 Alone among the public entry points.
 

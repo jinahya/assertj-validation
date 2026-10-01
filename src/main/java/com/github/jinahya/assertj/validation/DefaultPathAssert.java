@@ -35,58 +35,58 @@ public class DefaultPathAssert
     public static class DefaultNodeAssert
             extends AbstractNodeAssert<DefaultNodeAssert> {
 
-        static class DefaultBeanNodeAssert
+        public static class DefaultBeanNodeAssert
                 extends AbstractBeanNodeAssert<DefaultBeanNodeAssert> {
 
-            DefaultBeanNodeAssert(final Path.BeanNode actual) {
+            public DefaultBeanNodeAssert(final Path.BeanNode actual) {
                 super(actual, DefaultBeanNodeAssert.class);
             }
         }
 
-        static class DefaultConstructorNodeAssert
+        public static class DefaultConstructorNodeAssert
                 extends AbstractConstructorNodeAssert<DefaultConstructorNodeAssert> {
 
-            DefaultConstructorNodeAssert(final Path.ConstructorNode actual) {
+            public DefaultConstructorNodeAssert(final Path.ConstructorNode actual) {
                 super(actual, DefaultConstructorNodeAssert.class);
             }
         }
 
-        static class DefaultCrossParameterNodeAssert
+        public static class DefaultCrossParameterNodeAssert
                 extends AbstractCrossParameterNodeAssert<DefaultCrossParameterNodeAssert> {
 
-            DefaultCrossParameterNodeAssert(final Path.CrossParameterNode actual) {
+            public DefaultCrossParameterNodeAssert(final Path.CrossParameterNode actual) {
                 super(actual, DefaultCrossParameterNodeAssert.class);
             }
         }
 
-        static class DefaultMethodNodeAssert
+        public static class DefaultMethodNodeAssert
                 extends AbstractMethodNodeAssert<DefaultMethodNodeAssert> {
 
-            DefaultMethodNodeAssert(final Path.MethodNode actual) {
+            public DefaultMethodNodeAssert(final Path.MethodNode actual) {
                 super(actual, DefaultMethodNodeAssert.class);
             }
         }
 
-        static class DefaultParameterNodeAssert
+        public static class DefaultParameterNodeAssert
                 extends AbstractParameterNodeAssert<DefaultParameterNodeAssert> {
 
-            DefaultParameterNodeAssert(final Path.ParameterNode actual) {
+            public DefaultParameterNodeAssert(final Path.ParameterNode actual) {
                 super(actual, DefaultParameterNodeAssert.class);
             }
         }
 
-        static class DefaultContainerElementNodeAssert
+        public static class DefaultContainerElementNodeAssert
                 extends AbstractContainerElementNodeAssert<DefaultContainerElementNodeAssert> {
 
-            DefaultContainerElementNodeAssert(final Path.ContainerElementNode actual) {
+            public DefaultContainerElementNodeAssert(final Path.ContainerElementNode actual) {
                 super(actual, DefaultContainerElementNodeAssert.class);
             }
         }
 
-        static class DefaultReturnValueNodeAssert
+        public static class DefaultReturnValueNodeAssert
                 extends AbstractReturnValueNodeAssert<DefaultReturnValueNodeAssert> {
 
-            DefaultReturnValueNodeAssert(final Path.ReturnValueNode actual) {
+            public DefaultReturnValueNodeAssert(final Path.ReturnValueNode actual) {
                 super(actual, DefaultReturnValueNodeAssert.class);
             }
         }
@@ -94,13 +94,13 @@ public class DefaultPathAssert
         public static class DefaultPropertyNodeAssert
                 extends AbstractPropertyNodeAssert<DefaultPropertyNodeAssert> {
 
-            DefaultPropertyNodeAssert(final Path.PropertyNode actual) {
+            public DefaultPropertyNodeAssert(final Path.PropertyNode actual) {
                 super(actual, DefaultPropertyNodeAssert.class);
             }
         }
 
         // -------------------------------------------------------------------------------------------------------------
-        DefaultNodeAssert(final Path.Node actual) {
+        public DefaultNodeAssert(final Path.Node actual) {
             super(actual, DefaultNodeAssert.class);
         }
     }

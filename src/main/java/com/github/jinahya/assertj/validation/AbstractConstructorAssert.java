@@ -69,9 +69,10 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                             final boolean expectedEmpty) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(delegate.applyValidator(v -> validation.apply(v.forExecutables())));
-        final var assertion = assertThat(delegate.<T>getViolations())
+        final Class<?>[] groups = groups();
+        final Set<ConstraintViolation<T>> violations =
+                applyValidator(v -> validation.apply(v.forExecutables()));
+        final var assertion = assertThat(violations)
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\t%s of%n"
                     + "\tconstructor: %s%n"
@@ -86,8 +87,8 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                     .withFailMessage(() -> String.format(
                             "%nexpected to be empty but contains %1$d element(s)%n"
                             + "%2$s",
-                            delegate.getViolations().size(),
-                            ValidationAssertMessages.format(delegate.getViolations())
+                            violations.size(),
+                            ValidationAssertMessages.format(violations)
                     ))
                     .isEmpty();
         } else {
@@ -95,7 +96,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                     .withFailMessage("%nexpected to be not empty but empty")
                     .isNotEmpty();
         }
-        consumer.accept(delegate.getViolations());
+        consumer.accept(violations);
         return myself;
     }
 
@@ -112,7 +113,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
     public final SELF hasValidParameters(final Object[] parameterValues,
                                          final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("parameters",
-                          v -> v.validateConstructorParameters(actual, parameterValues, delegate.getGroups()),
+                          v -> v.validateConstructorParameters(actual, parameterValues, groups()),
                           consumer, true);
     }
 
@@ -140,7 +141,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      */
     public final SELF doesNotHaveValidParameters(final Object... parameterValues) {
         return validating("parameters",
-                          v -> v.validateConstructorParameters(actual, parameterValues, delegate.getGroups()),
+                          v -> v.validateConstructorParameters(actual, parameterValues, groups()),
                           s -> {
                           }, false);
     }
@@ -158,7 +159,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
     public final SELF hasValidReturnValue(final T createdObject,
                                           final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("return value",
-                          v -> v.validateConstructorReturnValue(actual, createdObject, delegate.getGroups()),
+                          v -> v.validateConstructorReturnValue(actual, createdObject, groups()),
                           consumer, true);
     }
 
@@ -186,7 +187,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      */
     public final SELF doesNotHaveValidReturnValue(final T createdObject) {
         return validating("return value",
-                          v -> v.validateConstructorReturnValue(actual, createdObject, delegate.getGroups()),
+                          v -> v.validateConstructorReturnValue(actual, createdObject, groups()),
                           s -> {
                           }, false);
     }

@@ -73,11 +73,11 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
-        final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(
-                delegate.applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups)));
-        delegate.acceptViolations(consumer);
-        assertThat(delegate.getViolations())
+        final Class<?>[] groups = groups();
+        final Set<ConstraintViolation<T>> violations =
+                applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
+        acceptViolations(consumer, violations);
+        assertThat(violations)
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "\tagainst%n"
@@ -93,8 +93,8 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
                 .withFailMessage(() -> String.format(
                         "%nexpected to be empty but contains %1$d element(s)%n"
                         + "%2$s",
-                        delegate.getViolations().size(),
-                        ValidationAssertMessages.format(delegate.getViolations())
+                        violations.size(),
+                        ValidationAssertMessages.format(violations)
                 ))
                 .isEmpty();
         return myself;
@@ -179,10 +179,10 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
     public final <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
-        final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(
-                delegate.applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups)));
-        assertThat(delegate.getViolations())
+        final Class<?>[] groups = groups();
+        final Set<ConstraintViolation<T>> violations =
+                applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
+        assertThat(violations)
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "\tagainst%n"

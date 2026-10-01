@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 110 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -146,13 +146,11 @@ Each is a few lines over the existing stored violations, and each removes a `Con
 
 - [ ] Add them.
 
-### 5.3 Make the delegate's stored violations earn their place — §6.5
+### 5.3 ~~Make the delegate's stored violations earn their place~~ — §6.5 — **DONE**
 
-`ValidationAssertDelegate.violations` is written by every assertion and read only to build failure messages — a
-scratch local promoted to state, which also makes an assert object non-reentrant.
-
-- [ ] Either expose it (`SELF satisfiesViolations(Consumer)`, or chaining into the set assertion, which would
-      give the field a reason to exist) or demote it back to a local.
+Resolved by deletion (§8.14). Every write was read only inside the method that wrote it, so it was a local
+promoted to a field. It is a local again; the field, its three accessors and the `unchecked` cast are gone,
+and assertion objects are reentrant.
 
 ### 5.4 Smaller items — §6.6
 

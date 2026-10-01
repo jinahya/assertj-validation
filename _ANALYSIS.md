@@ -975,6 +975,44 @@ Tests pin the parts that would rot silently: the assertion never calls `close()`
 test's proxy fails if it does), a validator is taken once per assertion rather than at configuration time,
 and whichever of the two was configured last is the one consulted.
 
+### 8.14 Delegate inlined; assertions hold only what they need (applied)
+
+`ValidationAssertDelegate` existed to be *composed*, but there was only ever one hierarchy to compose it
+into: four classes, all descending from `AbstractValidationAssert`. 59 `delegate.` prefixes bought an
+indirection with a single client.
+
+It is inlined into `AbstractValidationAssert`, which stays exactly where it was — the abstract intermediate
+parent between assertj's `AbstractAssert` and the three assertions that validate.
+
+Two things fall out that are worth more than the deleted class.
+
+**An extension point that actually works.** `delegate` was package-private, so an out-of-package subclass of
+`AbstractBeanAssert` — the extension point §7 was premised on — could call `usingValidator(...)` but could
+not write a validating assertion of its own, because neither `delegate` nor `applyValidator` was reachable.
+`applyValidator`, `groups()` and `acceptViolations` are now `protected final`, so they are.
+
+**`violations` is gone entirely.** Every `setViolations` was read only inside the method that set it — pure
+scratch state promoted to a field (§6.5), which also made an assertion object non-reentrant. It is now a
+local in each of the 8 methods. That deletes the field, three methods, and the `@SuppressWarnings("unchecked")`
+that only existed because a shared `Set<ConstraintViolation<?>>` had to hold any element type:
+
+```java
+// before: shared field, cast on the way out
+delegate.setViolations(delegate.applyValidator(v -> v.validate(actual, groups)));
+assertThat(delegate.getViolations())
+// after: a local, already precisely typed by validate(T, ...)
+final Set<ConstraintViolation<ACTUAL>> violations = applyValidator(v -> v.validate(actual, groups));
+assertThat(violations)
+```
+
+What `AbstractValidationAssert` holds is now exactly what a validating assertion needs and nothing else:
+`groups`, `validator`, `validatorFactory`.
+
+**What this gives up:** Java's single inheritance. A validating assertion that must extend a different
+assertj base — an `assertThatBeans(List<User>).allValid()` on `AbstractIterableAssert`, say — can no longer
+compose the state; it would need the delegate extracted again. That is mechanical and confined to these four
+classes, so the hypothetical did not justify keeping the indirection today.
+
 ---
 
 ## 9. Priorities
@@ -987,6 +1025,7 @@ and whichever of the two was configured last is the one consulted.
 | 4 | Tests for `AbstractPathAssert` and `ValidationAssertMessages` — the two uncovered areas that hold items 1 and 2 | 5 |
 | ~~5~~ | ~~Validator built from a closed factory, rebuilt per assertion~~ — fixed | 2.4 / 8.9 |
 | 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6, §3.8 fixed) | 3.2 |
+| ~~17~~ | ~~Delegate inlined; `violations` field removed~~ — done | 8.14 / 6.5 |
 | ~~7~~ | ~~Make the set-of-violations assertion public~~ — done | 8.2 |
 | 8 | Delete the four remaining empty placeholder classes | 4.1 |
 | ~~9~~ | ~~Collapse the redundant interface layer~~ — done | 7 |

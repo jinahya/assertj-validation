@@ -61,6 +61,46 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
         return myself;
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Configures this assertion object to use validators obtained from specified validator factory.
+     * <p>
+     * <strong>This assertion object never closes {@code factory}. Closing it is the caller's
+     * responsibility.</strong> The caller supplied the instance, so the caller owns its lifecycle; this assertion
+     * object only borrows it for the duration of each assertion.
+     * {@snippet lang = "java" id = "usingValidatorFactory":
+     * try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) { // @highlight substring="try"
+     *     assertThatBean(user).usingValidatorFactory(factory).isValid();
+     *     assertThatBean(other).usingValidatorFactory(factory).isNotValid();
+     * } // the caller closes it, here
+     *}
+     *
+     * @param factory the validator factory to obtain validators from, <em>not</em> closed by this assertion
+     *                object; {@code null} to reset.
+     * @return this assertion object.
+     * @apiNote This assertion object does not take ownership of {@code factory} and will not call
+     * {@link ValidatorFactory#close()} on it. A factory left unclosed holds whatever resources the provider
+     * allocated for it, so a caller which built the factory should close it &mdash; ideally with
+     * try-with-resources, since {@link ValidatorFactory} is {@link AutoCloseable}. Note that closing it also ends
+     * the life of every {@link Validator} it produced: the specification forbids using those afterwards.
+     * @implNote {@link ValidatorFactory#getValidator()} is invoked once per assertion rather than cached, so a
+     * factory reconfigured between assertions takes effect, and the factory remains free to return a validator of
+     * its own choosing.
+     * @see #usingValidator(Validator)
+     * @see ValidatorFactory#getValidator()
+     * @see ValidatorFactory#close()
+     */
+    public final SELF usingValidatorFactory(final ValidatorFactory factory) {
+        return usingValidatorSuppliedBy(
+                Optional.ofNullable(factory)
+                        .<Supplier<Validator>>map(f -> f::getValidator)
+                        .orElse(null)
+        );
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Configures this assertion object to use specified validator.
      *
@@ -76,27 +116,6 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     }
 
     /**
-     * Configures this assertion object to use validators obtained from specified validator factory.
-     * <p>
-     * The factory is <em>not</em> closed by this assertion object &mdash; the caller supplied the instance, so the
-     * caller owns its lifecycle. {@link ValidatorFactory#getValidator()} is invoked once per assertion rather than
-     * cached, so a factory reconfigured between assertions takes effect, and the factory remains free to return a
-     * validator of its own choosing.
-     *
-     * @param factory the validator factory to obtain validators from; {@code null} to reset.
-     * @return this assertion object.
-     * @see #usingValidator(Validator)
-     * @see ValidatorFactory#getValidator()
-     */
-    public final SELF usingValidatorFactory(final ValidatorFactory factory) {
-        return usingValidatorSuppliedBy(
-                Optional.ofNullable(factory)
-                        .<Supplier<Validator>>map(f -> f::getValidator)
-                        .orElse(null)
-        );
-    }
-
-    /**
      * Configures this assertion object to use validators supplied by specified supplier.
      *
      * @param validatorSupplier the supplier supplying validators; {@code null} to reset.
@@ -107,5 +126,6 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
         return myself;
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     final ValidationAssertDelegate delegate = new ValidationAssertDelegate();
 }

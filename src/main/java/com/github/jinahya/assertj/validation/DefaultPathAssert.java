@@ -186,6 +186,4 @@ public class DefaultPathAssert
     public DefaultPathAssert(final Path actual) {
         super(actual, DefaultPathAssert.class);
     }
-
-
 }

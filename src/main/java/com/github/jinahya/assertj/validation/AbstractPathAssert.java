@@ -150,6 +150,19 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
             extractingContainerClass().isEqualTo(expectedContainerClass);
             return (SELF) this;
         }
+
+        /**
+         * Verifies that the {@code actual} node's {@code containerClass} is {@code null}, that is, the node is
+         * not contained in a container type.
+         *
+         * @return this assertion object.
+         * @apiNote The specification defines {@code getContainerClass()} as returning the container's type
+         * &quot;if contained in a container type such as {@code Optional}, {@code List} or {@code Map},
+         * {@code null} otherwise&quot;, so {@code null} is a meaningful outcome rather than an exceptional one.
+         */
+        default SELF doesNotHaveContainerClass() {
+            return hasContainerClassSatisfying(AbstractAssert::isNull);
+        }
     }
 
     /**
@@ -276,6 +289,38 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
             return extractingParameterTypes(
                     a -> Assertions.<List<Class<?>>, Class<?>, ClassAssert>assertThat(a, ClassAssert::new)
             );
+        }
+
+        /**
+         * Verifies that the {@code actual} node's {@code parameterTypes} satisfies specified consumer.
+         *
+         * @param consumer the consumer accepting the extracted assertion; must be not {@code null}.
+         * @return this assertion object.
+         */
+        @SuppressWarnings({
+                "unchecked"
+        })
+        default SELF hasParameterTypesSatisfying(
+                final Consumer<? super AbstractListAssert<?, List<Class<?>>, Class<?>,
+                        ? extends AbstractClassAssert<?>>> consumer) {
+            Objects.requireNonNull(consumer, "consumer is null");
+            consumer.accept(extractingParameterTypes());
+            return (SELF) this;
+        }
+
+        /**
+         * Verifies that the {@code actual} node's {@code parameterTypes} are exactly specified types, in order.
+         *
+         * @param expectedParameterTypes the expected parameter types, in declaration order.
+         * @return this assertion object.
+         * @see Path.MethodNode#getParameterTypes()
+         */
+        @SuppressWarnings({
+                "unchecked"
+        })
+        default SELF hasParameterTypes(final Class<?>... expectedParameterTypes) {
+            extractingParameterTypes().containsExactly(expectedParameterTypes);
+            return (SELF) this;
         }
     }
 
@@ -448,7 +493,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return this assertion object.
          */
         public SELF doesNotHaveIndex() {
-            return hasIndex(null);
+            return hasIndexSatisfying(AbstractAssert::isNull);
         }
 
         // --------------------------------------------------------------------------------------------------------- key
@@ -551,7 +596,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @see #hasKey(Object)
          */
         public SELF doesNotHaveKey() {
-            return hasKey(null);
+            return hasKeySatisfying(AbstractAssert::isNull);
         }
 
         // -------------------------------------------------------------------------------------------------------- kind
@@ -675,6 +720,19 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
             return hasNameSatisfying(a -> a.isEqualTo(expectedName));
         }
 
+        /**
+         * Verifies that {@link Path.Node#getName() actual.name} is {@code null}.
+         *
+         * @return this assertion object.
+         * @apiNote A node's name is {@code null} only for a leaf node representing an entity, in particular the
+         * node representing the root object. Every other kind has a name, including the literals
+         * {@code <cross-parameter>}, {@code <return value>} and {@code <list element>}.
+         * @see Path.Node#getName()
+         */
+        public SELF doesNotHaveName() {
+            return hasNameSatisfying(AbstractAssert::isNull);
+        }
+
         // -------------------------------------------------------------------------------------------------- inIterable
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code inIterable}.
@@ -730,8 +788,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return this assertion object.
          */
         public SELF isInIterable() {
-            extractingInIterable().isTrue();
-            return myself;
+            return hasInIterableSatisfying(AbstractBooleanAssert::isTrue);
         }
 
         /**

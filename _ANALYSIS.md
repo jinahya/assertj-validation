@@ -1149,6 +1149,40 @@ This also settles part of the open question in `_TODO.md` §5.6: typed node asse
 soundly through assertj's ordinary `asInstanceOf` narrowing without this check, which weakens the case for
 keeping nine of them.
 
+### 8.19 The node assertions: structure kept, logic completed (applied)
+
+**The collapse proposed in §5.6 is rejected**, on evidence neither I nor the second opinion had raised. The
+specification *grows* node interfaces: `BeanNode` and `PropertyNode` were `@since 1.1` with no accessors at
+all, and gained `getContainerClass()` and `getTypeArgumentIndex()` in 2.0; `ContainerElementNode` is new in
+2.0 entirely. `CrossParameterNode` and `ReturnValueNode` are empty today in exactly the way those two were
+empty before 2.0. A typed assertion per kind is the seam where a future accessor lands without an API break
+&mdash; so the two "empty" assertion classes are not ceremony, they are the place the next version's methods
+will go.
+
+With the structure kept, the logic was audited property by property. Every node property should offer
+`extracting`, `...Satisfying`, a direct `has...`, and &mdash; where the value can be absent &mdash; a
+negative. Four gaps and two inconsistencies:
+
+| gap | why it matters |
+|---|---|
+| no `doesNotHaveName()` | `getName()` is specified `null` for a leaf bean node, the root object's node |
+| no `doesNotHaveContainerClass()` | `getContainerClass()` is specified `null` when not in a container; the sibling mixin had its negative |
+| no `hasParameterTypes(Class...)` | the other three mixins all offered a direct `has...`; this forced `extractingParameterTypes().containsExactly(..)` |
+| no `hasParameterTypesSatisfying(Consumer)` | the single-argument consumer form the other three had |
+
+The inconsistencies were in how the same idea was written twice: `isInIterable()` used
+`extractingInIterable().isTrue()` while its opposite used `hasInIterableSatisfying(..::isFalse)`, and
+`doesNotHaveIndex()`/`doesNotHaveKey()` delegated to `has...(null)` while
+`doesNotHaveTypeArgumentIndex()`/`doesNotHaveParameterIndex()` used `...Satisfying(isNull)`. All now use
+`...Satisfying`, which also gives the better message ("expecting actual to be null" rather than
+"expected null but was 3").
+
+The matrix is now complete. The two remaining blanks are correct rather than missing: a node always has a
+kind, and `hasParameterTypes()` with no arguments already asserts an empty list.
+
+Nine tests cover it, including the two node shapes the suite had never produced &mdash; a `BEAN` node, from
+a new class-level constraint fixture, and a `CONTAINER_ELEMENT` node, from a `List<@NotBlank String>`.
+
 ---
 
 ## 9. Priorities

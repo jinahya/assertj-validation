@@ -362,7 +362,7 @@ time — see §8.6.
 
 ## 4. Dead and unreachable code
 
-### 4.1 Classes with no reachable use
+### 4.1 Classes with no reachable use — **all deleted, see §8.15**
 
 | file | state |
 |---|---|
@@ -1013,6 +1013,26 @@ assertj base — an `assertThatBeans(List<User>).allValid()` on `AbstractIterabl
 compose the state; it would need the delegate extracted again. That is mechanical and confined to these four
 classes, so the hypothetical did not justify keeping the indirection today.
 
+### 8.15 Dead code removed, against assertj's conventions (applied)
+
+The four placeholder classes of §4.1 were not deleted on sight — each was first checked against what
+assertj's own conventions say such a class would hold. Three had no convention behind them:
+
+- **`ValidationAssertConstants`** — assertj ships no `*Constants` class anywhere; constants live where used.
+- **`ValidationAssertUtils`** — assertj's utilities sit in `org.assertj.core.util` named for a concern
+  (`Strings`, `Lists`, `Preconditions`, `Closeables`), never a `*Utils` dump.
+- **`AssertFactories`** — the role is `InstanceOfAssertFactories`, already filled here by
+  `ValidationInstanceOfAssertFactories`. Its two commented-out sketches were node assert factories, and all
+  nine of those already ship there. The stub was a to-do that had quietly been done.
+- **`BeanConditions`** — assertj ships `Condition` and its combinators but no ready-made `Condition`
+  constants; users build their own. The convention-correct version would be a `VerboseCondition`, which is
+  precisely what the deleted one lacked (§3.7: it swallowed the `AssertionError`). Recorded as `_TODO.md`
+  §5.5 rather than kept as a broken stub.
+
+Also removed: two imports left unused by §8.14's inlining, and the last commented-out method sketch
+(`extractingAs`). The module now has **no unreferenced type, no unused import and no commented-out code** —
+verified mechanically, not by eye.
+
 ---
 
 ## 9. Priorities
@@ -1027,7 +1047,7 @@ classes, so the hypothetical did not justify keeping the indirection today.
 | 6 | Consumer-timing inconsistency (§3.1, §3.3–3.6, §3.8 fixed) | 3.2 |
 | ~~17~~ | ~~Delegate inlined; `violations` field removed~~ — done | 8.14 / 6.5 |
 | ~~7~~ | ~~Make the set-of-violations assertion public~~ — done | 8.2 |
-| 8 | Delete the four remaining empty placeholder classes | 4.1 |
+| ~~8~~ | ~~Delete the four remaining empty placeholder classes~~ — done | 4.1 / 8.15 |
 | ~~9~~ | ~~Collapse the redundant interface layer~~ — done | 7 |
 | ~~10~~ | ~~Finish `ConstraintViolation` and `ConstraintDescriptor`~~ — done | 8.2 |
 | ~~11~~ | ~~Make every `Path.Node` kind reachable~~ — done | 8.2 |

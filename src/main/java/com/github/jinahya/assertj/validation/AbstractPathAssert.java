@@ -360,12 +360,6 @@ public abstract class AbstractPathAssert<
             super(actual, selfType);
         }
 
-        // ---------------------------------------------------------------------------------------------------------- as
-//        <NODE extends Path.Node, ASSERT extends _AbstractNodeAssert<?, ? extends NODE>> ASSERT extractingAs(
-//                final Class<NODE> nodeType,
-//                final AssertFactory<? super NODE, ? extends ASSERT> assertFactory
-//        );
-
         // ------------------------------------------------------------------------------------------------------- index
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code index}.

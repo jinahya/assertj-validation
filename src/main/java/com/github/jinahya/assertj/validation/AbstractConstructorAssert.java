@@ -21,7 +21,6 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import jakarta.validation.executable.ExecutableValidator;
 
 import java.lang.reflect.Constructor;

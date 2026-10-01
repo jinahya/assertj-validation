@@ -79,26 +79,21 @@ inherited the "after" shape, so they need the same decision applied.
 
 ## 3. Dead code
 
-### 3.1 Four empty placeholder classes — §4.1
+### 3.1 ~~Four empty placeholder classes~~ — §4.1 — **DONE**
 
-| file | state |
-|---|---|
-| `ValidationAssertUtils` | empty but for a throwing private constructor |
-| `ValidationAssertConstants` | empty but for a throwing private constructor |
-| `AssertFactories` | empty; body is two commented-out method sketches |
-| `BeanConditions` | no caller in main or test |
+All four deleted, after checking what assertj's own conventions say each would have held. Three turned out
+to have no convention behind them at all:
 
-- [ ] Finish them or delete them. As placeholders they cost a reader time on every pass.
+| | what assertj does | verdict |
+|---|---|---|
+| `ValidationAssertConstants` | assertj ships **no** `*Constants` class anywhere; constants live where they are used | nothing to infer — deleted |
+| `ValidationAssertUtils` | utilities live in `org.assertj.core.util` as classes named for a concern — `Strings`, `Lists`, `Preconditions`, `Closeables` — never a `*Utils` grab-bag | deleted; a future utility earns its own named class |
+| `AssertFactories` | the role is `InstanceOfAssertFactories`, which this module already has as `ValidationInstanceOfAssertFactories` | duplicate — deleted. Its two commented-out sketches were node assert factories, and **all 9 already ship** in `ValidationInstanceOfAssertFactories` |
+| `BeanConditions` | assertj ships `Condition` and its combinators but **no ready-made `Condition` constants** — users build their own | deleted; see 5.5 for the convention-correct version if it is ever wanted |
 
-### 3.2 `BeanConditions.valid` swallows the assertion error — §3.7
-
-An empty `catch (AssertionError ae)` with a named-but-unused variable. Returning `false` is right for a
-`Condition`, but the discarded error carries the only description of *why*, and nothing replaces it.
-
-- [ ] Set a description from `ae.getMessage()`, or comment that the message is deliberately dropped. Moot if
-      the class goes under 3.1.
-
----
+Also removed in the same pass: two imports left unused by the delegate inlining, and the last commented-out
+method sketch (`extractingAs` in `AbstractPathAssert`). The module now has **no unreferenced type, no unused
+import and no commented-out code**.
 
 ## 4. Test coverage
 
@@ -151,6 +146,27 @@ Each is a few lines over the existing stored violations, and each removes a `Con
 Resolved by deletion (§8.14). Every write was read only inside the method that wrote it, so it was a local
 promoted to a field. It is a local again; the field, its three accessors and the `unchecked` cast are gone,
 and assertion objects are reentrant.
+
+### 5.5 A bean `Condition`, done the assertj way
+
+`BeanConditions` was deleted as dead (3.1), but the idea behind it is sound and currently unexpressible:
+
+```java
+assertThat(users).are(valid);     // every bean in a collection
+assertThat(user).is(valid);
+```
+
+The deleted version swallowed the `AssertionError` and so reported nothing about *why* (§3.7). assertj's
+answer to that is `VerboseCondition`:
+
+```java
+VerboseCondition.verboseCondition(predicate, description, objectUnderTestDescriptor)
+```
+
+which keeps the failure text. Worth having only if the collection form is wanted — a plain
+`is(valid)` adds nothing over `assertThatBean(user).isValid()`.
+
+- [ ] Decide whether `are(valid)` over a collection is worth a `VerboseCondition`-based bean condition.
 
 ### 5.4 Smaller items — §6.6
 

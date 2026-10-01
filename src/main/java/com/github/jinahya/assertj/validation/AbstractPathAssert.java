@@ -33,8 +33,8 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ClassAssert;
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.EnumerableAssert;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssertFactory;
 import org.assertj.core.internal.Failures;
@@ -54,16 +54,16 @@ import java.util.function.Supplier;
  * An abstract class for verifying {@link Path} values.
  * <p>
  * This extends {@link AbstractAssert} and implements {@link EnumerableAssert}, rather than extending
- * {@code AbstractIterableAssert}. A {@link Path} is a sequence of {@link Path.Node}s, but it is a domain type,
- * not a collection: {@code AbstractIterableAssert} requires {@code filteredOn} to return {@code SELF}, which
- * would mean a filtered subset of nodes is itself a {@link Path}, and it is not. Every one of assertj's own
- * {@code AbstractIterableAssert} subclasses has a plain {@code List}, {@code Collection} or {@code Iterable} as
- * its actual type, never a domain type.
+ * {@code AbstractIterableAssert}. A {@link Path} is a sequence of {@link Path.Node}s, but it is a domain type, not a
+ * collection: {@code AbstractIterableAssert} requires {@code filteredOn} to return {@code SELF}, which would mean a
+ * filtered subset of nodes is itself a {@link Path}, and it is not. Every one of assertj's own
+ * {@code AbstractIterableAssert} subclasses has a plain {@code List}, {@code Collection} or {@code Iterable} as its
+ * actual type, never a domain type.
  * <p>
- * {@link EnumerableAssert} supplies the size vocabulary &mdash; {@link #hasSize(int)}, {@link #isEmpty()} and
- * friends &mdash; without that obligation, exactly as {@code AbstractCharSequenceAssert} uses it for the
- * characters of a {@code String}. The full collection surface is reached through {@link #nodes()}, where
- * filtering nodes yields nodes and nothing has to be fabricated.
+ * {@link EnumerableAssert} supplies the size vocabulary &mdash; {@link #hasSize(int)}, {@link #isEmpty()} and friends
+ * &mdash; without that obligation, exactly as {@code AbstractCharSequenceAssert} uses it for the characters of a
+ * {@code String}. The full collection surface is reached through {@link #nodes()}, where filtering nodes yields nodes
+ * and nothing has to be fabricated.
  *
  * @param <SELF> self type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
@@ -93,7 +93,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Extracts an assertion for verifying the {@code actual} value's {@code containerClass}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         <ASSERT extends AbstractClassAssert<? extends ASSERT>> ASSERT extractingContainerClass(
@@ -152,13 +152,13 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         /**
-         * Verifies that the {@code actual} node's {@code containerClass} is {@code null}, that is, the node is
-         * not contained in a container type.
+         * Verifies that the {@code actual} node's {@code containerClass} is {@code null}, that is, the node is not
+         * contained in a container type.
          *
          * @return this assertion object.
-         * @apiNote The specification defines {@code getContainerClass()} as returning the container's type
-         * &quot;if contained in a container type such as {@code Optional}, {@code List} or {@code Map},
-         * {@code null} otherwise&quot;, so {@code null} is a meaningful outcome rather than an exceptional one.
+         * @apiNote The specification defines {@code getContainerClass()} as returning the container's type &quot;if
+         * contained in a container type such as {@code Optional}, {@code List} or {@code Map}, {@code null}
+         * otherwise&quot;, so {@code null} is a meaningful outcome rather than an exceptional one.
          */
         default SELF doesNotHaveContainerClass() {
             return hasContainerClassSatisfying(AbstractAssert::isNull);
@@ -176,7 +176,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Extracts an assertion for verifying the {@code actual} value's {@code typeArgumentIndex}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingTypeArgumentIndex(
@@ -335,7 +335,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Extracts an assertion for verifying the {@code actual} value's {@code parameterIndex}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingParameterIndex(
@@ -424,11 +424,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         // ------------------------------------------------------------------------------------------------------- index
+
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code index}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingIndex(
@@ -441,7 +442,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Verifies that the {@code actual} value's {@code index} satisfies specified consumer.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
          */
@@ -501,7 +502,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Returns a new assertion for verifying {@link Path.Node#getKey()} actual.key} value.
          *
-         * @param factory an assertion factory.
+         * @param factory  an assertion factory.
          * @param <KEY>    key type parameter
          * @param <ASSERT> assertion type parameter
          * @return an assert for verifying {@link Path.Node#getKey() actual.key} value.
@@ -540,11 +541,11 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Verifies that the {@code actual} value's {@code key} satisfies specified consumer.
          *
-         * @param <KEY> key type parameter
-         * @param <ASSERT> assertion type parameter
+         * @param <KEY>     key type parameter
+         * @param <ASSERT>  assertion type parameter
          * @param extractor the extractor function.
-         * @param factory the assertion factory.
-         * @param consumer the consumer accepting the extracted assertion.
+         * @param factory   the assertion factory.
+         * @param consumer  the consumer accepting the extracted assertion.
          * @return this assertion object.
          */
         public <KEY, ASSERT extends AbstractObjectAssert<ASSERT, ? extends KEY>> SELF hasKeySatisfying(
@@ -600,11 +601,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         // -------------------------------------------------------------------------------------------------------- kind
+
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code kind}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         public <ASSERT extends AbstractComparableAssert<?, ElementKind>> ASSERT extractingKind(
@@ -617,7 +619,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Verifies that the {@code actual} value's {@code kind} satisfies specified consumer.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
          */
@@ -661,11 +663,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         // -------------------------------------------------------------------------------------------------------- name
+
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code name}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         public <ASSERT extends AbstractStringAssert<? extends ASSERT>> ASSERT extractingName(
@@ -678,7 +681,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Verifies that the {@code actual} value's {@code name} satisfies specified consumer.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
          */
@@ -724,9 +727,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Verifies that {@link Path.Node#getName() actual.name} is {@code null}.
          *
          * @return this assertion object.
-         * @apiNote A node's name is {@code null} only for a leaf node representing an entity, in particular the
-         * node representing the root object. Every other kind has a name, including the literals
-         * {@code <cross-parameter>}, {@code <return value>} and {@code <list element>}.
+         * @apiNote A node's name is {@code null} only for a leaf node representing an entity, in particular the node
+         * representing the root object. Every other kind has a name, including the literals {@code <cross-parameter>},
+         * {@code <return value>} and {@code <list element>}.
          * @see Path.Node#getName()
          */
         public SELF doesNotHaveName() {
@@ -734,11 +737,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         // -------------------------------------------------------------------------------------------------- inIterable
+
         /**
          * Extracts an assertion for verifying the {@code actual} value's {@code inIterable}.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
         public <ASSERT extends AbstractBooleanAssert<? extends ASSERT>> ASSERT extractingInIterable(
@@ -751,7 +755,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * Verifies that the {@code actual} value's {@code inIterable} satisfies specified consumer.
          *
          * @param <ASSERT> assertion type parameter
-         * @param factory the assertion factory.
+         * @param factory  the assertion factory.
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
          */
@@ -812,7 +816,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractNodeAssert(final Path.Node actual, final Class<?> selfType) {
@@ -821,6 +825,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -------------------------------------------------------------------------------------------------------- BeanNode
+
     /**
      * An abstract assertion class for verifying {@link Path.BeanNode} values.
      *
@@ -833,7 +838,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractBeanNodeAssert(final Path.BeanNode actual, final Class<?> selfType) {
@@ -856,6 +861,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // ------------------------------------------------------------------------------------------------- ConstructorNode
+
     /**
      * An abstract assertion class for verifying {@link Path.ConstructorNode} values.
      *
@@ -868,7 +874,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractConstructorNodeAssert(final Path.ConstructorNode actual, final Class<?> selfType) {
@@ -884,6 +890,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -------------------------------------------------------------------------------------------- ContainerElementNode
+
     /**
      * An abstract assertion class for verifying {@link Path.ContainerElementNode} values.
      *
@@ -896,7 +903,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractContainerElementNodeAssert(final Path.ContainerElementNode actual, final Class<?> selfType) {
@@ -919,6 +926,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // ---------------------------------------------------------------------------------------------- CrossParameterNode
+
     /**
      * An abstract assertion class for verifying {@link Path.CrossParameterNode} values.
      *
@@ -931,7 +939,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractCrossParameterNodeAssert(final Path.CrossParameterNode actual, final Class<?> selfType) {
@@ -940,6 +948,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // ------------------------------------------------------------------------------------------------------ MethodNode
+
     /**
      * An abstract assertion class for verifying {@link Path.MethodNode} values.
      *
@@ -952,7 +961,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractMethodNodeAssert(final Path.MethodNode actual, final Class<?> selfType) {
@@ -968,6 +977,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // --------------------------------------------------------------------------------------------------- ParameterNode
+
     /**
      * An abstract assertion class for verifying {@link Path.ParameterNode} values.
      *
@@ -980,7 +990,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractParameterNodeAssert(final Path.ParameterNode actual, final Class<?> selfType) {
@@ -996,6 +1006,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // ---------------------------------------------------------------------------------------------------- PropertyNode
+
     /**
      * An abstract assertion class for verifying {@link Path.PropertyNode} values.
      *
@@ -1008,7 +1019,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractPropertyNodeAssert(final Path.PropertyNode actual, final Class<?> selfType) {
@@ -1031,6 +1042,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // ------------------------------------------------------------------------------------------------- ReturnValueNode
+
     /**
      * An abstract assertion class for verifying {@link Path.ReturnValueNode} values.
      *
@@ -1042,7 +1054,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Creates a new instance with specified arguments.
          *
-         * @param actual the actual value to verify.
+         * @param actual   the actual value to verify.
          * @param selfType a class of {@code SELF}.
          */
         protected AbstractReturnValueNodeAssert(final Path.ReturnValueNode actual, final Class<?> selfType) {
@@ -1051,11 +1063,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Returns the node at specified index of specified iterable of nodes.
      *
      * @param iterable the iterable of nodes; must be not {@code null}.
-     * @param index the index of the node.
+     * @param index    the index of the node.
      * @return the extracted assertion.
      */
     protected static Path.Node nodeAt(final Iterable<? extends Path.Node> iterable, final int index) {
@@ -1074,9 +1087,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Returns the node at specified index of specified iterable of nodes.
      *
-     * @param <N> node type parameter
+     * @param <N>      node type parameter
      * @param iterable the iterable of nodes; must be not {@code null}.
-     * @param index the index of the node.
+     * @param index    the index of the node.
      * @param nodeType the type of the node.
      * @return the extracted assertion.
      */
@@ -1093,14 +1106,13 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Verifies that specified node is of the {@link ElementKind} that specified node type represents, failing as
-     * an assertion rather than letting {@link Path.Node#as(Class)} throw.
+     * Verifies that specified node is of the {@link ElementKind} that specified node type represents, failing as an
+     * assertion rather than letting {@link Path.Node#as(Class)} throw.
      * <p>
-     * {@link Path.Node#as(Class)} is specified to throw a {@link ClassCastException}, and says the kind
-     * &quot;should be checked before by calling {@link Path.Node#getKind()}&quot;. {@link Class#isInstance} is no
-     * substitute: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so an
-     * {@code instanceof} test accepts any node regardless of its kind. {@link Path.Node#getKind()} is the only
-     * reliable discriminator.
+     * {@link Path.Node#as(Class)} is specified to throw a {@link ClassCastException}, and says the kind &quot;should be
+     * checked before by calling {@link Path.Node#getKind()}&quot;. {@link Class#isInstance} is no substitute: Hibernate
+     * Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so an {@code instanceof} test
+     * accepts any node regardless of its kind. {@link Path.Node#getKind()} is the only reliable discriminator.
      *
      * @param node        the node to check.
      * @param nodeType    the node type it is about to be narrowed to.
@@ -1137,9 +1149,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     );
 
     /**
-     * Verifies that specified node is of the kind specified node type represents, for callers outside the
-     * positional navigation &mdash; the assertion factories in
-     * {@link ValidationInstanceOfAssertFactories}, which cannot rely on {@code instanceof}.
+     * Verifies that specified node is of the kind specified node type represents, for callers outside the positional
+     * navigation &mdash; the assertion factories in {@link ValidationInstanceOfAssertFactories}, which cannot rely on
+     * {@code instanceof}.
      *
      * @param node     the node to check.
      * @param nodeType the node type it is about to be narrowed to.
@@ -1152,10 +1164,11 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractPathAssert(final Path actual, final Class<?> selfType) {
@@ -1163,14 +1176,15 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Extracts an assertion for verifying the {@code actual} value's {@code node}.
      *
-     * @param <A> assertion type parameter
-     * @param <N> node type parameter
-     * @param index the index of the node.
+     * @param <A>      assertion type parameter
+     * @param <N>      node type parameter
+     * @param index    the index of the node.
      * @param nodeType the type of the node.
-     * @param factory the assertion factory.
+     * @param factory  the assertion factory.
      * @return the extracted assertion.
      */
     public <A extends AbstractAssert<?, ? extends N>, N extends Path.Node> A extractingNode(
@@ -1182,11 +1196,11 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Verifies that the {@code actual} value's {@code node} satisfies specified consumer.
      *
-     * @param <A> assertion type parameter
-     * @param <N> node type parameter
-     * @param index the index of the node.
+     * @param <A>      assertion type parameter
+     * @param <N>      node type parameter
+     * @param index    the index of the node.
      * @param nodeType the type of the node.
-     * @param factory the assertion factory.
+     * @param factory  the assertion factory.
      * @param consumer the consumer accepting the extracted assertion.
      * @return this assertion object.
      */
@@ -1201,8 +1215,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Extracts an assertion for verifying the {@code actual} value's {@code node}.
      *
-     * @param <A> assertion type parameter
-     * @param index the index of the node.
+     * @param <A>     assertion type parameter
+     * @param index   the index of the node.
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
@@ -1224,7 +1238,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Verifies that the {@code actual} value's {@code node} satisfies specified consumer.
      *
-     * @param index the index of the node.
+     * @param index    the index of the node.
      * @param consumer the consumer accepting the extracted assertion.
      * @return this assertion object.
      */
@@ -1237,8 +1251,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Extracts an assertion for verifying the {@code actual} value's {@code beanNode}.
      *
-     * @param <A> assertion type parameter
-     * @param index the index of the node.
+     * @param <A>     assertion type parameter
+     * @param index   the index of the node.
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
@@ -1260,8 +1274,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Extracts an assertion for verifying the {@code actual} value's {@code propertyNode}.
      *
-     * @param <A> assertion type parameter
-     * @param index the index of the node.
+     * @param <A>     assertion type parameter
+     * @param index   the index of the node.
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
@@ -1283,7 +1297,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Verifies that the {@code actual} value's {@code propertyNode} satisfies specified consumer.
      *
-     * @param index the index of the node.
+     * @param index    the index of the node.
      * @param consumer the consumer accepting the extracted assertion.
      * @return this assertion object.
      */
@@ -1295,8 +1309,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.ConstructorNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.ConstructorNode node} at specified index, using specified
+     * assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1332,8 +1346,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.ContainerElementNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.ContainerElementNode node} at specified index, using
+     * specified assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1369,8 +1383,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.CrossParameterNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.CrossParameterNode node} at specified index, using specified
+     * assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1406,8 +1420,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.MethodNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.MethodNode node} at specified index, using specified
+     * assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1443,8 +1457,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.ParameterNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.ParameterNode node} at specified index, using specified
+     * assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1480,8 +1494,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     }
 
     /**
-     * Extracts an assertion for verifying the {@link Path.ReturnValueNode node} at specified index, using specified assertion
-     * factory.
+     * Extracts an assertion for verifying the {@link Path.ReturnValueNode node} at specified index, using specified
+     * assertion factory.
      *
      * @param index   the index of the node.
      * @param factory the assertion factory.
@@ -1516,7 +1530,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         return myself;
     }
 
-    // ------------------------------------------------------------------------------------------------------- nodes
+    // ----------------------------------------------------------------------------------------------------------- nodes
 
     /**
      * Returns the {@code actual} path's nodes, in order.
@@ -1533,10 +1547,10 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Returns an assertion for the {@code actual} path's nodes, as a list.
      * <p>
-     * This is where the full collection surface lives &mdash; {@code filteredOn}, {@code contains},
-     * {@code allSatisfy}, {@code extracting} and the rest. Filtering a list of nodes yields a list of nodes, so
-     * nothing has to pretend to be a {@link Path}. For a node of a known kind at a known index, prefer the typed
-     * navigation, such as {@link #extractingPropertyNode(int)}.
+     * This is where the full collection surface lives &mdash; {@code filteredOn}, {@code contains}, {@code allSatisfy},
+     * {@code extracting} and the rest. Filtering a list of nodes yields a list of nodes, so nothing has to pretend to
+     * be a {@link Path}. For a node of a known kind at a known index, prefer the typed navigation, such as
+     * {@link #extractingPropertyNode(int)}.
      * {@snippet lang = "java" id = "nodes":
      * assertThatPath(path).hasSize(2);                             // the size vocabulary, on the path
      * assertThatPath(path).nodes().filteredOn(n -> n.isInIterable()).isEmpty();
@@ -1548,7 +1562,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         return Assertions.assertThat(nodeList());
     }
 
-    // ------------------------------------------------------------------------------------------ EnumerableAssert
+    // ------------------------------------------------------------------------------------------------ EnumerableAssert
 
     @Override
     public void isNullOrEmpty() {
@@ -1620,8 +1634,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param customComparator ignored.
      * @return never returns.
      * @throws UnsupportedOperationException always.
-     * @implNote A {@link Path} has no element-comparison semantics to customize, and nothing here compares nodes
-     * to one another. Use {@link #nodes()} and configure the comparator on the resulting list assertion instead.
+     * @implNote A {@link Path} has no element-comparison semantics to customize, and nothing here compares nodes to one
+     * another. Use {@link #nodes()} and configure the comparator on the resulting list assertion instead.
      * {@code AbstractCharSequenceAssert} refuses the same pair for the same reason.
      */
     @Override
@@ -1643,5 +1657,6 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
                 "custom element comparator is not supported for a path; use nodes() instead");
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
     private final Iterables iterables = Iterables.instance();
 }

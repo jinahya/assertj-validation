@@ -36,7 +36,8 @@ import static java.lang.annotation.ElementType.TYPE;
  * A constraint for verifying that a {@link Greeter} carries a non-blank name.
  * <p>
  * Applied to a constructor it becomes a <em>return value</em> constraint, which is what makes
- * {@link jakarta.validation.executable.ExecutableValidator#validateConstructorReturnValue(java.lang.reflect.Constructor,
+ * {@link
+ * jakarta.validation.executable.ExecutableValidator#validateConstructorReturnValue(java.lang.reflect.Constructor,
  * Object, Class[]) validateConstructorReturnValue} testable for failure &mdash; a {@code @NotNull} there cannot fail,
  * because the provider rejects a {@code null} created instance with an {@link IllegalArgumentException} before any
  * constraint runs.

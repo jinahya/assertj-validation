@@ -33,8 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Tests {@code usingValidatorFactory(ValidatorFactory)} and how it interacts with
- * {@code usingValidator(Validator)}.
+ * Tests {@code usingValidatorFactory(ValidatorFactory)} and how it interacts with {@code usingValidator(Validator)}.
  */
 class User_UsingValidatorFactory_Test {
 

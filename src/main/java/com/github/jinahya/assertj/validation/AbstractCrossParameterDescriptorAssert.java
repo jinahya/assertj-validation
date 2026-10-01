@@ -37,7 +37,7 @@ public abstract class AbstractCrossParameterDescriptorAssert<SELF extends Abstra
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractCrossParameterDescriptorAssert(final CrossParameterDescriptor actual, final Class<?> selfType) {

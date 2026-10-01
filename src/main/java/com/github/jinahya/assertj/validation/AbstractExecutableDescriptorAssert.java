@@ -47,7 +47,7 @@ public abstract class AbstractExecutableDescriptorAssert<
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractExecutableDescriptorAssert(final ACTUAL actual, final Class<?> selfType) {
@@ -57,8 +57,7 @@ public abstract class AbstractExecutableDescriptorAssert<
     // ---------------------------------------------------------------------------------------------------------- name
 
     /**
-     * Extracts an assertion for verifying the {@code actual} descriptor's
-     * {@link ExecutableDescriptor#getName() name}.
+     * Extracts an assertion for verifying the {@code actual} descriptor's {@link ExecutableDescriptor#getName() name}.
      *
      * @return a string assertion for the {@code actual} descriptor's name.
      * @see ExecutableDescriptor#getName()

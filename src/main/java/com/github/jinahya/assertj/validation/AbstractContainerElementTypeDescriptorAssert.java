@@ -41,7 +41,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractContainerElementTypeDescriptorAssert(final ContainerElementTypeDescriptor actual,
@@ -87,8 +87,8 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
     }
 
     /**
-     * Verifies that the {@link ContainerElementTypeDescriptor#getTypeArgumentIndex() actual.typeArgumentIndex} is
-     * equal to specified value.
+     * Verifies that the {@link ContainerElementTypeDescriptor#getTypeArgumentIndex() actual.typeArgumentIndex} is equal
+     * to specified value.
      *
      * @param expectedTypeArgumentIndex the expected value of {@code actual.typeArgumentIndex}.
      * @return this assertion object.

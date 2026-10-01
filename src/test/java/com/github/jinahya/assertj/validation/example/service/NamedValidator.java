@@ -26,7 +26,8 @@ import jakarta.validation.ConstraintValidatorContext;
 /**
  * A validator for the {@link Named} constraint.
  */
-public class NamedValidator implements ConstraintValidator<Named, Greeter> {
+public class NamedValidator
+        implements ConstraintValidator<Named, Greeter> {
 
     @Override
     public boolean isValid(final Greeter value, final ConstraintValidatorContext context) {

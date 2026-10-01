@@ -33,9 +33,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.TYPE;
 
 /**
- * A class-level constraint which never holds, so that validating a bean yields a violation whose property path
- * is a single {@link jakarta.validation.Path.Node} of kind {@link jakarta.validation.ElementKind#BEAN} &mdash;
- * the only node whose name is {@code null}.
+ * A class-level constraint which never holds, so that validating a bean yields a violation whose property path is a
+ * single {@link jakarta.validation.Path.Node} of kind {@link jakarta.validation.ElementKind#BEAN} &mdash; the only node
+ * whose name is {@code null}.
  */
 @Documented
 @Constraint(validatedBy = {AlwaysInvalid.Validator.class})
@@ -52,7 +52,8 @@ public @interface AlwaysInvalid {
     /**
      * The validator, which never passes.
      */
-    class Validator implements ConstraintValidator<AlwaysInvalid, Object> {
+    class Validator
+            implements ConstraintValidator<AlwaysInvalid, Object> {
 
         @Override
         public boolean isValid(final Object value, final ConstraintValidatorContext context) {

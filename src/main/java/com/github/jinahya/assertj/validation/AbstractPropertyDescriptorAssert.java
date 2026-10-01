@@ -39,7 +39,7 @@ public abstract class AbstractPropertyDescriptorAssert<SELF extends AbstractProp
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractPropertyDescriptorAssert(final PropertyDescriptor actual, final Class<?> selfType) {

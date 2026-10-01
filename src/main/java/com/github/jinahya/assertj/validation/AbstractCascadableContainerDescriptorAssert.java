@@ -37,8 +37,8 @@ import org.assertj.core.api.InstanceOfAssertFactories;
  * {@link jakarta.validation.metadata.PropertyDescriptor PropertyDescriptor},
  * {@link jakarta.validation.metadata.ParameterDescriptor ParameterDescriptor},
  * {@link jakarta.validation.metadata.ReturnValueDescriptor ReturnValueDescriptor} and
- * {@link ContainerElementTypeDescriptor} &mdash; and never apart, so this single intersection-bounded class covers
- * the combination without needing a mixin interface.
+ * {@link ContainerElementTypeDescriptor} &mdash; and never apart, so this single intersection-bounded class covers the
+ * combination without needing a mixin interface.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -55,7 +55,7 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractCascadableContainerDescriptorAssert(final ACTUAL actual, final Class<?> selfType) {
@@ -77,8 +77,8 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
     }
 
     /**
-     * Verifies that the {@code actual} descriptor is {@link CascadableDescriptor#isCascaded() cascaded}, that is, it
-     * is annotated with {@link jakarta.validation.Valid @Valid}.
+     * Verifies that the {@code actual} descriptor is {@link CascadableDescriptor#isCascaded() cascaded}, that is, it is
+     * annotated with {@link jakarta.validation.Valid @Valid}.
      *
      * @return this assertion object.
      * @see CascadableDescriptor#isCascaded()
@@ -89,8 +89,7 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
     }
 
     /**
-     * Verifies that the {@code actual} descriptor is <em>not</em>
-     * {@link CascadableDescriptor#isCascaded() cascaded}.
+     * Verifies that the {@code actual} descriptor is <em>not</em> {@link CascadableDescriptor#isCascaded() cascaded}.
      *
      * @return this assertion object.
      * @see CascadableDescriptor#isCascaded()

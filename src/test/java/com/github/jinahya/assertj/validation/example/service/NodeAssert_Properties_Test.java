@@ -38,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests the node assertions added to close the gaps in the property matrix: every node property now offers
- * {@code extracting}, {@code ...Satisfying}, a direct {@code has...} and, where the value can be absent, a
- * negative.
+ * {@code extracting}, {@code ...Satisfying}, a direct {@code has...} and, where the value can be absent, a negative.
  */
 class NodeAssert_Properties_Test {
 

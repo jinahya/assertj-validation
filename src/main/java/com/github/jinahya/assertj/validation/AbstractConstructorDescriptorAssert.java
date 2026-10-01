@@ -37,7 +37,7 @@ public abstract class AbstractConstructorDescriptorAssert<SELF extends AbstractC
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractConstructorDescriptorAssert(final ConstructorDescriptor actual, final Class<?> selfType) {

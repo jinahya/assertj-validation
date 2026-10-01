@@ -26,10 +26,10 @@ import jakarta.validation.metadata.ConstraintDescriptor;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
+import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.ObjectArrayAssert;
 import org.assertj.core.api.ObjectAssertFactory;
 
@@ -39,11 +39,10 @@ import java.util.function.Function;
 /**
  * An abstract assertion class for verifying {@link ConstraintViolation} values.
  * <p>
- * Unlike {@link AbstractBeanAssert} and its siblings, this does <em>not</em> extend
- * {@link AbstractValidationAssert}: a {@link ConstraintViolation} is a <em>result</em> of validation, so there is
- * nothing left to validate and no {@link jakarta.validation.Validator} to configure. Inheriting
- * {@code usingValidator} and {@code targetingGroups} here would offer settings that could not affect
- * anything.
+ * Unlike {@link AbstractBeanAssert} and its siblings, this does <em>not</em> extend {@link AbstractValidationAssert}: a
+ * {@link ConstraintViolation} is a <em>result</em> of validation, so there is nothing left to validate and no
+ * {@link jakarta.validation.Validator} to configure. Inheriting {@code usingValidator} and {@code targetingGroups} here
+ * would offer settings that could not affect anything.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter

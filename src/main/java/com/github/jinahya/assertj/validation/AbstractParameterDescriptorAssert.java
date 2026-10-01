@@ -40,7 +40,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractParameterDescriptorAssert(final ParameterDescriptor actual, final Class<?> selfType) {
@@ -72,8 +72,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
     }
 
     /**
-     * Extracts an assertion for verifying the {@code actual} descriptor's
-     * {@link ParameterDescriptor#getName() name}.
+     * Extracts an assertion for verifying the {@code actual} descriptor's {@link ParameterDescriptor#getName() name}.
      *
      * @return a string assertion for the {@code actual} descriptor's name.
      * @see ParameterDescriptor#getName()

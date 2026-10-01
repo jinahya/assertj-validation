@@ -38,11 +38,11 @@ import static java.util.Collections.unmodifiableSet;
 /**
  * An abstract base class for assertions which <em>perform</em> validation.
  * <p>
- * It holds only what such an assertion needs: the groups to target, and the validator to validate with &mdash;
- * either one the caller supplied, a factory the caller supplied, or neither, in which case each assertion builds
- * and closes a factory of its own. Assertions which merely inspect what validation produced &mdash; a
- * {@link ConstraintViolation}, a {@link jakarta.validation.Path}, a metadata descriptor &mdash; do not extend
- * this class, because there is nothing left for them to validate.
+ * It holds only what such an assertion needs: the groups to target, and the validator to validate with &mdash; either
+ * one the caller supplied, a factory the caller supplied, or neither, in which case each assertion builds and closes a
+ * factory of its own. Assertions which merely inspect what validation produced &mdash; a {@link ConstraintViolation}, a
+ * {@link jakarta.validation.Path}, a metadata descriptor &mdash; do not extend this class, because there is nothing
+ * left for them to validate.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -88,16 +88,15 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     /**
      * Configures this assertion object to use specified validator.
      * <p>
-     * Supersedes any factory configured by {@link #usingValidatorFactory(ValidatorFactory)}; the two are
-     * alternatives and the last call wins.
+     * Supersedes any factory configured by {@link #usingValidatorFactory(ValidatorFactory)}; the two are alternatives
+     * and the last call wins.
      *
      * @param validator the validator to use; {@code null} to fall back to a per-assertion default.
      * @return this assertion object.
-     * @apiNote This accepts a {@link Validator} rather than only a {@link ValidatorFactory} because the
-     * conversion runs one way only. A factory yields a validator through
-     * {@link ValidatorFactory#getValidator()}, but a validator cannot yield a factory &mdash; and a validator
-     * customized through {@link ValidatorFactory#usingContext()}, one injected by a framework, or a test double
-     * has no factory to offer.
+     * @apiNote This accepts a {@link Validator} rather than only a {@link ValidatorFactory} because the conversion runs
+     * one way only. A factory yields a validator through {@link ValidatorFactory#getValidator()}, but a validator
+     * cannot yield a factory &mdash; and a validator customized through {@link ValidatorFactory#usingContext()}, one
+     * injected by a framework, or a test double has no factory to offer.
      * @see #usingValidatorFactory(ValidatorFactory)
      */
     public final SELF usingValidator(final Validator validator) {
@@ -110,8 +109,8 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * Configures this assertion object to take validators from specified validator factory.
      * <p>
      * <strong>This assertion object never closes {@code factory}. Closing it is the caller's
-     * responsibility.</strong> The caller supplied the instance, so the caller owns its lifecycle; each
-     * assertion only takes a {@link Validator} from it.
+     * responsibility.</strong> The caller supplied the instance, so the caller owns its lifecycle; each assertion only
+     * takes a {@link Validator} from it.
      * {@snippet lang = "java" id = "usingValidatorFactory":
      * try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) { // @highlight substring="try"
      *     assertThatBean(user).usingValidatorFactory(factory).isValid();
@@ -119,15 +118,15 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * } // the caller closes it, here
      *}
      * <p>
-     * Supersedes any validator configured by {@link #usingValidator(Validator)}; the two are alternatives and
-     * the last call wins.
+     * Supersedes any validator configured by {@link #usingValidator(Validator)}; the two are alternatives and the last
+     * call wins.
      *
-     * @param factory the factory to take validators from, <em>not</em> closed by this assertion object;
-     *                {@code null} to fall back to a per-assertion default.
+     * @param factory the factory to take validators from, <em>not</em> closed by this assertion object; {@code null} to
+     *                fall back to a per-assertion default.
      * @return this assertion object.
      * @apiNote This assertion object does not take ownership of {@code factory} and will not call
-     * {@link ValidatorFactory#close()} on it. Closing it also ends the life of every {@link Validator} taken
-     * from it: the specification forbids using those afterwards.
+     * {@link ValidatorFactory#close()} on it. Closing it also ends the life of every {@link Validator} taken from it:
+     * the specification forbids using those afterwards.
      * @see #usingValidator(Validator)
      * @see ValidatorFactory#close()
      */
@@ -168,8 +167,8 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * @param function the function to apply the validator to; must be not {@code null}.
      * @param <R>      result type parameter
      * @return the result of applying {@code function}.
-     * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite
-     * which minds that configures a validator or a factory of its own and keeps the lifecycle.
+     * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite which
+     * minds that configures a validator or a factory of its own and keeps the lifecycle.
      */
     protected final <R> R applyValidator(final Function<? super Validator, ? extends R> function) {
         Objects.requireNonNull(function, "function is null");
@@ -190,10 +189,10 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * @param consumer   the consumer; must be not {@code null}.
      * @param violations the violations to accept.
      * @param <T>        root bean type parameter
-     * @implNote Anything the consumer throws propagates unchanged. {@link Consumer#accept(Object)} declares no
-     * checked exception, so wrapping could only ever re-wrap an unchecked one and lose its type &mdash; and the
-     * throwable that matters most here, an {@link AssertionError} from an assertion made inside the consumer, is
-     * an {@link Error} and was never caught anyway.
+     * @implNote Anything the consumer throws propagates unchanged. {@link Consumer#accept(Object)} declares no checked
+     * exception, so wrapping could only ever re-wrap an unchecked one and lose its type &mdash; and the throwable that
+     * matters most here, an {@link AssertionError} from an assertion made inside the consumer, is an {@link Error} and
+     * was never caught anyway.
      */
     protected final <T> void acceptViolations(final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                                               final Set<ConstraintViolation<T>> violations) {

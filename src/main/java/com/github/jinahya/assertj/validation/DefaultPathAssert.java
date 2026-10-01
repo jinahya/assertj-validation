@@ -22,7 +22,6 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.Path;
 
-
 /**
  * A class for verifying values against specified properties of specified bean types.
  *
@@ -166,6 +165,7 @@ public class DefaultPathAssert
         }
 
         // -------------------------------------------------------------------------------------------------------------
+
         /**
          * Creates a new instance for verifying specified node.
          *

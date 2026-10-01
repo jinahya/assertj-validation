@@ -129,7 +129,6 @@ public final class ValidationAssertions {
         return new DefaultPathAssert(actual);
     }
 
-
     // ------------------------------------------------------------------------------------------ executable validation
 
     /**

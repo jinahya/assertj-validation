@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fixture producing the two node shapes the suite otherwise never sees: a {@code BEAN} node, from the
- * class-level constraint, and a {@code CONTAINER_ELEMENT} node, from the constrained list element.
+ * A fixture producing the two node shapes the suite otherwise never sees: a {@code BEAN} node, from the class-level
+ * constraint, and a {@code CONTAINER_ELEMENT} node, from the constrained list element.
  */
 @AlwaysInvalid
 public class Bagged {

@@ -45,10 +45,10 @@ import java.lang.annotation.Annotation;
  * constants and the generic ones are methods.
  * <p>
  * The {@link Path.Node} factories check {@link Path.Node#getKind()} themselves. The {@code instanceof} test
- * {@link org.assertj.core.api.AbstractAssert#asInstanceOf(InstanceOfAssertFactory) asInstanceOf} performs first
- * cannot discriminate them: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at
- * once, so without the kind check {@code asInstanceOf(PROPERTY_NODE)} would accept a method node and fail later,
- * from inside the provider, rather than as an assertion.
+ * {@link org.assertj.core.api.AbstractAssert#asInstanceOf(InstanceOfAssertFactory) asInstanceOf} performs first cannot
+ * discriminate them: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so without
+ * the kind check {@code asInstanceOf(PROPERTY_NODE)} would accept a method node and fail later, from inside the
+ * provider, rather than as an assertion.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */

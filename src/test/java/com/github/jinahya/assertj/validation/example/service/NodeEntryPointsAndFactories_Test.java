@@ -20,6 +20,7 @@ package com.github.jinahya.assertj.validation.example.service;
  * #L%
  */
 
+import com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ElementKind;
 import jakarta.validation.Path;
@@ -30,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintViolation;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatMethodNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatParameterNode;
@@ -38,8 +38,6 @@ import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFa
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.METHOD_NODE;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.PATH;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.PROPERTY_DESCRIPTOR;
-import com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

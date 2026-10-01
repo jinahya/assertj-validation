@@ -33,8 +33,8 @@ import static com.github.jinahya.assertj.validation.ValidationAssertions.assertT
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests the typed node navigation on {@code AbstractPathAssert}, including the node kinds that previously had no
- * entry point at all.
+ * Tests the typed node navigation on {@code AbstractPathAssert}, including the node kinds that previously had no entry
+ * point at all.
  */
 class PathAssert_NodeNavigation_Test {
 

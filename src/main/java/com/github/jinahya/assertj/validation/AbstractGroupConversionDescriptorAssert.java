@@ -41,7 +41,7 @@ public abstract class AbstractGroupConversionDescriptorAssert<
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractGroupConversionDescriptorAssert(final GroupConversionDescriptor actual,
@@ -62,8 +62,8 @@ public abstract class AbstractGroupConversionDescriptorAssert<
     }
 
     /**
-     * Extracts an assertion for verifying the {@code actual} descriptor's
-     * {@link GroupConversionDescriptor#getTo() to} group.
+     * Extracts an assertion for verifying the {@code actual} descriptor's {@link GroupConversionDescriptor#getTo() to}
+     * group.
      *
      * @return a class assertion for the {@code actual} descriptor's target group.
      * @see GroupConversionDescriptor#getTo()

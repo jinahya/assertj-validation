@@ -37,7 +37,7 @@ public abstract class AbstractMethodDescriptorAssert<SELF extends AbstractMethod
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractMethodDescriptorAssert(final MethodDescriptor actual, final Class<?> selfType) {

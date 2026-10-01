@@ -95,8 +95,8 @@
  * // @end
  *}
  * <p>
- * The entry points in {@link com.github.jinahya.assertj.validation.ValidationAssertions} cover the Jakarta
- * Validation API in three groups.
+ * The entry points in {@link com.github.jinahya.assertj.validation.ValidationAssertions} cover the Jakarta Validation
+ * API in three groups.
  * <ul>
  *   <li><b>Running validation</b> &mdash;
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object) assertThatBean},

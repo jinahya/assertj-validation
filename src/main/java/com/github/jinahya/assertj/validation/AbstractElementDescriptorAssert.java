@@ -32,8 +32,8 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 /**
- * An abstract assertion class for verifying {@link ElementDescriptor} values, the common base of the Jakarta
- * Validation metadata API.
+ * An abstract assertion class for verifying {@link ElementDescriptor} values, the common base of the Jakarta Validation
+ * metadata API.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -50,7 +50,7 @@ public abstract class AbstractElementDescriptorAssert<
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractElementDescriptorAssert(final ACTUAL actual, final Class<?> selfType) {

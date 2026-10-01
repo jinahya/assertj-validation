@@ -37,7 +37,7 @@ public abstract class AbstractReturnValueDescriptorAssert<SELF extends AbstractR
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractReturnValueDescriptorAssert(final ReturnValueDescriptor actual, final Class<?> selfType) {

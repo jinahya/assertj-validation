@@ -33,8 +33,8 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import java.util.Objects;
 
 /**
- * An abstract assertion class for verifying {@link BeanDescriptor} values, the root of the Jakarta Validation
- * metadata API.
+ * An abstract assertion class for verifying {@link BeanDescriptor} values, the root of the Jakarta Validation metadata
+ * API.
  *
  * @param <SELF> self type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
@@ -49,7 +49,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractBeanDescriptorAssert(final BeanDescriptor actual, final Class<?> selfType) {
@@ -116,8 +116,8 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * Extracts an assertion for verifying the constraints declared on the property of specified name.
      *
      * @param propertyName the name of the property; must be not {@code null}.
-     * @return a property-descriptor assertion; its {@code actual} is {@code null} when the property has no
-     * constraint and is not cascaded.
+     * @return a property-descriptor assertion; its {@code actual} is {@code null} when the property has no constraint
+     * and is not cascaded.
      * @see BeanDescriptor#getConstraintsForProperty(String)
      */
     public AbstractPropertyDescriptorAssert<?> extractingConstraintsForProperty(final String propertyName) {
@@ -151,8 +151,8 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
     // -------------------------------------------------------------------------------------------------------- method
 
     /**
-     * Extracts an assertion for verifying the constraints declared on the method of specified name and parameter
-     * types, using specified assertion factory.
+     * Extracts an assertion for verifying the constraints declared on the method of specified name and parameter types,
+     * using specified assertion factory.
      *
      * @param factory        the assertion factory.
      * @param name           the name of the method; must be not {@code null}.

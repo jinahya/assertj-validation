@@ -35,9 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * An abstract assertion class for verifying constructor parameters and constructor return values.
  * <p>
- * Constructor validation has no instance to assert on &mdash; the object does not exist yet &mdash; so, unlike
- * method validation which hangs off {@link AbstractBeanAssert}, it takes the {@link Constructor} itself as the
- * {@code actual} value.
+ * Constructor validation has no instance to assert on &mdash; the object does not exist yet &mdash; so, unlike method
+ * validation which hangs off {@link AbstractBeanAssert}, it takes the {@link Constructor} itself as the {@code actual}
+ * value.
  *
  * @param <SELF> self type parameter
  * @param <T>    the type declaring the constructor
@@ -55,7 +55,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
     /**
      * Creates a new instance with specified arguments.
      *
-     * @param actual the actual value to verify.
+     * @param actual   the actual value to verify.
      * @param selfType a class of {@code SELF}.
      */
     protected AbstractConstructorAssert(final Constructor<? extends T> actual, final Class<?> selfType) {
@@ -146,8 +146,8 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
     }
 
     /**
-     * Verifies that specified created object is valid as the {@code actual} constructor's return value, while
-     * accepting the resulting set of constraint violations, which may be empty, to specified consumer.
+     * Verifies that specified created object is valid as the {@code actual} constructor's return value, while accepting
+     * the resulting set of constraint violations, which may be empty, to specified consumer.
      *
      * @param createdObject the object created by the {@code actual} constructor.
      * @param consumer      the consumer accepts the set of constraint violations.

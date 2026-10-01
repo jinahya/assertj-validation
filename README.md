@@ -21,10 +21,6 @@ An [AssertJ](https://assertj.github.io/doc/) extension for [Jakarta Validation](
 </dependency>
 ```
 
-One jar, no classifiers. The `javax.validation` flavors, which earlier versions published as `jakarta`,
-`release-11`, `release-17` and so on, are gone: this module targets Jakarta Validation only. The last release
-carrying them stays published under `com.github.jinahya:assertj-bean-validation`.
-
 ## Compatibilities
 
 Both APIs this module sits between are *provided*-scoped, so a consumer brings its own:

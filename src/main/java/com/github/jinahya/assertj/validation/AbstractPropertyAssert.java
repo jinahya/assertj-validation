@@ -73,9 +73,9 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
-        final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(validator.validateValue(beanType, propertyName, actual, groups));
+        delegate.setViolations(
+                delegate.applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups)));
         delegate.acceptViolations(consumer);
         assertThat(delegate.getViolations())
                 .as("%nThe set of constraint violations resulted while validating%n"
@@ -179,9 +179,9 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
     public final <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
-        final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(validator.validateValue(beanType, propertyName, actual, groups));
+        delegate.setViolations(
+                delegate.applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups)));
         assertThat(delegate.getViolations())
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"

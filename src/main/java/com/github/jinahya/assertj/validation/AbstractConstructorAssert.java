@@ -69,9 +69,8 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                             final boolean expectedEmpty) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Validator validator = delegate.getValidator();
         final Class<?>[] groups = delegate.getGroups();
-        delegate.setViolations(validation.apply(validator.forExecutables()));
+        delegate.setViolations(delegate.applyValidator(v -> validation.apply(v.forExecutables())));
         final var assertion = assertThat(delegate.<T>getViolations())
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\t%s of%n"

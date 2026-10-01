@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("ValidationAssertDelegate")
 class ValidationAssertDelegateTest {
@@ -74,12 +75,25 @@ class ValidationAssertDelegateTest {
     @Nested
     class ValidatorTest {
 
-        @DisplayName("getValidator()")
+        @DisplayName("applyValidator() with nothing configured builds, uses and closes a factory")
         @Test
-        void getValidator_NotNull_() {
+        void applyValidator_Default_() {
             final var delegate = new ValidationAssertDelegate();
-            final var validator = delegate.getValidator();
-            assertThat(validator).isNotNull();
+            assertThat(delegate.<Validator>applyValidator(v -> v)).isNotNull();
+            // the factory was closed before applyValidator returned; nothing is retained
+            assertThat(delegate.<Validator>applyValidator(v -> v))
+                    .as("a fresh validator each time, since the factory is per call")
+                    .isNotNull();
+        }
+
+        @DisplayName("applyValidator() propagates the function's result and its exceptions")
+        @Test
+        void applyValidator_Propagates_() {
+            final var delegate = new ValidationAssertDelegate();
+            assertThat(delegate.<String>applyValidator(v -> "result")).isEqualTo("result");
+            assertThatThrownBy(() -> delegate.applyValidator(v -> {
+                throw new IllegalStateException("boom");
+            })).isInstanceOf(IllegalStateException.class).hasMessage("boom");
         }
 
         @DisplayName("validator(null)")
@@ -98,7 +112,9 @@ class ValidationAssertDelegateTest {
                 validator = factory.getValidator();
             }
             delegate.setValidator(validator);
-            assertThat(delegate.getValidator()).isSameAs(validator);
+            assertThat(delegate.<Validator>applyValidator(v -> v))
+                    .as("a configured validator is applied as-is, never replaced")
+                    .isSameAs(validator);
         }
     }
 }

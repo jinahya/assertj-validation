@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 116 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 117 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -13,7 +13,7 @@ static entry point and an `InstanceOfAssertFactory`; the visibility census repor
 |---|---|
 | `usingValidatorFactory(ValidatorFactory)` — caller supplies and owns the factory | **done** |
 | `usingValidatorFactorySuppliedBy(Supplier, ...)` — any disposing form | **refused** (§6) |
-| the **default** validator, built from a factory that was closed before use | **done** (§1.1) |
+| the **default** validator, built from a factory that was closed before use | **done** (§1.1, §8.11) |
 | `usingValidatorSuppliedBy(Supplier<Validator>)` | **removed** — see §1.1 |
 
 All settled.
@@ -32,7 +32,11 @@ A `ValidatorFactory` exposes no mutator, so there was nothing a supplier could u
 now a plain `Validator`, the default a single held factory and validator behind a lazy holder, never closed by
 design. `usingValidatorSuppliedBy` is gone; `usingValidatorFactory(f)` is `usingValidator(f.getValidator())`.
 
-Measured: **1.20 ms → 0.00010 ms** per `getValidator()`.
+Then reworked again (§8.11): holding a factory forever fixed the spec violation but left process-scoped
+state with no owner. The delegate now exposes `applyValidator(Function)` — a configured validator is applied
+as-is, otherwise a factory is built, used and closed inside the one call. `getValidator()` is deleted so no
+validator can escape. The delegate holds no static state; the default path costs ~1.20 ms per assertion,
+accepted as the price of having no unowned resource.
 
 ### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3
 

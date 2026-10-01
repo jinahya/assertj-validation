@@ -863,6 +863,52 @@ validator-carrying set drops from 9 types to 7.
 caller supplies none", across 8 enumerable call sites in one branch. 61 of 68 types are untouched by the
 lifecycle question entirely.
 
+### 8.11 `applyValidator`: the delegate owns nothing beyond a call (applied)
+
+§8.9 fixed the use-after-close by holding one factory forever. That traded a spec violation for
+process-scoped state with **no owner and no close location** — which is not a fix, just a different hole.
+
+The resolution: separate *configured* from *default*.
+
+```java
+<R> R applyValidator(final Function<? super Validator, ? extends R> function) {
+    if (validator != null) {
+        return function.apply(validator);                 // caller owns it; nothing to release
+    }
+    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+        return function.apply(factory.getValidator());    // we own it, so we close it
+    }
+}
+```
+
+The only factory this class ever creates lives and dies inside one call, so the validator never outlives it
+and there is nothing left to own. `ValidationAssertDelegate` now holds **no static state at all**.
+
+`Validator getValidator()` is **deleted**. That is the enforcement: with it gone, no `Validator` can escape
+the delegate, so ownership is a compiler guarantee rather than a convention. The alternative shape — the
+call site asking for a validator and falling back to its own factory — was rejected because it would spread
+the acquire/close into 8 call sites across 3 classes, each a chance to drop the `finally`.
+
+The 8 call sites got shorter, not longer:
+
+```java
+// before
+final Validator validator = delegate.getValidator();
+final Class<?>[] groups = delegate.getGroups();
+delegate.setViolations(validator.validate(actual, groups));
+// after
+final Class<?>[] groups = delegate.getGroups();
+delegate.setViolations(delegate.applyValidator(v -> v.validate(actual, groups)));
+```
+
+**Cost, stated plainly:** the default path builds a factory per assertion again — about 1.20 ms, against
+0.0001 ms for the held one. A suite which minds that supplies its own validator or factory and keeps the
+lifecycle itself. The trade was taken deliberately: correctness by construction over speed, since the
+library has no honest place to own a factory.
+
+This also makes the policy a delegate-internal matter. Changing it later touches one method, not the API,
+not the call sites, not the tests.
+
 ---
 
 ## 9. Priorities

@@ -30,32 +30,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableSet;
 
 final class ValidationAssertDelegate {
-
-    /**
-     * Holds the default {@link Validator}, and the factory it came from.
-     * <p>
-     * The factory is deliberately <em>never</em> closed. {@link ValidatorFactory#close()} forbids any further use
-     * of the validators it produced, so a factory whose validator outlives it must not be closed; and rebuilding
-     * one per assertion costs a classpath scan plus a {@code META-INF/validation.xml} parse. For a test-scoped
-     * library, holding one for the life of the JVM is the right trade &mdash; process exit reclaims it.
-     * <p>
-     * Initialization is deferred to first use of the default: a suite which always supplies its own validator
-     * never builds one. Class initialization makes that lazy and thread-safe without locking.
-     */
-    private static final class DefaultValidatorHolder {
-
-        private static final ValidatorFactory FACTORY = Validation.buildDefaultValidatorFactory();
-
-        private static final Validator INSTANCE = FACTORY.getValidator();
-
-        private DefaultValidatorHolder() {
-            throw new AssertionError("instantiation is not allowed");
-        }
-    }
 
     /**
      * Returns groups targeted.
@@ -103,18 +82,33 @@ final class ValidationAssertDelegate {
     }
 
     /**
-     * Returns the validator to assert with: the one configured on this delegate, or the shared default.
+     * Applies the validator to assert with to specified function, and returns the result.
+     * <p>
+     * A configured validator is simply applied: the caller supplied it, so the caller owns it and there is
+     * nothing here to release. Otherwise a {@link ValidatorFactory} is built for this one call and closed before
+     * returning, so the validator never outlives the factory that produced it &mdash; which
+     * {@link ValidatorFactory#close()} forbids &mdash; and this class owns no resource beyond the call.
      *
-     * @return a validator; never {@code null}.
+     * @param function the function to apply the validator to; must be not {@code null}.
+     * @param <R>      result type parameter
+     * @return the result of applying {@code function}.
+     * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite
+     * which minds that can supply its own validator, keeping ownership of the lifecycle itself.
      */
-    Validator getValidator() {
-        return validator != null ? validator : DefaultValidatorHolder.INSTANCE;
+    <R> R applyValidator(final Function<? super Validator, ? extends R> function) {
+        Objects.requireNonNull(function, "function is null");
+        if (validator != null) {
+            return function.apply(validator);
+        }
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            return function.apply(factory.getValidator());
+        }
     }
 
     /**
      * Configures the validator to assert with.
      *
-     * @param validator the validator; {@code null} to fall back to the shared default.
+     * @param validator the validator; {@code null} to fall back to a freshly built default.
      */
     void setValidator(final Validator validator) {
         this.validator = validator;

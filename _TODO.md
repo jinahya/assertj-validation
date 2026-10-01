@@ -42,18 +42,52 @@ as-is, otherwise a factory is built, used and closed inside the one call. `getVa
 validator can escape. The delegate holds no static state; the default path costs ~1.20 ms per assertion,
 accepted as the price of having no unowned resource.
 
-### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3
+### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3 — **open, but not what it said**
 
 ```java
 return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
 ```
 
-`Path` is `Iterable<Node>`, so a lambda compiles — but the result is not a real path and has no meaningful
-`toString()`, which is exactly what a `Path` is read for. Any failure message after a `filteredOn` /
-`extracting` on a path assertion degrades to a lambda's identity hash. Reachable, because the inherited
-`AbstractIterableAssert` operations are public on `AbstractPathAssert`.
+`AbstractIterableAssert` requires this hook so `filteredOn` and friends can return `SELF`. `Path` is
+`Iterable<Node>`, so a lambda compiles — but a filtered subset of nodes is not a path.
 
-- [ ] Wrap in a real `Path` implementation with a spec-shaped `toString()`, or override the message.
+**The harm this item used to claim does not happen.** It said failure messages "degrade to a lambda's
+identity hash". Measured, they do not:
+
+| | `toString()` | in a failure message |
+|---|---|---|
+| real `MaterializedPath` | `go.arg0` | `go.arg0` |
+| the lambda | `…$$Lambda@55fe41ea` | `[go, arg0]` |
+
+assertj's `StandardRepresentation` is why — it element-formats an `Iterable` *unless* the class overrides
+`toString`:
+
+```java
+// Only format Iterables that are not collections and have not overridden toString
+if (object instanceof Iterable<?> iterable && !hasOverriddenToString(object.getClass()))
+    return smartFormat(iterable);
+```
+
+So the output is fine **because the lambda is a bad `Path`**. The identity hash only surfaces on a direct
+`toString()` call, and `actual` has no public accessor.
+
+**And the fix this item used to recommend would make things worse.** Give the derived object a "spec-shaped
+`toString()`" and assertj starts using it — so a subset of `user.name` renders as `"name"`, which reads like
+a real root-level path that does not exist. A plausible lie beats an honest `[go, arg0]` only in appearance.
+
+What is actually wrong is narrow: a type claims to be a `Path` when it is not, and the readable output
+depends on an assertj implementation detail rather than on anything we decided.
+
+- [ ] **Preferred** — stop claiming it. Change the base from
+      `AbstractIterableAssert<SELF, Path, Path.Node, NODE_ASSERT>` to
+      `AbstractIterableAssert<SELF, Iterable<Path.Node>, Path.Node, NODE_ASSERT>`, so a derived assert holds a
+      plain `List<Path.Node>` and no fake `Path` is ever built. Messages are unchanged: a real `Path` still
+      overrides `toString` and prints `go.arg0`; a `List` is a `Collection` and is always smart-formatted to
+      `[go, arg0]`. `assertThatPath(Path)` keeps its signature, since `Path extends Iterable<Path.Node>`.
+      Costs a public generic parameter change.
+- [ ] **Alternative** — keep `ACTUAL = Path` and replace the lambda with a small named class that
+      *deliberately* does not override `toString`, commented with why. Zero API change, same messages, but
+      the semantic fib stays — merely documented.
 
 ---
 

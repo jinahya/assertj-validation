@@ -387,18 +387,27 @@ Related: `AbstractIterableOfConstraintViolationsAssert` declares its `ELEMENT_AS
 `DefaultConstraintViolationAssert<T>`, a package-private class. Even made public, the assert would leak a type
 callers cannot name. It should be `AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T>`.
 
-### 4.3 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path`
-
-`DefaultPathAssert.java:107-110`
+### 4.3 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — **corrected**
 
 ```java
 return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
 ```
 
-`Path` is `Iterable<Node>`, so a lambda satisfies the compiler — but the result is not a real path. It has no
-meaningful `toString()`, which is exactly what `Path` is normally read for, so any failure message produced
-after a `filteredOn`/`extracting` on a path assertion degrades to a lambda's identity hash. Inherited
-`AbstractIterableAssert` operations are reachable on `AbstractPathAssert`, so this is reachable.
+`Path` is `Iterable<Node>`, so a lambda satisfies the compiler, and `AbstractIterableAssert` requires the
+hook so `filteredOn` can return `SELF`. A filtered subset of nodes is not a path, so the type is a fib.
+
+**This section originally claimed that any failure message after `filteredOn` "degrades to a lambda's
+identity hash". That is wrong**, and was never checked. Measured: the real path prints `go.arg0`, the lambda
+prints `[go, arg0]`. assertj's `StandardRepresentation` element-formats an `Iterable` unless its class
+overrides `toString`, so the lambda gets structural formatting — the output is readable *because* it is a
+bad `Path`.
+
+The recommended remedy was wrong too: giving the derived object a spec-shaped `toString()` makes assertj use
+it, and a subset of `user.name` would then render `"name"` — a plausible-looking path that does not exist,
+which is worse than honest structural output.
+
+What remains is narrow and real: a type claims to be a `Path` when it is not, and the readable output rests
+on an assertj implementation detail. `_TODO.md` §1.2 carries the two viable fixes.
 
 ### 4.4 Commented-out code blocks
 

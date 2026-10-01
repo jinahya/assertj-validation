@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2023 Jinahya, Inc.
  * %%
@@ -20,7 +20,8 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
+
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -50,7 +51,7 @@ final class ValidationAssertMessages {
         final Iterator<? extends ConstraintViolation<?>> iterator = violations.iterator();
         return IntStream.range(0, violations.size())
                 .mapToObj(i -> String.format("-> %1$s", format(iterator.next())))
-                .collect(Collectors.joining("%n"));
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     private ValidationAssertMessages() {

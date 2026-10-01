@@ -1,11 +1,5 @@
 [submodule ".idea/codeStyles"]
 	path = .idea/codeStyles
-	url = https://github.com/onacit/dot-idea-codestyles.git
+	url = git@github.com:onacit/dot-idea-codestyles.git
 	ignore = dirty
 	update = merge
-[submodule "sub/hibernate-validator"]
-	path = sub/hibernate-validator
-	url = https://github.com/hibernate/hibernate-validator.git
-[submodule "sub/bval"]
-	path = sub/bval
-	url = https://github.com/apache/bval.git

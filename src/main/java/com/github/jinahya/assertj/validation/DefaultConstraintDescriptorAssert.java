@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%
@@ -20,10 +20,16 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.metadata.ConstraintDescriptor;
+import jakarta.validation.metadata.ConstraintDescriptor;
+
 import java.lang.annotation.Annotation;
 
-class DefaultConstraintDescriptorAssert<T extends Annotation>
+/**
+ * An abstract assertion class for verifying {@code DefaultConstraintDescriptor} values.
+ *
+ * @param <T> root bean type parameter
+ */
+public class DefaultConstraintDescriptorAssert<T extends Annotation>
         extends AbstractConstraintDescriptorAssert<DefaultConstraintDescriptorAssert<T>, ConstraintDescriptor<T>, T> {
 
     /**
@@ -31,7 +37,7 @@ class DefaultConstraintDescriptorAssert<T extends Annotation>
      *
      * @param actual the actual value to verify.
      */
-    DefaultConstraintDescriptorAssert(final ConstraintDescriptor<T> actual) {
+    public DefaultConstraintDescriptorAssert(final ConstraintDescriptor<T> actual) {
         super(actual, DefaultConstraintDescriptorAssert.class);
     }
 }

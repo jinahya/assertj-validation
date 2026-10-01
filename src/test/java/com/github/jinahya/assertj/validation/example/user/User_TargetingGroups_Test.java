@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation.example.user;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2023 Jinahya, Inc.
  * %%
@@ -20,7 +20,7 @@ package com.github.jinahya.assertj.validation.example.user;
  * #L%
  */
 
-import com.github.jinahya.assertj.validation.ValidationAssert;
+import com.github.jinahya.assertj.validation.AbstractValidationAssert;
 import org.junit.jupiter.api.Test;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Tests {@link ValidationAssert#targetingGroups(Class[])} method.
+ * Tests {@link AbstractValidationAssert#targetingGroups(Class[])} method.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */

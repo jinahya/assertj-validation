@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation.example.user;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2023 Jinahya, Inc.
  * %%
@@ -20,12 +20,11 @@ package com.github.jinahya.assertj.validation.example.user;
  * #L%
  */
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
 import static com.github.jinahya.assertj.validation.example.user.User.newValidUser;

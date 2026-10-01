@@ -1,2 +1,2 @@
 #!/bin/sh
-mvn -Possrh,hibernate-validator,attach-jakarta-transformed clean deploy
+mvn -Possrh clean deploy

@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%
@@ -25,7 +25,10 @@ package com.github.jinahya.assertj.validation;
  *
  * @param <ACTUAL> actual type parameter
  */
-class DefaultBeanAssert<ACTUAL>
+@SuppressWarnings({
+        "java:S119" // <ACTUAL>
+})
+public class DefaultBeanAssert<ACTUAL>
         extends AbstractBeanAssert<DefaultBeanAssert<ACTUAL>, ACTUAL> {
 
     /**

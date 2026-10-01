@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%
@@ -20,8 +20,7 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.Path;
-import java.util.Iterator;
+import jakarta.validation.Path;
 
 /**
  * A class for verifying values against specified properties of specified bean types.
@@ -29,69 +28,150 @@ import java.util.Iterator;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 public class DefaultPathAssert
-        extends AbstractPathAssert<DefaultPathAssert, DefaultPathAssert.DefaultNodeAssert> {
+        extends AbstractPathAssert<DefaultPathAssert> {
 
+    /**
+     * An abstract assertion class for verifying {@code DefaultNode} values.
+     */
     public static class DefaultNodeAssert
             extends AbstractNodeAssert<DefaultNodeAssert> {
 
-        static class DefaultBeanNodeAssert
+        /**
+         * An abstract assertion class for verifying {@code DefaultBeanNode} values.
+         */
+        public static class DefaultBeanNodeAssert
                 extends AbstractBeanNodeAssert<DefaultBeanNodeAssert> {
 
-            DefaultBeanNodeAssert(final Path.BeanNode actual) {
+            /**
+             * Creates a new instance for verifying specified bean node.
+             *
+             * @param actual the bean node to verify.
+             */
+            public DefaultBeanNodeAssert(final Path.BeanNode actual) {
                 super(actual, DefaultBeanNodeAssert.class);
             }
         }
 
-        static class DefaultParameterizedNodeAssert
-                extends AbstractParameterNodeAssert<DefaultParameterizedNodeAssert> {
-
-            DefaultParameterizedNodeAssert(final Path.ParameterNode actual, final Class<?> selfType) {
-                super(actual, selfType);
-            }
-        }
-
-        static class DefaultConstructorNodeAssert
+        /**
+         * An abstract assertion class for verifying {@code DefaultConstructorNode} values.
+         */
+        public static class DefaultConstructorNodeAssert
                 extends AbstractConstructorNodeAssert<DefaultConstructorNodeAssert> {
 
-            DefaultConstructorNodeAssert(final Path.ConstructorNode actual) {
+            /**
+             * Creates a new instance for verifying specified constructor node.
+             *
+             * @param actual the constructor node to verify.
+             */
+            public DefaultConstructorNodeAssert(final Path.ConstructorNode actual) {
                 super(actual, DefaultConstructorNodeAssert.class);
             }
         }
 
-        static class DefaultCrossParameterNodeAssert
+        /**
+         * An abstract assertion class for verifying {@code DefaultCrossParameterNode} values.
+         */
+        public static class DefaultCrossParameterNodeAssert
                 extends AbstractCrossParameterNodeAssert<DefaultCrossParameterNodeAssert> {
 
-            DefaultCrossParameterNodeAssert(final Path.CrossParameterNode actual) {
+            /**
+             * Creates a new instance for verifying specified cross parameter node.
+             *
+             * @param actual the cross parameter node to verify.
+             */
+            public DefaultCrossParameterNodeAssert(final Path.CrossParameterNode actual) {
                 super(actual, DefaultCrossParameterNodeAssert.class);
             }
         }
 
-        static class DefaultMethodNodeAssert
+        /**
+         * An abstract assertion class for verifying {@code DefaultMethodNode} values.
+         */
+        public static class DefaultMethodNodeAssert
                 extends AbstractMethodNodeAssert<DefaultMethodNodeAssert> {
 
-            DefaultMethodNodeAssert(final Path.MethodNode actual) {
+            /**
+             * Creates a new instance for verifying specified method node.
+             *
+             * @param actual the method node to verify.
+             */
+            public DefaultMethodNodeAssert(final Path.MethodNode actual) {
                 super(actual, DefaultMethodNodeAssert.class);
             }
         }
 
-        static class DefaultParameterNodeAssert
+        /**
+         * An abstract assertion class for verifying {@code DefaultParameterNode} values.
+         */
+        public static class DefaultParameterNodeAssert
                 extends AbstractParameterNodeAssert<DefaultParameterNodeAssert> {
 
-            DefaultParameterNodeAssert(final Path.ParameterNode actual) {
+            /**
+             * Creates a new instance for verifying specified parameter node.
+             *
+             * @param actual the parameter node to verify.
+             */
+            public DefaultParameterNodeAssert(final Path.ParameterNode actual) {
                 super(actual, DefaultParameterNodeAssert.class);
             }
         }
 
+        /**
+         * An abstract assertion class for verifying {@code DefaultContainerElementNode} values.
+         */
+        public static class DefaultContainerElementNodeAssert
+                extends AbstractContainerElementNodeAssert<DefaultContainerElementNodeAssert> {
+
+            /**
+             * Creates a new instance for verifying specified container element node.
+             *
+             * @param actual the container element node to verify.
+             */
+            public DefaultContainerElementNodeAssert(final Path.ContainerElementNode actual) {
+                super(actual, DefaultContainerElementNodeAssert.class);
+            }
+        }
+
+        /**
+         * An abstract assertion class for verifying {@code DefaultReturnValueNode} values.
+         */
+        public static class DefaultReturnValueNodeAssert
+                extends AbstractReturnValueNodeAssert<DefaultReturnValueNodeAssert> {
+
+            /**
+             * Creates a new instance for verifying specified return value node.
+             *
+             * @param actual the return value node to verify.
+             */
+            public DefaultReturnValueNodeAssert(final Path.ReturnValueNode actual) {
+                super(actual, DefaultReturnValueNodeAssert.class);
+            }
+        }
+
+        /**
+         * An abstract assertion class for verifying {@code DefaultPropertyNode} values.
+         */
         public static class DefaultPropertyNodeAssert
                 extends AbstractPropertyNodeAssert<DefaultPropertyNodeAssert> {
 
-            DefaultPropertyNodeAssert(final Path.PropertyNode actual) {
+            /**
+             * Creates a new instance for verifying specified property node.
+             *
+             * @param actual the property node to verify.
+             */
+            public DefaultPropertyNodeAssert(final Path.PropertyNode actual) {
                 super(actual, DefaultPropertyNodeAssert.class);
             }
         }
 
         // -------------------------------------------------------------------------------------------------------------
-        DefaultNodeAssert(final Path.Node actual) {
+
+        /**
+         * Creates a new instance for verifying specified node.
+         *
+         * @param actual the node to verify.
+         */
+        public DefaultNodeAssert(final Path.Node actual) {
             super(actual, DefaultNodeAssert.class);
         }
     }
@@ -105,16 +185,5 @@ public class DefaultPathAssert
      */
     public DefaultPathAssert(final Path actual) {
         super(actual, DefaultPathAssert.class);
-    }
-
-    @Override
-    protected DefaultNodeAssert toAssert(final Path.Node value, final String description) {
-        return new DefaultNodeAssert(value);
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    protected DefaultPathAssert newAbstractIterableAssert(final Iterable<? extends Path.Node> iterable) {
-        return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
     }
 }

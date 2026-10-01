@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2023 Jinahya, Inc.
  * %%
@@ -20,18 +20,31 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import jakarta.validation.ConstraintViolation;
 import org.assertj.core.api.AbstractIterableAssert;
 
-import javax.validation.ConstraintViolation;
-
+/**
+ * An abstract assertion class for verifying an {@link Iterable} of {@link jakarta.validation.ConstraintViolation}
+ * values, the shape that {@link jakarta.validation.Validator#validate(Object, Class[]) Validator.validate} and its
+ * siblings return.
+ *
+ * @param <SELF> self type parameter
+ * @param <T>    root bean type parameter
+ */
 @SuppressWarnings({
         "java:S119" // <SELF>
 })
-abstract class AbstractIterableOfConstraintViolationsAssert<
+public abstract class AbstractIterableOfConstraintViolationsAssert<
         SELF extends AbstractIterableOfConstraintViolationsAssert<SELF, T>, T>
         extends AbstractIterableAssert<
         SELF, Iterable<? extends ConstraintViolation<T>>, ConstraintViolation<T>, DefaultConstraintViolationAssert<T>> {
 
+    /**
+     * Creates a new instance with specified arguments.
+     *
+     * @param actual   the actual value to verify.
+     * @param selfType a class of {@code SELF}.
+     */
     protected AbstractIterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual,
                                                            final Class<?> selfType) {
         super(actual, selfType);

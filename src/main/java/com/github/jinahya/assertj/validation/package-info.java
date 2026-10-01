@@ -36,10 +36,10 @@
  * // @highlight region substring="fail" type=highlighted
  * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
- * // @link region substring="targetingGroups" target="ValidationAssert#targetingGroups(Class[])"
- * // @link region substring="isValid" target="BeanAssert#isValid()"
- * // @link region substring="isValidFor" target="PropertyAssert#isValidFor(Class, String)"
- * // @link region substring="isNotValidFor" target="PropertyAssert#isNotValidFor(Class, String)"
+ * // @link region substring="targetingGroups" target="AbstractValidationAssert#targetingGroups(Class[])"
+ * // @link region substring=".isValid()" target="AbstractBeanAssert#isValid()"
+ * // @link region substring="isValidFor" target="AbstractPropertyAssert#isValidFor(Class, String)"
+ * // @link region substring="isNotValidFor" target="AbstractPropertyAssert#isNotValidFor(Class, String)"
  * assertThatProperty("Jane").isValidFor(User.class, "name"); // should pass
  * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
  * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)' type=highlighted
@@ -70,10 +70,10 @@
  * // @highlight region substring="fail" type=highlighted
  * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
- * // @link region substring="targetingGroups" target="ValidationAssert#targetingGroups(Class[])"
- * // @link region substring="isValid" target="BeanAssert#isValid()"
- * // @link region substring="isValidFor" target="PropertyAssert#isValidFor(Class, String)"
- * // @link region substring="isNotValidFor" target="PropertyAssert#isNotValidFor(Class, String)"
+ * // @link region substring="targetingGroups" target="AbstractValidationAssert#targetingGroups(Class[])"
+ * // @link region substring=".isValid()" target="AbstractBeanAssert#isValid()"
+ * // @link region substring="isValidFor" target="AbstractPropertyAssert#isValidFor(Class, String)"
+ * // @link region substring="isNotValidFor" target="AbstractPropertyAssert#isNotValidFor(Class, String)"
  * assertThatBean(new User("Jane", 28)).hasValidProperty("name"); // should pass
  * assertThatBean(new User("Jane", 28)).hasValidProperty( "age"); // should pass
  * assertThatBean(new User(  null,  0)).hasValidProperty("name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
@@ -94,13 +94,42 @@
  * // @end
  * // @end
  *}
+ * <p>
+ * The entry points in {@link com.github.jinahya.assertj.validation.ValidationAssertions} cover the Jakarta Validation
+ * API in three groups.
+ * <ul>
+ *   <li><b>Running validation</b> &mdash;
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object) assertThatBean},
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatProperty(Object)
+ *       assertThatProperty} and
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstructor(java.lang.reflect.Constructor)
+ *       assertThatConstructor}. Method and return-value validation hang off the bean assertion as
+ *       {@code hasValidParameters} and {@code hasValidReturnValue}.</li>
+ *   <li><b>Inspecting what validation produced</b> &mdash;
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolations(java.util.Set)
+ *       assertThatConstraintViolations} for the set
+ *       {@link jakarta.validation.Validator#validate(Object, Class[]) validate} returns, and
+ *       {@code assertThatConstraintViolation}, {@code assertThatConstraintDescriptor},
+ *       {@code assertThatPath} and {@code assertThatNode} with a typed variant for each of the nine
+ *       {@link jakarta.validation.Path.Node} kinds.</li>
+ *   <li><b>Inspecting metadata</b> &mdash; {@code assertThatBeanDescriptor} for
+ *       {@link jakarta.validation.Validator#getConstraintsForClass(Class) getConstraintsForClass}, and one
+ *       entry point for each of the other descriptors: property, method, constructor, parameter, return
+ *       value, cross parameter, container element type and group conversion.</li>
+ * </ul>
+ * <p>
+ * Every assertion is reachable three ways: by navigation from a related assertion, by a static entry point,
+ * and through an {@link org.assertj.core.api.InstanceOfAssertFactory} in
+ * {@link com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories}, for use with
+ * {@link org.assertj.core.api.AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)
+ * asInstanceOf}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 package com.github.jinahya.assertj.validation;
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%

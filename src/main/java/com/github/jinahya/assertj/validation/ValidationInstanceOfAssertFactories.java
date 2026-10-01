@@ -81,7 +81,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path}.
      */
-    public static final InstanceOfAssertFactory<Path, AbstractPathAssert<?, ?>> PATH =
+    public static final InstanceOfAssertFactory<Path, AbstractPathAssert<?>> PATH =
             new InstanceOfAssertFactory<>(Path.class, ValidationAssertions::assertThatPath);
 
     // --------------------------------------------------------------------------------------------------------- nodes

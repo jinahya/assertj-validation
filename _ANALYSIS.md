@@ -387,7 +387,7 @@ Related: `AbstractIterableOfConstraintViolationsAssert` declares its `ELEMENT_AS
 `DefaultConstraintViolationAssert<T>`, a package-private class. Even made public, the assert would leak a type
 callers cannot name. It should be `AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T>`.
 
-### 4.3 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — **corrected**
+### 4.3 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — **fixed in §8.17**
 
 ```java
 return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
@@ -1063,6 +1063,45 @@ One item was **withdrawn rather than fixed**: §6.6 claimed `package-info.java` 
 module" to put its license header after the package declaration. Checking, every file does that — `package`
 first, licence block after — and `package-info` is no different. What precedes *its* package declaration is
 the package javadoc, which Java requires to go there. The item was a misreading.
+
+### 8.17 `AbstractPathAssert` off the iterable base (applied)
+
+The fake `Path` was a symptom; the cause was inheritance. `AbstractIterableAssert` requires `filteredOn` to
+return `SELF`, i.e. that a subset of the actual is still the actual's type. For a `Path` that is false, so
+the subset had to be manufactured from a lambda.
+
+assertj's own code says this was never the right base: **all seven of its `AbstractIterableAssert`
+subclasses take a plain `List`, `Collection` or `Iterable` as the actual type.** None uses a domain type.
+Two of them cannot reconstruct one either and refuse outright with
+`checkArgument(iterable instanceof List, …)`. For a domain type made of parts, assertj navigates instead —
+`AbstractFileAssert.content()`, and its own `AbstractPathAssert.binaryContent()` for `java.nio.file.Path`.
+
+So:
+
+```java
+public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
+        extends AbstractAssert<SELF, Path>
+        implements EnumerableAssert<SELF, Path.Node>
+```
+
+`EnumerableAssert` gives the size vocabulary without the filtering obligation — the same way
+`AbstractCharSequenceAssert` uses it over a `String`'s characters, down to refusing the two element-comparator
+methods with `UnsupportedOperationException`. `nodes()` returns a `ListAssert<Path.Node>` for the full
+collection surface, where filtering nodes yields nodes. `NODE_ASSERT` is gone, having existed only as the
+iterable base's `ELEMENT_ASSERT`.
+
+The size assertions delegate to `Iterables.instance()` against the `Path` itself rather than to a copied
+list, so failure messages are byte-for-byte what they were:
+
+```
+assertThatPath(p).hasSize(99)                         ->  Expected size: 99 but was: 2 in: go.arg0
+assertThatPath(p).nodes().filteredOn(..).hasSize(99)  ->  ... in: [go, arg0]
+```
+
+One method of blast radius: `element(0)`, the only inherited iterable operation the suite used on a path
+assertion, became `extractingNode(0)`. The deleted §7 interface had declared
+`Assert<SELF, Path>, EnumerableAssert<SELF, Path.Node>` — the original design was right, and
+`AbstractPathAssert` had quietly widened it.
 
 ---
 

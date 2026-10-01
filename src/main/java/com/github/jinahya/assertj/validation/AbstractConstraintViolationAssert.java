@@ -453,7 +453,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link ASSERT}.
      * @see ConstraintViolation#getPropertyPath()
      */
-    public <ASSERT extends AbstractPathAssert<?, ? extends AbstractPathAssert.AbstractNodeAssert<?>>>
+    public <ASSERT extends AbstractPathAssert<?>>
     ASSERT extractingPropertyPath(final AssertFactory<? super Path, ? extends ASSERT> assertFactory) {
         return isNotNull()
                 .extracting(ConstraintViolation::getPropertyPath, assertFactory::createAssert);
@@ -466,7 +466,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return a path assertion for the {@code actual} constraint violation's property path.
      * @see ConstraintViolation#getPropertyPath()
      */
-    public AbstractPathAssert<?, ? extends AbstractPathAssert.AbstractNodeAssert<?>> extractingPropertyPath() {
+    public AbstractPathAssert<?> extractingPropertyPath() {
         return extractingPropertyPath(pp -> new DefaultPathAssert(pp));
     }
 

@@ -107,7 +107,7 @@ class User_ConstraintViolationAssert_Test {
                                 a.hasContainerClass(null);
                                 a.doesNotHaveTypeArgumentIndex();
                             })
-                            .element(0)
+                            .extractingNode(0)
                             .isInstanceOf(Path.PropertyNode.class)
                             .doesNotHaveIndex()
                             .hasKey(null)
@@ -169,7 +169,7 @@ class User_ConstraintViolationAssert_Test {
                     assertThatConstraintViolation(cv)
                             .extractingPropertyPath()
                             .hasSize(1)
-                            .element(0)
+                            .extractingNode(0)
                             .hasName(User.PROPERTY_NAME_AGE);
                 }
                 {
@@ -197,7 +197,7 @@ class User_ConstraintViolationAssert_Test {
                                 a.hasContainerClass(null);
                                 a.doesNotHaveTypeArgumentIndex();
                             })
-                            .element(0)
+                            .extractingNode(0)
                             .isInstanceOf(Path.PropertyNode.class)
                             .doesNotHaveIndex()
                             .hasKey(null)

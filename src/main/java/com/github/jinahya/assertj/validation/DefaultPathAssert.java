@@ -22,7 +22,6 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.Path;
 
-import java.util.Iterator;
 
 /**
  * A class for verifying values against specified properties of specified bean types.
@@ -30,7 +29,7 @@ import java.util.Iterator;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 public class DefaultPathAssert
-        extends AbstractPathAssert<DefaultPathAssert, DefaultPathAssert.DefaultNodeAssert> {
+        extends AbstractPathAssert<DefaultPathAssert> {
 
     /**
      * An abstract assertion class for verifying {@code DefaultNode} values.
@@ -188,14 +187,5 @@ public class DefaultPathAssert
         super(actual, DefaultPathAssert.class);
     }
 
-    @Override
-    protected DefaultNodeAssert toAssert(final Path.Node value, final String description) {
-        return new DefaultNodeAssert(value);
-    }
 
-    @Override
-    @SuppressWarnings({"unchecked"})
-    protected DefaultPathAssert newAbstractIterableAssert(final Iterable<? extends Path.Node> iterable) {
-        return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
-    }
 }

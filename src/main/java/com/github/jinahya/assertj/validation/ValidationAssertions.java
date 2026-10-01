@@ -125,7 +125,7 @@ public final class ValidationAssertions {
      * @param actual the path value to verify.
      * @return a new assertion instance for {@code actual}.
      */
-    public static AbstractPathAssert<?, ?> assertThatPath(final Path actual) {
+    public static AbstractPathAssert<?> assertThatPath(final Path actual) {
         return new DefaultPathAssert(actual);
     }
 

@@ -42,20 +42,44 @@ as-is, otherwise a factory is built, used and closed inside the one call. `getVa
 validator can escape. The delegate holds no static state; the default path costs ~1.20 ms per assertion,
 accepted as the price of having no unowned resource.
 
-### 1.2 `DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path` — §4.3 — **open, but not what it said**
+### 1.2 ~~`DefaultPathAssert.newAbstractIterableAssert` fabricates a fake `Path`~~ — §4.3 — **DONE**
+
+Fixed at the root: `AbstractPathAssert` no longer extends `AbstractIterableAssert`.
+
+The fake existed because that base requires `filteredOn` to return `SELF` — "a subset of me is still a me",
+which is false for a `Path`. Checking assertj, **every one of its seven `AbstractIterableAssert` subclasses
+has a plain `List`, `Collection` or `Iterable` as its actual type**; not one uses a domain type, which is why
+no one else has this problem. Two of them cannot reconstruct either and simply refuse
+(`checkArgument(iterable instanceof List, …)`).
+
+The shape is now assertj's own, for a domain type made of parts:
 
 ```java
-return new DefaultPathAssert(() -> (Iterator<Path.Node>) iterable.iterator());
+public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
+        extends AbstractAssert<SELF, Path>
+        implements EnumerableAssert<SELF, Path.Node>
 ```
 
-`AbstractIterableAssert` requires this hook so `filteredOn` and friends can return `SELF`. `Path` is
-`Iterable<Node>`, so a lambda compiles — but a filtered subset of nodes is not a path.
+- `EnumerableAssert` supplies `hasSize`, `isEmpty` and the rest **without** the filtering obligation, exactly
+  as `AbstractCharSequenceAssert` uses it for a `String`'s characters. The two comparator methods throw
+  `UnsupportedOperationException`, which is what `AbstractCharSequenceAssert` does with the same pair.
+- `nodes()` returns a `ListAssert<Path.Node>` — the full collection surface, where filtering nodes yields
+  nodes and nothing is fabricated.
+- The `NODE_ASSERT` type parameter is gone; it existed solely as the iterable base's `ELEMENT_ASSERT`.
 
-**The harm this item used to claim does not happen.** It said failure messages "degrade to a lambda's
-identity hash". Measured, they do not:
+**Messages are unchanged**, which was the point of implementing against `Iterables.instance()` rather than a
+copied list: size assertions still report the `Path` itself.
 
-| | `toString()` | in a failure message |
-|---|---|---|
+```
+assertThatPath(p).hasSize(99)                    ->  Expected size: 99 but was: 2 in: go.arg0
+assertThatPath(p).nodes().filteredOn(..).hasSize(99) ->  ... in: [go, arg0]
+```
+
+**Blast radius:** one method. `element(0)` was the only inherited iterable operation the suite used off a
+path assertion, and `extractingNode(0)` is its exact equivalent. `contains`, `allSatisfy`, `extracting`,
+`filteredOn` and the rest now live behind `nodes()`.
+
+---|---|---|
 | real `MaterializedPath` | `go.arg0` | `go.arg0` |
 | the lambda | `…$$Lambda@55fe41ea` | `[go, arg0]` |
 

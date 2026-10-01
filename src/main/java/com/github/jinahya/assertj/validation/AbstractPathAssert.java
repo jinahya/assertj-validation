@@ -27,7 +27,6 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
-import org.assertj.core.api.AbstractIterableAssert;
 import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.AbstractStringAssert;
@@ -35,8 +34,13 @@ import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ClassAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.api.EnumerableAssert;
+import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.internal.Iterables;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -45,18 +49,29 @@ import java.util.function.Function;
 
 /**
  * An abstract class for verifying {@link Path} values.
+ * <p>
+ * This extends {@link AbstractAssert} and implements {@link EnumerableAssert}, rather than extending
+ * {@code AbstractIterableAssert}. A {@link Path} is a sequence of {@link Path.Node}s, but it is a domain type,
+ * not a collection: {@code AbstractIterableAssert} requires {@code filteredOn} to return {@code SELF}, which
+ * would mean a filtered subset of nodes is itself a {@link Path}, and it is not. Every one of assertj's own
+ * {@code AbstractIterableAssert} subclasses has a plain {@code List}, {@code Collection} or {@code Iterable} as
+ * its actual type, never a domain type.
+ * <p>
+ * {@link EnumerableAssert} supplies the size vocabulary &mdash; {@link #hasSize(int)}, {@link #isEmpty()} and
+ * friends &mdash; without that obligation, exactly as {@code AbstractCharSequenceAssert} uses it for the
+ * characters of a {@code String}. The full collection surface is reached through {@link #nodes()}, where
+ * filtering nodes yields nodes and nothing has to be fabricated.
  *
- * @param <SELF>        self type parameter
- * @param <NODE_ASSERT> node assertion type parameter
+ * @param <SELF> self type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @see #nodes()
  */
 @SuppressWarnings({
         "java:S119" // <SELF>, <ACTUAL>
 })
-public abstract class AbstractPathAssert<
-        SELF extends AbstractPathAssert<SELF, NODE_ASSERT>,
-        NODE_ASSERT extends AbstractPathAssert.AbstractNodeAssert<NODE_ASSERT>>
-        extends AbstractIterableAssert<SELF, Path, Path.Node, NODE_ASSERT> {
+public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
+        extends AbstractAssert<SELF, Path>
+        implements EnumerableAssert<SELF, Path.Node> {
 
     // ------------------------------------------------------------------------------------------------------- mixins
     // The following interfaces are implemented by several node assertion classes which do not share a common base
@@ -1380,4 +1395,133 @@ public abstract class AbstractPathAssert<
         consumer.accept(extractingReturnValueNode(index));
         return myself;
     }
+
+    // ------------------------------------------------------------------------------------------------------- nodes
+
+    /**
+     * Returns the {@code actual} path's nodes, in order.
+     *
+     * @return a list of the {@code actual} path's nodes.
+     */
+    private List<Path.Node> nodeList() {
+        isNotNull();
+        final List<Path.Node> list = new ArrayList<>();
+        actual.forEach(list::add);
+        return list;
+    }
+
+    /**
+     * Returns an assertion for the {@code actual} path's nodes, as a list.
+     * <p>
+     * This is where the full collection surface lives &mdash; {@code filteredOn}, {@code contains},
+     * {@code allSatisfy}, {@code extracting} and the rest. Filtering a list of nodes yields a list of nodes, so
+     * nothing has to pretend to be a {@link Path}. For a node of a known kind at a known index, prefer the typed
+     * navigation, such as {@link #extractingPropertyNode(int)}.
+     * {@snippet lang = "java" id = "nodes":
+     * assertThatPath(path).hasSize(2);                             // the size vocabulary, on the path
+     * assertThatPath(path).nodes().filteredOn(n -> n.isInIterable()).isEmpty();
+     *}
+     *
+     * @return a list assertion for the {@code actual} path's nodes.
+     */
+    public ListAssert<Path.Node> nodes() {
+        return Assertions.assertThat(nodeList());
+    }
+
+    // ------------------------------------------------------------------------------------------ EnumerableAssert
+
+    @Override
+    public void isNullOrEmpty() {
+        iterables.assertNullOrEmpty(info, actual);
+    }
+
+    @Override
+    public void isEmpty() {
+        iterables.assertEmpty(info, actual);
+    }
+
+    @Override
+    public SELF isNotEmpty() {
+        iterables.assertNotEmpty(info, actual);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSize(final int expected) {
+        iterables.assertHasSize(info, actual, expected);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSizeGreaterThan(final int boundary) {
+        iterables.assertHasSizeGreaterThan(info, actual, boundary);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSizeGreaterThanOrEqualTo(final int boundary) {
+        iterables.assertHasSizeGreaterThanOrEqualTo(info, actual, boundary);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSizeLessThan(final int boundary) {
+        iterables.assertHasSizeLessThan(info, actual, boundary);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSizeLessThanOrEqualTo(final int boundary) {
+        iterables.assertHasSizeLessThanOrEqualTo(info, actual, boundary);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSizeBetween(final int lowerBoundary, final int higherBoundary) {
+        iterables.assertHasSizeBetween(info, actual, lowerBoundary, higherBoundary);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSameSizeAs(final Iterable<?> other) {
+        iterables.assertHasSameSizeAs(info, actual, other);
+        return myself;
+    }
+
+    @Override
+    public SELF hasSameSizeAs(final Object other) {
+        iterables.assertHasSameSizeAs(info, actual, other);
+        return myself;
+    }
+
+    /**
+     * Not supported.
+     *
+     * @param customComparator ignored.
+     * @return never returns.
+     * @throws UnsupportedOperationException always.
+     * @implNote A {@link Path} has no element-comparison semantics to customize, and nothing here compares nodes
+     * to one another. Use {@link #nodes()} and configure the comparator on the resulting list assertion instead.
+     * {@code AbstractCharSequenceAssert} refuses the same pair for the same reason.
+     */
+    @Override
+    public SELF usingElementComparator(final Comparator<? super Path.Node> customComparator) {
+        throw new UnsupportedOperationException(
+                "custom element comparator is not supported for a path; use nodes() instead");
+    }
+
+    /**
+     * Not supported.
+     *
+     * @return never returns.
+     * @throws UnsupportedOperationException always.
+     * @implNote See {@link #usingElementComparator(Comparator)}.
+     */
+    @Override
+    public SELF usingDefaultElementComparator() {
+        throw new UnsupportedOperationException(
+                "custom element comparator is not supported for a path; use nodes() instead");
+    }
+
+    private final Iterables iterables = Iterables.instance();
 }

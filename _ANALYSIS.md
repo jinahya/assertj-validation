@@ -909,7 +909,7 @@ library has no honest place to own a factory.
 This also makes the policy a delegate-internal matter. Changing it later touches one method, not the API,
 not the call sites, not the tests.
 
-### 8.12 One factory, one place (applied)
+### 8.12 One factory, one place — superseded by §8.13 (applied)
 
 `usingValidatorFactory(ValidatorFactory)`, added earlier in this pass, is **removed** again. It was one line
 of code —
@@ -937,6 +937,43 @@ try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
 
 Either a validator comes from the caller, or one assertion builds, uses and closes a factory of its own.
 There is no third case, no static state, and nothing whose ownership has to be documented.
+
+### 8.13 Validator, factory, or neither (applied)
+
+§8.12 removed `usingValidatorFactory` on the grounds that a factory-holding caller can write
+`usingValidator(factory.getValidator())`. True, but it made callers do a conversion the library can do, for
+no gain once `applyValidator` already localises the ownership rule. It is back, this time storing the
+factory rather than converting at configuration time, and `applyValidator` resolves all three cases in the
+one place:
+
+```java
+<R> R applyValidator(final Function<? super Validator, ? extends R> function) {
+    if (validator != null) {
+        return function.apply(validator);                     // caller owns it
+    }
+    if (validatorFactory != null) {
+        return function.apply(validatorFactory.getValidator()); // caller owns it; never closed here
+    }
+    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+        return function.apply(factory.getValidator());        // we own it, so we close it
+    }
+}
+```
+
+No case leaves a resource unowned, and the only factory this class ever creates dies inside the call that
+made it. The two configuration methods are alternatives — setting either clears the other, last call wins.
+
+**Why both, and not the factory alone.** The conversion runs one way: `getValidator()` turns a factory into a
+validator, but nothing turns a validator back into a factory — `Validator` holds no reference to one, and the
+nine-method interface cannot be synthesised. A validator customised through
+{@code ValidatorFactory.usingContext()} — the specification's own mechanism for a custom
+`MessageInterpolator`, `ClockProvider` and so on — has no factory behind it, nor does one injected by a
+framework or a test double. Accepting only a factory would lock all of those out, so `usingValidator` stays
+as the more general currency and `usingValidatorFactory` is the convenience for callers who have a factory.
+
+Tests pin the parts that would rot silently: the assertion never calls `close()` on a caller's factory (the
+test's proxy fails if it does), a validator is taken once per assertion rather than at configuration time,
+and whichever of the two was configured last is the one consulted.
 
 ---
 

@@ -3,7 +3,7 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 112 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 118 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
@@ -14,10 +14,10 @@ Settled, after several passes. The validator surface is now two methods, and the
 
 | | outcome |
 |---|---|
-| `usingValidator(Validator)` | **kept** — the only way in; caller owns the lifecycle |
-| default, when none supplied | one factory built, used and **closed** inside the single assertion |
+| `usingValidator(Validator)` | **kept** — the general currency; caller owns it |
+| `usingValidatorFactory(ValidatorFactory)` | **kept** (§8.13) — caller owns it, never closed here |
+| default, when neither supplied | one factory built, used and **closed** inside the single assertion |
 | `usingValidatorSuppliedBy(Supplier<Validator>)` | **removed** (§8.9) |
-| `usingValidatorFactory(ValidatorFactory)` | **removed** (§8.12) |
 | `usingValidatorFactorySuppliedBy(Supplier, ...)` | **refused** (§6) |
 
 No static state, no unowned resource, nothing whose ownership needs documenting.

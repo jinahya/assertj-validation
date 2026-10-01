@@ -84,21 +84,29 @@ final class ValidationAssertDelegate {
     /**
      * Applies the validator to assert with to specified function, and returns the result.
      * <p>
-     * A configured validator is simply applied: the caller supplied it, so the caller owns it and there is
-     * nothing here to release. Otherwise a {@link ValidatorFactory} is built for this one call and closed before
-     * returning, so the validator never outlives the factory that produced it &mdash; which
-     * {@link ValidatorFactory#close()} forbids &mdash; and this class owns no resource beyond the call.
+     * There are three cases, and in none of them does this class retain a resource past the call:
+     * <ul>
+     *   <li>a validator was configured &mdash; it is applied as-is; the caller owns it;</li>
+     *   <li>a factory was configured &mdash; a validator is taken from it and applied; the caller owns the
+     *       factory, so it is <em>never</em> closed here;</li>
+     *   <li>neither &mdash; a {@link ValidatorFactory} is built for this one call and closed before returning,
+     *       so the validator never outlives the factory that produced it, which
+     *       {@link ValidatorFactory#close()} forbids.</li>
+     * </ul>
      *
      * @param function the function to apply the validator to; must be not {@code null}.
      * @param <R>      result type parameter
      * @return the result of applying {@code function}.
      * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite
-     * which minds that can supply its own validator, keeping ownership of the lifecycle itself.
+     * which minds that configures a validator or a factory of its own and keeps the lifecycle.
      */
     <R> R applyValidator(final Function<? super Validator, ? extends R> function) {
         Objects.requireNonNull(function, "function is null");
         if (validator != null) {
             return function.apply(validator);
+        }
+        if (validatorFactory != null) {
+            return function.apply(validatorFactory.getValidator());
         }
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             return function.apply(factory.getValidator());
@@ -106,12 +114,25 @@ final class ValidationAssertDelegate {
     }
 
     /**
-     * Configures the validator to assert with.
+     * Configures the validator to assert with, clearing any configured factory.
      *
-     * @param validator the validator; {@code null} to fall back to a freshly built default.
+     * @param validator the validator; {@code null} to fall back to a per-assertion default.
      */
     void setValidator(final Validator validator) {
         this.validator = validator;
+        this.validatorFactory = null;
+    }
+
+    /**
+     * Configures the factory to take validators from, clearing any configured validator.
+     * <p>
+     * The factory is never closed here; the caller supplied it, so the caller owns it.
+     *
+     * @param validatorFactory the factory; {@code null} to fall back to a per-assertion default.
+     */
+    void setValidatorFactory(final ValidatorFactory validatorFactory) {
+        this.validatorFactory = validatorFactory;
+        this.validator = null;
     }
 
     final Set<Class<?>> groups = new HashSet<>();
@@ -119,4 +140,6 @@ final class ValidationAssertDelegate {
     final Set<ConstraintViolation<?>> violations = new HashSet<>();
 
     private Validator validator;
+
+    private ValidatorFactory validatorFactory;
 }

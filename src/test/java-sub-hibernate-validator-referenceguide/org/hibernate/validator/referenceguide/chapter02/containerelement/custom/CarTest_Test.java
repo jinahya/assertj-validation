@@ -2,7 +2,7 @@ package org.hibernate.validator.referenceguide.chapter02.containerelement.custom
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2024 Jinahya, Inc.
  * %%
@@ -29,9 +29,9 @@ import org.hibernate.validator.HibernateValidator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.Path;
-import javax.validation.Validation;
-import javax.validation.Validator;
+import jakarta.validation.Path;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
 import static org.assertj.core.api.Assertions.assertThat;

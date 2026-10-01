@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%
@@ -20,11 +20,11 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.groups.Default;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.groups.Default;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation.example.user;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
@@ -23,8 +23,8 @@ package com.github.jinahya.assertj.validation.example.user;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.function.Function;
 
 abstract class Registration {

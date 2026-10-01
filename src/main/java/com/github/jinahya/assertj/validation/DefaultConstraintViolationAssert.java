@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%
@@ -20,7 +20,7 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 class DefaultConstraintViolationAssert<T>
         extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert<T>, ConstraintViolation<T>, T> {

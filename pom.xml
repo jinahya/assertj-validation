@@ -1,105 +1,98 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.github.jinahya</groupId>
+    <groupId>io.github.jinahya</groupId>
     <artifactId>jinahya-parent</artifactId>
-    <version>0.9.1</version>
+    <version>1.0.9</version>
   </parent>
 
-  <artifactId>assertj-bean-validation</artifactId>
+  <artifactId>assertj-validation</artifactId>
   <version>0.5.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
-  <description>An AssertJ extension for Bean-Validation</description>
+  <description>
+    An AssertJ extension for Jakarta Validation: asserts for beans, property values, constraint violations,
+    constraint descriptors and property paths.
+  </description>
   <url>https://github.com/jinahya/${project.artifactId}</url>
   <inceptionYear>2021</inceptionYear>
-  <organization>
-    <name>Jinahya, Inc.</name>
-    <url>https://jinahya.com</url>
-  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <developers>
     <developer>
-      <id>onacit</id>
       <name>Jin Kwon</name>
-      <email>onacit@gmail.com</email>
+      <email>onacit_at_gmail.com</email>
       <url>https://github.com/onacit</url>
-      <roles>
-        <role>architect</role>
-        <role>developer</role>
-      </roles>
-      <timezone>Asia/Seoul</timezone>
-      <properties/>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:jinahya/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:jinahya/${project.artifactId}.git</developerConnection>
-    <url>https://github.com:jinahya/${project.artifactId}</url>
+    <url>https://github.com/jinahya/${project.artifactId}</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
-    <system>GitHub Issues</system>
+    <system>GitHub</system>
     <url>https://github.com/jinahya/${project.artifactId}/issues</url>
   </issueManagement>
-  <ciManagement>
-    <system>GitHub Action</system>
-    <url>https://github.com/jinahya/${project.artifactId}/actions</url>
-  </ciManagement>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     <maven.compiler.release>${maven.compiler.target}</maven.compiler.release>
-    <maven.compiler.testSource>17</maven.compiler.testSource>
+    <maven.compiler.testSource>25</maven.compiler.testSource>
     <maven.compiler.testTarget>${maven.compiler.testSource}</maven.compiler.testTarget>
-    <maven.compiler.testRelease>${maven.compiler.testTarget}</maven.compiler.testRelease>
-    <sonar.projectKey>jinahya_assertj-bean-validation</sonar.projectKey>
-    <sonar.organization>jinahya-github</sonar.organization>
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <version.animal-sniffer>1.23</version.animal-sniffer>
-    <version.checkstyle>10.15.0</version.checkstyle>
-    <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
-    <version.javax.validation-api>2.0.1.Final</version.javax.validation-api>
-    <version.logback-classic>1.5.6</version.logback-classic>
-    <version.maven-failsafe>${version.maven-surefire}</version.maven-failsafe>
-    <version.maven-surefire>3.1.2</version.maven-surefire>
-    <version.org.apache.bval>3.0.0</version.org.apache.bval>
-    <version.org.assertj>3.25.3</version.org.assertj>
-    <version.org.eclipse.transformer>0.5.0</version.org.eclipse.transformer>
-    <version.org.junit>5.11.0-M1</version.org.junit>
-    <version.org.mockito>5.11.0</version.org.mockito>
-    <version.org.mockito-inline>5.2.0</version.org.mockito-inline>
-    <version.org.projectlombok>1.18.32</version.org.projectlombok>
+    <maven.compiler.testRelease>${maven.compiler.testSource}</maven.compiler.testRelease>
+    <version.maven.compiler>3.16.0</version.maven.compiler>
+    <version.maven.surefire>3.6.0</version.maven.surefire>
+    <version.maven.failsafe>${version.maven.surefire}</version.maven.failsafe>
+
+    <!-- Jakarta Validation is the API this module extends, so unlike the test tooling below it is compiled
+         against. It stays provided: a consumer already has the API on its classpath, and pinning one version
+         here would drag it onto theirs. The generation is an axis, though, so the versions below move together
+         and a profile overrides them; see <profiles>.
+         The defaults are Jakarta EE 11, which is what jakarta-ee-11 selects. -->
+    <!-- https://jakarta.ee/specifications/platform/11/ -->
+    <!-- https://central.sonatype.com/artifact/jakarta.platform/jakarta.jakartaee-bom/versions -->
+    <!-- 11.0.0 manages: jakarta.validation-api 3.1.1 -->
+    <version.jakarta.jakartaee-bom>11.0.0</version.jakarta.jakartaee-bom>
+    <!-- the Jakarta Validation specification of the active generation; surefire hands it to the tests, so that
+         a test can assert which generation it is running against -->
+    <jakarta.validation.spec.version>3.1</jakarta.validation.spec.version>
+    <!-- the reference implementation; test-scope only, since this module validates through the API alone -->
+    <!-- https://hibernate.org/validator/releases/ -->
+    <!-- https://docs.jboss.org/hibernate/validator/9.0/reference/en-US/html_single/#validator-gettingstarted-uel -->
+    <!-- hibernate-validator: 9 / expressly: 6 -->
+    <version.org.hibernate.validator>9.1.3.Final</version.org.hibernate.validator>
+    <!-- https://central.sonatype.com/artifact/org.glassfish.expressly/expressly -->
+    <version.org.glassfish.expressly>6.0.0</version.org.glassfish.expressly>
+
+    <version.ch.qos.logback>1.6.3</version.ch.qos.logback>
+    <version.org.assertj>4.0.0-M1</version.org.assertj>
+    <version.org.junit>5.14.4</version.org.junit>
+    <version.org.mockito>5.23.0</version.org.mockito>
+    <!-- test-scope only, and on the annotation processor path of the test compilation alone; see <build> -->
+    <version.org.projectlombok>1.18.48</version.org.projectlombok>
+    <version.org.slf4j>2.0.19</version.org.slf4j>
   </properties>
 
   <dependencyManagement>
+    <!-- sorted by groupId, then artifactId -->
     <dependencies>
       <dependency>
-        <groupId>com.puppycrawl.tools</groupId>
-        <artifactId>checkstyle</artifactId>
-        <version>${version.checkstyle}</version>
-      </dependency>
-      <!--      <dependency> &lt;!&ndash; only for the javadoc &ndash;&gt;-->
-      <!--        <groupId>jakarta.validation</groupId>-->
-      <!--        <artifactId>jakarta.validation-api</artifactId>-->
-      <!--        <version>${version.jakarta.validation-api}</version>-->
-      <!--      </dependency>-->
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.bval</groupId>
-        <artifactId>bval-jsr</artifactId>
-        <version>${version.org.apache.bval}</version>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-bom</artifactId>
+        <version>${version.jakarta.jakartaee-bom}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
@@ -116,33 +109,69 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${version.org.projectlombok}</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${version.org.mockito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-bom</artifactId>
+        <version>${version.org.slf4j}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <!-- sorted by groupId, then artifactId; what a scope means here:
+         provided - the two APIs this module sits between, Jakarta Validation and AssertJ. Both are compiled
+                    against, and a consumer of this module already has both, at versions of its own choosing.
+         test     - the test tooling, and the validation engine: nothing in main references an implementation,
+                    which is the point of extending the API rather than Hibernate Validator. -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${version.logback-classic}</version>
+      <version>${version.ch.qos.logback}</version>
       <scope>test</scope>
     </dependency>
-    <!--    <dependency> &lt;!&ndash; only for the javadoc &ndash;&gt;-->
-    <!--      <groupId>jakarta.validation</groupId>-->
-    <!--      <artifactId>jakarta.validation-api</artifactId>-->
-    <!--      <scope>provided</scope>-->
-    <!--    </dependency>-->
+    <!-- the API this module extends; its version is pinned by the active jakarta-ee-NN profile -->
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <!-- the other API this module extends -->
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <!-- assertj pins an older byte-buddy than mockito needs; let mockito's own version win. The exclusion is
+             declared here, rather than in <dependencyManagement>, because assertj-bom is an import and an import
+             carries no exclusions: only the versions it manages are read, and anything else on the entry is
+             ignored. Dropping it would hand the resolution to declaration order, where org.assertj sorts ahead of
+             org.mockito, and the older version would win -->
+        <exclusion>
+          <groupId>net.bytebuddy</groupId>
+          <artifactId>byte-buddy</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- the expression language Hibernate Validator resolves message templates with -->
+    <dependency>
+      <groupId>org.glassfish.expressly</groupId>
+      <artifactId>expressly</artifactId>
+      <version>${version.org.glassfish.expressly}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- the reference implementation the tests validate through -->
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${version.org.hibernate.validator}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -151,772 +180,134 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
-      <version>${version.org.mockito-inline}</version>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>${version.org.mockito}</version>
       <scope>test</scope>
     </dependency>
+    <!-- the annotations only; the processor which acts on them is put on the processor path of the test
+         compilation, in <build>, and never on the compile classpath -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>${version.org.projectlombok}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.github.spotbugs</groupId>
-          <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>4.8.4.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.3.0</version>
-          <dependencies>
-            <dependency>
-              <groupId>com.puppycrawl.tools</groupId>
-              <artifactId>checkstyle</artifactId>
-              <version>${version.checkstyle}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
-          <configuration>
-            <annotationProcessorPaths>
-              <path>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${version.org.projectlombok}</version>
-              </path>
-            </annotationProcessorPaths>
-            <compilerArgs>
-              <arg>-Xlint</arg>
-            </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.4.0</version>
-          <executions>
-            <execution>
-              <id>enforce</id>
-              <configuration>
-                <skip>true</skip>
-                <rules>
-                  <dependencyConvergence/>
-                </rules>
-              </configuration>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>enforce-require-java-version-to-[1.8.0,)</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <skip>false</skip>
-                <rules>
-                  <requireJavaVersion>
-                    <version>[1.8.0,)</version>
-                  </requireJavaVersion>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-require-maven-version-to-[3.5.4,)</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>verify</phase>
-              <configuration>
-                <skip>false</skip>
-                <rules>
-                  <requireMavenVersion>
-                    <version>[3.5.4,)</version>
-                  </requireMavenVersion>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-require-profile-ids-exist</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>validate</phase>
-              <configuration>
-                <rules>
-                  <requireProfileIdsExist/>
-                </rules>
-                <skip>false</skip>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.maven-failsafe}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.5.0</version>
-          <configuration>
-            <doclint>none</doclint>
-            <links>
-              <!--              <link>https://javadoc.io/doc/com.github.jinahya/assertj-bean-validation-base/latest</link>-->
-              <link>https://javadoc.io/static/org.assertj/assertj-core/${version.org.assertj}</link>
-              <link>https://javadoc.io/static/jakarta.validation/jakarta.validation-api/${version.jakarta.validation-api}/</link>
-              <link>https://javadoc.io/static/javax.validation/validation-api/${version.javax.validation-api}/</link>
-            </links>
-            <tags>
-              <tag>
-                <name>apiNote</name>
-                <placement>a</placement>
-                <head>API Note:</head>
-              </tag>
-              <tag>
-                <name>implSpec</name>
-                <placement>a</placement>
-                <head>Implementation Requirements:</head>
-              </tag>
-              <tag>
-                <name>implNote</name>
-                <placement>a</placement>
-                <head>Implementation Note:</head>
-              </tag>
-            </tags>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.maven-surefire}</version>
-          <configuration>
-            <forkCount>0</forkCount>
-            <argLine>@{argLine}</argLine>
-            <trimStackTrace>false</trimStackTrace>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.4.1</version>
-          <configuration>
-            <archive>
-              <manifestEntries>
-                <Automatic-Module-Name>com.github.jinahya.assertj.validation</Automatic-Module-Name>
-              </manifestEntries>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-          <version>3.3.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>3.21.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.4.5</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M9</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${version.maven-surefire}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.5.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <version>2.4.0</version>
-          <configuration>
-            <licenseName>apache_v2</licenseName>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.9.1.2184</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>versions-maven-plugin</artifactId>
-          <version>2.16.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.transformer</groupId>
-          <artifactId>transformer-maven-plugin</artifactId>
-          <version>${version.org.eclipse.transformer}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.10</version>
-          <executions>
-            <execution>
-              <id>default-prepare-agent</id>
-              <goals>
-                <goal>prepare-agent</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>default-report</id>
-              <goals>
-                <goal>report</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.13</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>${version.animal-sniffer}</version>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.maven.compiler}</version>
         <executions>
+          <!-- Lombok is put on the processor path of the test compilation, and of that one alone: no class under
+               src/main uses it, and a processor path declared on the plugin rather than on an execution would apply
+               to the main compilation too. Declaring the path at all is also what enables annotation processing,
+               since javac runs no processor it merely finds on the classpath, so the main compilation goes on
+               running with no processor at all, which is what it wants. -->
           <execution>
-            <id>check-against-java18</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
+            <id>default-testCompile</id>
             <configuration>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java18</artifactId>
-                <version>1.0</version>
-              </signature>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                  <version>${version.org.projectlombok}</version>
+                </path>
+              </annotationProcessorPaths>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.eclipse.transformer</groupId>
-        <artifactId>transformer-maven-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <rules>
-            <jakartaDefaults>true</jakartaDefaults>
-          </rules>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>com.github.jinahya.assertj.validation</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>https://javadoc.io/static/org.assertj/assertj-core/${version.org.assertj}</link>
+            <link>https://jakarta.ee/specifications/bean-validation/${jakarta.validation.spec.version}/apidocs/</link>
+          </links>
+          <!-- @apiNote, @implSpec and @implNote are documented by JEP 8068562, yet the standard
+               doclet registers none of them for code outside the JDK: left alone, every one of
+               them is rejected as an "unknown tag". They are registered here, in the order, and
+               with the headings, the JDK itself uses. -->
+          <tags>
+            <tag>
+              <name>apiNote</name>
+              <placement>a</placement>
+              <head>API Note:</head>
+            </tag>
+            <tag>
+              <name>implSpec</name>
+              <placement>a</placement>
+              <head>Implementation Requirements:</head>
+            </tag>
+            <tag>
+              <name>implNote</name>
+              <placement>a</placement>
+              <head>Implementation Note:</head>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.maven.surefire}</version>
+        <configuration>
+          <systemPropertyVariables>
+            <jakarta.validation.spec.version>${jakarta.validation.spec.version}</jakarta.validation.spec.version>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <configuration>
-          <showSuccess>false</showSuccess>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>dependency-updates-report</report>
-              <report>plugin-updates-report</report>
-              <report>property-updates-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
-
   <profiles>
+    <!-- ============================================== Jakarta EE generation ================ -->
+    <!-- The only implementation axis in this build. Jakarta Validation has a single implementation,
+         Hibernate Validator with Expressly for the expression language, so a profile does not choose
+         an implementation. It chooses a GENERATION, and the three versions that move with it: the
+         platform BOM, which pins jakarta.validation-api, and the release of each of those two
+         aligned with it.
+         The defaults in <properties> are jakarta-ee-11's, so that profile overrides nothing, while
+         jakarta-ee-10 overrides all three. Unlike the sibling builds, the API here is compiled
+         against rather than merely read reflectively, so the profile also decides what the main
+         sources see: 3.1 adds no member this module uses, which is why one source tree serves both. -->
     <profile>
-      <id>hibernate-validator</id>
+      <id>jakarta-ee-11</id>
+      <!-- https://jakarta.ee/specifications/platform/11/ -->
+      <!-- jakarta.validation-api 3.1.1 / hibernate-validator 9 / expressly 6 -->
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.glassfish</groupId>
-          <artifactId>javax.el</artifactId>
-          <version>3.0.1-b12</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency><!-- https://hibernate.org/validator/documentation/migration-guide/ -->
-          <!-- https://hibernate.org/validator/releases/ -->
-          <groupId>org.hibernate.validator</groupId>
-          <artifactId>hibernate-validator</artifactId>
-          <version>6.2.5.Final</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
-      <id>apache-bval</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.bval</groupId>
-          <artifactId>bval-jsr</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>attach-jakarta-transformed</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <compilerArgs>
-                <arg>-Xlint</arg>
-              </compilerArgs>
-            </configuration>
-            <executions>
-              <execution>
-                <id>jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-jakarta</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-11</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>11</target>
-                  <release>11</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-11</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-11-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>11</target>
-                  <release>11</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-11-jakarta</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-17</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>17</target>
-                  <release>17</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-17</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-17-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>17</target>
-                  <release>17</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-17-jakarta</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-21</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>21</target>
-                  <release>21</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-21</outputDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>release-21-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <target>21</target>
-                  <release>21</release>
-                  <fork>true</fork>
-                  <outputDirectory>${project.build.outputDirectory}-release-21-jakarta</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>jar-jakarta</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-jakarta</classesDirectory>
-                  <classifier>jakarta</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-11</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-11</classesDirectory>
-                  <classifier>release-11</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-11-jakarta</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-11-jakarta</classesDirectory>
-                  <classifier>release-11-jakarta</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-17</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-17</classesDirectory>
-                  <classifier>release-17</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-17-jakarta</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-17-jakarta</classesDirectory>
-                  <classifier>release-17-jakarta</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-21</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-21</classesDirectory>
-                  <classifier>release-21</classifier>
-                </configuration>
-              </execution>
-              <execution>
-                <id>jar-release-21-jakarta</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classesDirectory>${project.build.outputDirectory}-release-21-jakarta</classesDirectory>
-                  <classifier>release-21-jakarta</classifier>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.eclipse.transformer</groupId>
-            <artifactId>transformer-maven-plugin</artifactId>
-            <configuration>
-              <rules>
-                <jakartaDefaults>true</jakartaDefaults>
-              </rules>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>biz.aQute.bnd</groupId>
-                <artifactId>biz.aQute.bndlib</artifactId>
-                <version>7.0.0</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <transformDirectory>${project.build.outputDirectory}-jakarta</transformDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>transform-release-11-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <transformDirectory>${project.build.outputDirectory}-release-11-jakarta</transformDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>transform-release-17-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <transformDirectory>${project.build.outputDirectory}-release-17-jakarta</transformDirectory>
-                </configuration>
-              </execution>
-              <execution>
-                <id>transform-release-21-jakarta</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>transform</goal>
-                </goals>
-                <configuration>
-                  <transformDirectory>${project.build.outputDirectory}-release-21-jakarta</transformDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>sub-hibernate-validator-referenceguide</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.hibernate.validator</groupId>
-          <artifactId>hibernate-validator</artifactId>
-          <version>6.2.5.Final</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.glassfish</groupId>
-          <artifactId>jakarta.el</artifactId>
-          <version>3.0.3</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.hibernate.validator</groupId>
-          <artifactId>hibernate-validator-cdi</artifactId>
-          <version>6.2.5.Final</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>jakarta.enterprise</groupId>
-          <artifactId>jakarta.enterprise.cdi-api</artifactId>
-          <version>2.0.1</version>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>jakarta.interceptor</groupId>
-              <artifactId>jakarta.interceptor-api</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>jakarta.el</groupId>
-              <artifactId>jakarta.el-api</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-          <version>30.1.1-jre</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-jsr223</artifactId>
-          <version>2.4.12</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.core</artifactId>
-          <version>6.0.0</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-expression</artifactId>
-          <version>5.3.22</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.openjfx</groupId>
-          <artifactId>javafx-base</artifactId>
-          <version>11.0.2</version>
-          <!--          <scope>compile</scope>-->
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.13.1</version>
-          <scope>test</scope>
-        </dependency>
-        <!--        <dependency>-->
-        <!--          <groupId>org.assertj</groupId>-->
-        <!--          <artifactId>assertj-core</artifactId>-->
-        <!--          <version>3.8.0</version>-->
-        <!--          <scope>test</scope>-->
-        <!--        </dependency>-->
-        <dependency>
-          <groupId>jakarta.annotation</groupId>
-          <artifactId>jakarta.annotation-api</artifactId>
-          <version>1.3.5</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-          <version>2.13.2.2</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-annotations</artifactId>
-          <version>2.13.2</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>add-test-source</id>
-                <phase>generate-test-sources</phase>
-                <goals>
-                  <goal>add-test-source</goal>
-                </goals>
-                <configuration>
-                  <sources>
-                    <source>src/test/java-sub-hibernate-validator-referenceguide</source>
-                    <source>sub/hibernate-validator/documentation/src/test/java</source>
-                  </sources>
-                </configuration>
-              </execution>
-              <execution>
-                <id>add-test-resource</id>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>add-test-resource</goal>
-                </goals>
-                <configuration>
-                  <resources>
-                    <resource>
-                      <directory>sub/hibernate-validator/documentation/src/test/resources</directory>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+      <id>jakarta-ee-10</id>
+      <!-- https://jakarta.ee/specifications/platform/10/ -->
+      <!-- jakarta.validation-api 3.0.2 / hibernate-validator 8 / expressly 5 -->
+      <properties>
+        <version.jakarta.jakartaee-bom>10.0.0</version.jakarta.jakartaee-bom>
+        <jakarta.validation.spec.version>3.0</jakarta.validation.spec.version>
+        <version.org.hibernate.validator>8.0.3.Final</version.org.hibernate.validator>
+        <version.org.glassfish.expressly>5.0.0</version.org.glassfish.expressly>
+      </properties>
     </profile>
   </profiles>
 </project>

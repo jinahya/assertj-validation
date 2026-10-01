@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation.example.user;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
@@ -20,8 +20,8 @@ package com.github.jinahya.assertj.validation.example.user;
  * #L%
  */
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class SeniorValidator
         implements ConstraintValidator<Senior, User> {

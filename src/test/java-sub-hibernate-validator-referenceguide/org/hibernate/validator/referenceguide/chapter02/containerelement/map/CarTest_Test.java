@@ -2,7 +2,7 @@ package org.hibernate.validator.referenceguide.chapter02.containerelement.map;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2024 Jinahya, Inc.
  * %%

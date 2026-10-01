@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation-javax
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
@@ -20,8 +20,8 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -125,7 +125,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or its current value of {@code propertyName} is
      *                        not valid.
-     * @apiNote Note that the {@link javax.validation.Valid @Valid} is not honored by the
+     * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      * href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
      * Validation methods (Jakarta Bean Validation 3.0)</a>.
@@ -159,7 +159,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or its current value of the {@code propertyName}
      *                        is not valid.
-     * @apiNote Note that the {@link javax.validation.Valid @Valid} is not honored by the
+     * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      * href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
      * Validation methods (Jakarta Bean Validation 3.0)</a>.
@@ -200,7 +200,7 @@ public interface BeanAssert<SELF extends BeanAssert<SELF, ACTUAL>, ACTUAL>
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or its current value of the {@code propertyName}
      *                        is not valid.
-     * @apiNote Note that the {@link javax.validation.Valid @Valid} is not honored by the
+     * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      * href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
      * Validation methods (Jakarta Bean Validation 3.0)</a>.

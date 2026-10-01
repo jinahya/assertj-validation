@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation-javax
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
@@ -31,8 +31,8 @@ import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.AssertFactory;
 
-import javax.validation.ElementKind;
-import javax.validation.Path;
+import jakarta.validation.ElementKind;
+import jakarta.validation.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;

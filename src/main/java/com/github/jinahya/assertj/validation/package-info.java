@@ -37,7 +37,7 @@
  * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
  * // @link region substring="targetingGroups" target="ValidationAssert#targetingGroups(Class[])"
- * // @link region substring="isValid" target="BeanAssert#isValid()"
+ * // @link region substring=".isValid()" target="BeanAssert#isValid()"
  * // @link region substring="isValidFor" target="PropertyAssert#isValidFor(Class, String)"
  * // @link region substring="isNotValidFor" target="PropertyAssert#isNotValidFor(Class, String)"
  * assertThatProperty("Jane").isValidFor(User.class, "name"); // should pass
@@ -71,7 +71,7 @@
  * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
  * // @link region substring="targetingGroups" target="ValidationAssert#targetingGroups(Class[])"
- * // @link region substring="isValid" target="BeanAssert#isValid()"
+ * // @link region substring=".isValid()" target="BeanAssert#isValid()"
  * // @link region substring="isValidFor" target="PropertyAssert#isValidFor(Class, String)"
  * // @link region substring="isNotValidFor" target="PropertyAssert#isNotValidFor(Class, String)"
  * assertThatBean(new User("Jane", 28)).hasValidProperty("name"); // should pass
@@ -100,7 +100,7 @@
 package com.github.jinahya.assertj.validation;
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 Jinahya, Inc.
  * %%

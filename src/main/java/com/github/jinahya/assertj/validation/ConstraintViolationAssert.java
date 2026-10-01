@@ -2,7 +2,7 @@ package com.github.jinahya.assertj.validation;
 
 /*-
  * #%L
- * assertj-bean-validation
+ * assertj-validation
  * %%
  * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
@@ -29,9 +29,9 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectArrayAssert;
 import org.assertj.core.api.ObjectAssertFactory;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.metadata.ConstraintDescriptor;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Path;
+import jakarta.validation.metadata.ConstraintDescriptor;
 import java.util.Objects;
 import java.util.function.Function;
 

@@ -42,8 +42,8 @@ import java.util.function.Function;
  * Unlike {@link AbstractBeanAssert} and its siblings, this does <em>not</em> extend
  * {@link AbstractValidationAssert}: a {@link ConstraintViolation} is a <em>result</em> of validation, so there is
  * nothing left to validate and no {@link jakarta.validation.Validator} to configure. Inheriting
- * {@code usingValidator}, {@code usingValidatorFactory} and {@code targetingGroups} here would offer three
- * settings that could not affect anything.
+ * {@code usingValidator} and {@code targetingGroups} here would offer settings that could not affect
+ * anything.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter

@@ -909,6 +909,35 @@ library has no honest place to own a factory.
 This also makes the policy a delegate-internal matter. Changing it later touches one method, not the API,
 not the call sites, not the tests.
 
+### 8.12 One factory, one place (applied)
+
+`usingValidatorFactory(ValidatorFactory)`, added earlier in this pass, is **removed** again. It was one line
+of code —
+
+```java
+return usingValidator(factory == null ? null : factory.getValidator());
+```
+
+— carrying some twenty-five lines of javadoc whose entire job was to answer "who closes this?". Once the
+assertion refuses to accept a factory, that question cannot be asked. A caller holding one writes
+`usingValidator(factory.getValidator())` and keeps the lifecycle, which is both shorter than the contract
+needed to explain the alternative and impossible to misread.
+
+The validator surface is now two methods, and `ValidatorFactory` appears exactly once in main code:
+
+```java
+public final SELF usingValidator(Validator validator)        // caller's, caller's to close
+public final SELF targetingGroups(Class<?>... groups)
+
+// ValidationAssertDelegate, the only ValidatorFactory in the module:
+try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+    return function.apply(factory.getValidator());
+}
+```
+
+Either a validator comes from the caller, or one assertion builds, uses and closes a factory of its own.
+There is no third case, no static state, and nothing whose ownership has to be documented.
+
 ---
 
 ## 9. Priorities

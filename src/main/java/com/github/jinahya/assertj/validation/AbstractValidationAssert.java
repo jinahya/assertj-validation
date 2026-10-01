@@ -21,7 +21,6 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.assertj.core.api.AbstractAssert;
 
 
@@ -62,44 +61,20 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Configures this assertion object to use validators obtained from specified validator factory.
+     * Configures this assertion object to use specified validator.
      * <p>
-     * <strong>This assertion object never closes {@code factory}. Closing it is the caller's
-     * responsibility.</strong> The caller supplied the instance, so the caller owns its lifecycle; this assertion
-     * object only takes a {@link Validator} from it.
-     * {@snippet lang = "java" id = "usingValidatorFactory":
-     * try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) { // @highlight substring="try"
-     *     assertThatBean(user).usingValidatorFactory(factory).isValid();
-     *     assertThatBean(other).usingValidatorFactory(factory).isNotValid();
-     * } // the caller closes it, here
+     * This is the only way to supply a validator, and deliberately so: the assertion never accepts a
+     * {@link jakarta.validation.ValidatorFactory}, so it never has to answer who closes one. A caller holding a
+     * factory passes {@code factory.getValidator()} and keeps the factory's lifecycle entirely to itself.
+     * {@snippet lang = "java" id = "usingValidator":
+     * try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+     *     assertThatBean(user).usingValidator(factory.getValidator()).isValid();
+     * } // the caller closes it, because the caller owns it
      *}
      *
-     * @param factory the validator factory to take a validator from, <em>not</em> closed by this assertion
-     *                object; {@code null} to reset to the default.
+     * @param validator the validator to use; {@code null} to let each assertion build, use and close a default
+     *                  {@link jakarta.validation.ValidatorFactory} of its own.
      * @return this assertion object.
-     * @apiNote This assertion object does not take ownership of {@code factory} and will not call
-     * {@link ValidatorFactory#close()} on it. A factory left unclosed holds whatever resources the provider
-     * allocated for it, so a caller which built the factory should close it &mdash; ideally with
-     * try-with-resources, since {@link ValidatorFactory} is {@link AutoCloseable}. Note that closing it also ends
-     * the life of the {@link Validator} taken from it: the specification forbids using that afterwards.
-     * @implNote {@link ValidatorFactory#getValidator()} is invoked once, here, and the resulting validator is
-     * kept. A {@link ValidatorFactory} exposes no mutator, so it cannot be reconfigured after the fact and there
-     * is nothing to re-read per assertion. To assert with a customized validator, build one from
-     * {@link ValidatorFactory#usingContext()} and pass it to {@link #usingValidator(Validator)}.
-     * @see #usingValidator(Validator)
-     * @see ValidatorFactory#getValidator()
-     * @see ValidatorFactory#close()
-     */
-    public final SELF usingValidatorFactory(final ValidatorFactory factory) {
-        return usingValidator(factory == null ? null : factory.getValidator());
-    }
-
-    /**
-     * Configures this assertion object to use specified validator.
-     *
-     * @param validator the validator to use; {@code null} to reset to the default.
-     * @return this assertion object.
-     * @see #usingValidatorFactory(ValidatorFactory)
      */
     public final SELF usingValidator(final Validator validator) {
         delegate.setValidator(validator);

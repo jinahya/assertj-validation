@@ -3,20 +3,24 @@
 Open work as of 2026-10-01, after the build realignment, the interface-layer collapse and the API-coverage
 completion. Section references point at `_ANALYSIS.md`, which carries the full reasoning for each item.
 
-Current state: `mvn verify` passes with 117 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
+Current state: `mvn verify` passes with 112 tests, 0 failures; `javadoc:javadoc` builds with **zero** warnings;
 67 of 68 Jakarta Validation 3.1 API members are covered; every concrete assertion has a navigation route, a
 static entry point and an `InstanceOfAssertFactory`; the visibility census reports no deviation.
 
 **Validator lifecycle, where things stand.** Three separate pieces, often conflated:
 
-| | status |
-|---|---|
-| `usingValidatorFactory(ValidatorFactory)` — caller supplies and owns the factory | **done** |
-| `usingValidatorFactorySuppliedBy(Supplier, ...)` — any disposing form | **refused** (§6) |
-| the **default** validator, built from a factory that was closed before use | **done** (§1.1, §8.11) |
-| `usingValidatorSuppliedBy(Supplier<Validator>)` | **removed** — see §1.1 |
+Settled, after several passes. The validator surface is now two methods, and the module contains exactly one
+`ValidatorFactory`, inside `ValidationAssertDelegate.applyValidator`:
 
-All settled.
+| | outcome |
+|---|---|
+| `usingValidator(Validator)` | **kept** — the only way in; caller owns the lifecycle |
+| default, when none supplied | one factory built, used and **closed** inside the single assertion |
+| `usingValidatorSuppliedBy(Supplier<Validator>)` | **removed** (§8.9) |
+| `usingValidatorFactory(ValidatorFactory)` | **removed** (§8.12) |
+| `usingValidatorFactorySuppliedBy(Supplier, ...)` | **refused** (§6) |
+
+No static state, no unowned resource, nothing whose ownership needs documenting.
 
 ---
 

@@ -8,6 +8,9 @@ build realignment, the interface-layer collapse and the API-coverage completion 
 enhancements left open. Everything below was read against the working tree, and every defect marked
 **confirmed** was reproduced.
 
+The still-open items are collected as a checklist in [_TODO.md](_TODO.md); this document keeps the reasoning
+behind each.
+
 ---
 
 ## 1. Build realignment (applied)

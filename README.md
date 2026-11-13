@@ -99,7 +99,63 @@ which is the point of extending the API rather than the engine.
 
 ## Usages
 
-See
-the [package-info](https://javadoc.io/doc/io.github.jinahya/assertj-validation/latest/com/github/jinahya/assertj/validation/package-summary.html).
+All entry points are static methods of `ValidationAssertions`.
 
-[6.1.1. Validation methods]: https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods
+```java
+import static com.github.jinahya.assertj.validation.ValidationAssertions.*;
+
+// beans, and their properties
+assertThatBean(user).isValid();
+assertThatBean(user).targetingGroups(Senior.class).isNotValid();
+assertThatBean(user).hasValidProperty("name");
+
+// a value, against the constraints of a property, without a bean
+assertThatProperty("").isNotValidFor(User.class, "name");
+
+// executables
+assertThatBean(greeter).hasValidParameters(method, "world", 1);
+assertThatConstructor(constructor).doesNotHaveValidReturnValue(createdObject);
+
+// what validation produced
+assertThatConstraintViolations(violations)
+        .filteredOn(v -> v.getPropertyPath().toString().equals("name"))
+        .first()
+        .hasMessageTemplate("{jakarta.validation.constraints.NotBlank.message}");
+assertThatConstraintViolationException(thrown).hasViolationOn("name");
+assertThatPath(violation.getPropertyPath()).extractingPropertyNode(0).hasName("name");
+
+// metadata
+assertThatBeanDescriptor(validator.getConstraintsForClass(User.class))
+        .extractingConstraintsForProperty("name")
+        .hasConstraints();
+```
+
+A failure lists every violation, and honours `as(..)` and `withFailMessage(..)`:
+
+```text
+[registration case 42]
+The set of constraint violations resulted while validating
+	actual: User@3c1{name=null,age=0}
+targeting
+	groups: [interface jakarta.validation.groups.Default]
+expected to be empty but contains 1 element(s)
+-> 	message        : must not be blank
+	propertyPath   : name
+	rootBeanClass  : class User
+	messageTemplate: {jakarta.validation.constraints.NotBlank.message}
+```
+
+### Validators
+
+With nothing configured, each assertion builds a `ValidatorFactory` and closes it before returning. A suite which
+minds the cost hands in its own, which the assertions use but never close:
+
+```java
+try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+    assertThatBean(user).usingValidatorFactory(factory).isValid();
+    assertThatBean(user).usingValidator(factory.getValidator()).isValid();
+}
+```
+
+More in the [wiki](https://github.com/jinahya/assertj-validation/wiki) and
+the [package-info](https://javadoc.io/doc/io.github.jinahya/assertj-validation/latest/com/github/jinahya/assertj/validation/package-summary.html).

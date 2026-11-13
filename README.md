@@ -99,7 +99,9 @@ which is the point of extending the API rather than the engine.
 
 ## Usages
 
-All entry points are static methods of `ValidationAssertions`.
+All entry points are static methods of `ValidationAssertions`. As in AssertJ, `ValidationBDDAssertions` offers each as
+`then…` (`thenBean(user).isValid()`), and a test class may implement `WithValidationAssertions` instead of importing
+them.
 
 ```java
 import static com.github.jinahya.assertj.validation.ValidationAssertions.*;

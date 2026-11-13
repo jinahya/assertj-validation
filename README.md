@@ -137,7 +137,7 @@ A failure lists every violation, and honours `as(..)` and `withFailMessage(..)`:
 The set of constraint violations resulted while validating
 	actual: User@3c1{name=null,age=0}
 targeting
-	groups: [interface jakarta.validation.groups.Default]
+	groups: [jakarta.validation.groups.Default]
 expected to be empty but contains 1 element(s)
 -> 	message        : must not be blank
 	propertyPath   : name
@@ -155,6 +155,25 @@ try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
     assertThatBean(user).usingValidatorFactory(factory).isValid();
     assertThatBean(user).usingValidator(factory.getValidator()).isValid();
 }
+```
+
+### Soft assertions
+
+Each assertion method can be intercepted by `SoftAssertions.proxy(..)`, so a failure is collected rather than thrown:
+
+```java
+SoftAssertions softly = new SoftAssertions();
+softly.proxy(DefaultBeanAssert.class, Object.class, user).isValid();
+softly.proxy(DefaultBeanAssert.class, Object.class, user).hasValidProperty("age");
+softly.assertAll(); // reports both
+```
+
+On AssertJ 3.x and 4.0.0-M1, a chain which *navigates* into a nested assertion, e.g. `extractingPropertyPath()` or
+`extractingNode(0)`, is not a soft chain: released AssertJ re-proxies only the results of its own navigation methods.
+Wrap such a chain in `check(..)`, which collects its first failure and lets the next check run:
+
+```java
+softly.check(() -> assertThatConstraintViolation(violation).extractingPropertyPath().hasSize(1));
 ```
 
 More in the [wiki](https://github.com/jinahya/assertj-validation/wiki) and

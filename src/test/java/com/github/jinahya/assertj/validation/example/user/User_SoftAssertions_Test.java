@@ -118,6 +118,7 @@ class User_SoftAssertions_Test {
         final ConstraintViolation<User> violation = violationOf(User.of(null, 0));
         final var softly = new SoftAssertions();
         softly.check(() -> assertThatConstraintViolation(violation).extractingPropertyPath().hasSize(2));
+        assertThat(softly.errorsCollected()).hasSize(1);
         softly.check(() -> assertThatPath(violation.getPropertyPath()).extractingNode(0).hasName("wrong"));
         assertThat(softly.errorsCollected()).hasSize(2);
     }

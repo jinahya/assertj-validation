@@ -53,6 +53,8 @@ import static java.util.Collections.unmodifiableSet;
  * unchanged, and the assertion is not checked.
  * <p>
  * The assertion methods of subclasses are not {@code final}, so that AssertJ's soft assertions can intercept them.
+ * On AssertJ 3.x and 4.0.0-M1, a chain navigating from a proxied assertion into a nested one, such as
+ * {@code extractingPropertyPath()}, is not soft; wrap such a chain in {@code softly.check(..)}.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter

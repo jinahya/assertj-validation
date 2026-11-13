@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract assert class for verifying a bean value.
@@ -80,21 +79,14 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<ACTUAL>> violations = applyValidator(v -> v.validate(actual, groups));
         acceptViolations(consumer, violations);
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, true, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "targeting%n"
                     + "\tgroups: %s%n",
                     actual,
                     Arrays.asList(groups)
-                )
-                .withFailMessage(() -> String.format(
-                        "%nexpected to be empty but contains %1$d element(s)%n"
-                        + "%2$s",
-                        violations.size(),
-                        ValidationAssertMessages.format(violations)
-                ))
-                .isEmpty();
+        ));
         return myself;
     }
 
@@ -172,16 +164,14 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         isNotNull();
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<ACTUAL>> violations = applyValidator(v -> v.validate(actual, groups));
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, false, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "targeting%n"
                     + "\tgroups: %s%n",
                     actual,
                     Arrays.asList(groups)
-                )
-                .withFailMessage("%nexpected to be not empty but empty")
-                .isNotEmpty();
+        ));
         consumer.accept(violations);
         return myself;
     }
@@ -211,8 +201,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<ACTUAL>> violations =
                 applyValidator(v -> v.validateProperty(actual, propertyName, groups));
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, true, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "for its%n"
                     + "\tproperty: '%s'%n"
@@ -221,14 +211,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
                     actual,
                     propertyName,
                     Arrays.asList(groups)
-                )
-                .withFailMessage(() -> String.format(
-                        "%nexpected to be empty but contains %1$d element(s)%n"
-                        + "%2$s",
-                        violations.size(),
-                        ValidationAssertMessages.format(violations)
-                ))
-                .isEmpty();
+        ));
         consumer.accept(violations);
         return myself;
     }
@@ -312,8 +295,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<ACTUAL>> violations =
                 applyValidator(v -> v.validateProperty(actual, propertyName, groups));
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, false, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "for its%n"
                     + "\tproperty: '%s'%n"
@@ -322,9 +305,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
                     actual,
                     propertyName,
                     Arrays.asList(groups)
-                )
-                .withFailMessage("%nexpected to be not empty but empty")
-                .isNotEmpty();
+        ));
         return myself;
     }
 
@@ -340,8 +321,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<ACTUAL>> violations =
                 applyValidator(v -> validation.apply(v.forExecutables()));
-        final var assertion = assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, expectedEmpty, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "for the%n"
                     + "\t%s of%n"
@@ -352,21 +333,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
                     what,
                     detail,
                     Arrays.asList(groups)
-                );
-        if (expectedEmpty) {
-            assertion
-                    .withFailMessage(() -> String.format(
-                            "%nexpected to be empty but contains %1$d element(s)%n"
-                            + "%2$s",
-                            violations.size(),
-                            ValidationAssertMessages.format(violations)
-                    ))
-                    .isEmpty();
-        } else {
-            assertion
-                    .withFailMessage("%nexpected to be not empty but empty")
-                    .isNotEmpty();
-        }
+        ));
         consumer.accept(violations);
         return myself;
     }

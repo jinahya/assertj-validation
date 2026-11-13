@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract class for verifying a value against a specific property of a specific bean type.
@@ -76,8 +75,8 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
         final Set<ConstraintViolation<T>> violations =
                 applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
         acceptViolations(consumer, violations);
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, true, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "\tagainst%n"
                     + "\t\tbeanType: %s%n"
@@ -88,14 +87,7 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
                     beanType,
                     propertyName,
                     Arrays.asList(groups)
-                )
-                .withFailMessage(() -> String.format(
-                        "%nexpected to be empty but contains %1$d element(s)%n"
-                        + "%2$s",
-                        violations.size(),
-                        ValidationAssertMessages.format(violations)
-                ))
-                .isEmpty();
+        ));
         return myself;
     }
 
@@ -181,8 +173,8 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<T>> violations =
                 applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, false, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
                     + "\tagainst%n"
                     + "\t\tbeanType: %s%n"
@@ -193,9 +185,7 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
                     beanType,
                     propertyName,
                     Arrays.asList(groups)
-                )
-                .withFailMessage("%nexpected to be not empty but empty")
-                .isNotEmpty();
+        ));
         return myself;
     }
 }

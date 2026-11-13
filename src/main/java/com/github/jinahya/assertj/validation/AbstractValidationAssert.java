@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableSet;
 
@@ -197,6 +198,31 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     protected final <T> void acceptViolations(final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                                               final Set<ConstraintViolation<T>> violations) {
         consumer.accept(unmodifiableSet(violations));
+    }
+
+    /**
+     * Verifies that specified violations are empty, or not empty, failing through this assertion object.
+     * <p>
+     * The failure is raised by {@link #failure(String, Object...)}, so it honours what the caller configured on this
+     * assertion object: a description set with {@code as(...)} prefixes the message, and a message set with
+     * {@code withFailMessage(...)} or {@code overridingErrorMessage(...)}, eager or lazy, replaces the default one.
+     *
+     * @param violations    the violations to check.
+     * @param expectedEmpty {@code true} when {@code violations} should be empty; {@code false} when it should not.
+     * @param context       supplies what was validated, and how; evaluated only on failure.
+     * @throws AssertionError when {@code violations} is not as expected.
+     */
+    protected final void checkViolations(final Set<? extends ConstraintViolation<?>> violations,
+                                         final boolean expectedEmpty, final Supplier<String> context) {
+        if (violations.isEmpty() == expectedEmpty) {
+            return;
+        }
+        final String detail = expectedEmpty
+                              ? String.format("expected to be empty but contains %1$d element(s)%n%2$s",
+                                              violations.size(), ValidationAssertMessages.format(violations))
+                              : "expected to be not empty but empty";
+        // the completed text goes in as an argument, so that a '%' in a value or a message is not a format specifier
+        throw failure("%s%s", context.get(), detail);
     }
 
     // -----------------------------------------------------------------------------------------------------------

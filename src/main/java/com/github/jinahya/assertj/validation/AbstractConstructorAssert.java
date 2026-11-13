@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract assertion class for verifying constructor parameters and constructor return values.
@@ -71,8 +70,8 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
         final Class<?>[] groups = groups();
         final Set<ConstraintViolation<T>> violations =
                 applyValidator(v -> validation.apply(v.forExecutables()));
-        final var assertion = assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
+        checkViolations(violations, expectedEmpty, () -> String.format(
+                "%nThe set of constraint violations resulted while validating%n"
                     + "\t%s of%n"
                     + "\tconstructor: %s%n"
                     + "targeting%n"
@@ -80,21 +79,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                     what,
                     actual,
                     Arrays.asList(groups)
-                );
-        if (expectedEmpty) {
-            assertion
-                    .withFailMessage(() -> String.format(
-                            "%nexpected to be empty but contains %1$d element(s)%n"
-                            + "%2$s",
-                            violations.size(),
-                            ValidationAssertMessages.format(violations)
-                    ))
-                    .isEmpty();
-        } else {
-            assertion
-                    .withFailMessage("%nexpected to be not empty but empty")
-                    .isNotEmpty();
-        }
+        ));
         consumer.accept(violations);
         return myself;
     }

@@ -37,6 +37,7 @@ import org.assertj.core.api.EnumerableAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.WritableAssertionInfo;
 import org.assertj.core.error.ShouldBeEmpty;
 import org.assertj.core.error.ShouldBeNullOrEmpty;
 import org.assertj.core.error.ShouldHaveSameSizeAs;
@@ -1144,18 +1145,36 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     private static void requireKindOf(final Path.Node node, final Class<? extends Path.Node> nodeType,
                                       final Supplier<String> description) {
+        final String mismatch = kindMismatch(node, nodeType, description);
+        if (mismatch != null) {
+            throw new AssertionError(mismatch);
+        }
+    }
+
+    /**
+     * Returns the failure message for specified node not being of the {@link ElementKind} that specified node type
+     * represents.
+     *
+     * @param node        the node to check.
+     * @param nodeType    the node type it is about to be narrowed to.
+     * @param description supplies a description of where the node came from.
+     * @return the failure message; {@code null} when the kind matches.
+     * @see #requireKindOf(Path.Node, Class, Supplier)
+     */
+    private static String kindMismatch(final Path.Node node, final Class<? extends Path.Node> nodeType,
+                                       final Supplier<String> description) {
         final ElementKind expected = KIND_BY_NODE_TYPE.get(nodeType);
         if (expected == null || node.getKind() == expected) {
-            return;
+            return null;
         }
-        throw new AssertionError(String.format(
+        return String.format(
                 "%nExpecting %1$s%n"
                 + "  <%2$s>%n"
                 + "to be of kind%n"
                 + "  <%3$s>%n"
                 + "so that it can be narrowed to <%4$s>, but its kind is%n"
                 + "  <%5$s>",
-                description.get(), node, expected, nodeType.getSimpleName(), node.getKind()));
+                description.get(), node, expected, nodeType.getSimpleName(), node.getKind());
     }
 
     /**
@@ -1224,10 +1243,19 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         for (final Path.Node ignored : actual) {
             size++;
         }
+        // failures go through this assertion object, which keeps its description and overriding message; the text is
+        // preformatted, and passed as an argument since a path may contain a '%'
         if (index >= size) {
-            failWithMessage("%s", noNodeAt(actual, index, size)); // preformatted; a path may contain a '%'
+            throw failure("%s", noNodeAt(actual, index, size));
         }
-        return extracting(a -> nodeAt(a, index, nodeType), factory);
+        final Path.Node node = nodeAt(actual, index);
+        final String mismatch = kindMismatch(node, nodeType, () -> String.format("the node at index %1$d", index));
+        if (mismatch != null) {
+            throw failure("%s", mismatch);
+        }
+        @SuppressWarnings({"unchecked"})
+        final N narrowed = nodeType == Path.Node.class ? (N) node : node.as(nodeType);
+        return inheritInfo(factory.createAssert(narrowed));
     }
 
     /**
@@ -1596,7 +1624,28 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @return a list assertion for the {@code actual} path's nodes.
      */
     public ListAssert<Path.Node> nodes() {
-        return Assertions.assertThat(nodeList());
+        return inheritInfo(Assertions.assertThat(nodeList()));
+    }
+
+    /**
+     * Hands this assertion object's description, representation and overriding error message to specified assertion,
+     * which navigation created.
+     * <p>
+     * The overriding message is handed over lazily, as a supplier reading this object's, so that a message supplied
+     * with {@code withFailMessage(Supplier)} is evaluated only if the navigated assertion fails.
+     * {@code AbstractAssert#extracting} would copy it eagerly, and evaluate it on success too.
+     *
+     * @param navigated the assertion navigation created.
+     * @param <A>       assertion type parameter
+     * @return {@code navigated}.
+     */
+    private <A extends AbstractAssert<?, ?>> A inheritInfo(final A navigated) {
+        final WritableAssertionInfo source = getWritableAssertionInfo();
+        final WritableAssertionInfo target = navigated.getWritableAssertionInfo();
+        target.description(source.description());
+        target.useRepresentation(source.representation());
+        target.overridingErrorMessage((Supplier<String>) source::overridingErrorMessage);
+        return navigated;
     }
 
     // ------------------------------------------------------------------------------------------------ EnumerableAssert

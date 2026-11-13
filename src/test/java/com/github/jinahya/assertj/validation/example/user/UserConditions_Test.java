@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-class UserConditionsTest {
+class UserConditions_Test {
 
     @Nested
     class JuniorTest {

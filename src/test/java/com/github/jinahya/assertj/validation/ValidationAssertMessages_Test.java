@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Tests {@link ValidationAssertMessages}, the class which renders every failure message this library produces.
  */
-class ValidationAssertMessagesTest {
+class ValidationAssertMessages_Test {
 
     static class Bean {
 

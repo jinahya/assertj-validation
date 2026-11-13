@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 class ConstraintViolationAssert_LeafBean_Test
-        extends ConstraintViolationAssert_$Test {
+        extends ConstraintViolationAssert__Base {
 
     @Test
     void should_pass_if_leaf_bean_is_equal() {

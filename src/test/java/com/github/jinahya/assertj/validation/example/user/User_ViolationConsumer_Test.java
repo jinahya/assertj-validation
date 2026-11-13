@@ -65,7 +65,7 @@ class User_ViolationConsumer_Test {
 
     @DisplayName("isValid(consumer) and isNotValid(consumer) see the violations, also when they fail")
     @Test
-    void bean__() {
+    void should_see_the_violations_of_isValid_and_isNotValid_also_on_failure() {
         final var invalid = User.of(null, 0);
         final var valid = User.newValidUser();
         assertThat(recorded(c -> () -> assertThatBean(invalid).isValid(c), true)).hasSize(1);
@@ -76,7 +76,7 @@ class User_ViolationConsumer_Test {
 
     @DisplayName("hasValidProperty(name, consumer) sees the violations, also when it fails")
     @Test
-    void hasValidProperty__() {
+    void should_see_the_violations_of_hasValidProperty_also_on_failure() {
         final var invalid = User.of(null, 0);
         assertThat(recorded(c -> () -> assertThatBean(invalid).hasValidProperty(User.PROPERTY_NAME_NAME, c), true)
                            ).hasSize(1);
@@ -86,14 +86,14 @@ class User_ViolationConsumer_Test {
 
     @DisplayName("isValidFor(type, name, consumer) sees the violations, also when it fails")
     @Test
-    void isValidFor__() {
+    void should_see_the_violations_of_isValidFor_also_on_failure() {
         assertThat(recorded(c -> () -> assertThatProperty((String) null)
                 .isValidFor(User.class, User.PROPERTY_NAME_NAME, c), true)).hasSize(1);
     }
 
     @DisplayName("method and constructor consumers see the violations, also when they fail")
     @Test
-    void executable__() throws Exception {
+    void should_see_the_violations_of_executables_also_on_failure() throws Exception {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
         final var greeter = new Greeter("Jane");
         assertThat(recorded(c -> () -> assertThatBean(greeter)
@@ -109,7 +109,7 @@ class User_ViolationConsumer_Test {
 
     @DisplayName("what the consumer throws propagates unchanged, before the check")
     @Test
-    void consumerThrows__() {
+    void should_propagate_what_the_consumer_throws() {
         final var thrown = new IllegalStateException("from the consumer");
         assertThatThrownBy(() -> assertThatBean(User.newValidUser()).isNotValid(s -> {
             throw thrown;

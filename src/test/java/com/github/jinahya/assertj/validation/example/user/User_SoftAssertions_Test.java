@@ -53,7 +53,7 @@ class User_SoftAssertions_Test {
 
     @DisplayName("bean, property and constructor assertions are collected, and reported by assertAll()")
     @Test
-    void collected__() throws Exception {
+    void should_collect_bean_property_and_constructor_failures() throws Exception {
         final var softly = new SoftAssertions();
         final var invalid = User.of(null, -1);
         softly.proxy(DefaultBeanAssert.class, Object.class, invalid).isValid();
@@ -71,7 +71,7 @@ class User_SoftAssertions_Test {
 
     @DisplayName("a null bean is one collected failure, not a NullPointerException")
     @Test
-    void null__() {
+    void should_collect_a_null_bean_as_one_failure() {
         final var softly = new SoftAssertions();
         softly.proxy(DefaultBeanAssert.class, Object.class, null).isValid();
         assertThat(softly.errorsCollected()).hasSize(1);
@@ -79,7 +79,7 @@ class User_SoftAssertions_Test {
 
     @DisplayName("BDDSoftAssertions collects them alike, and a passing chain collects nothing")
     @Test
-    void bdd__() {
+    void should_collect_through_BDDSoftAssertions() {
         final var softly = new BDDSoftAssertions();
         softly.proxy(DefaultBeanAssert.class, Object.class, User.newValidUser()).isValid().hasValidProperty(
                 User.PROPERTY_NAME_NAME);
@@ -90,7 +90,7 @@ class User_SoftAssertions_Test {
 
     @DisplayName("assertions on a violation are collected")
     @Test
-    void violation__() {
+    void should_collect_violation_failures() {
         final ConstraintViolation<User> violation = violationOf(User.of(null, 0));
         final var softly = new SoftAssertions();
         softly.proxy(DefaultConstraintViolationAssert.class, ConstraintViolation.class, violation)
@@ -101,7 +101,7 @@ class User_SoftAssertions_Test {
 
     @DisplayName("assertions on a path are collected")
     @Test
-    void path__() {
+    void should_collect_path_failures() {
         final Path path = violationOf(User.of(null, 0)).getPropertyPath();
         final var softly = new SoftAssertions();
         softly.proxy(DefaultPathAssert.class, Path.class, path).hasSize(2);
@@ -114,7 +114,7 @@ class User_SoftAssertions_Test {
      */
     @DisplayName("a navigating chain is collected through check(...)")
     @Test
-    void navigation__() {
+    void should_collect_a_navigating_chain_through_check() {
         final ConstraintViolation<User> violation = violationOf(User.of(null, 0));
         final var softly = new SoftAssertions();
         softly.check(() -> assertThatConstraintViolation(violation).extractingPropertyPath().hasSize(2));

@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 class ConstraintViolationAssert_InvalidValue_Test
-        extends ConstraintViolationAssert_$Test {
+        extends ConstraintViolationAssert__Base {
 
     @Test
     void should_pass_if_invalid_value_is_equal() {

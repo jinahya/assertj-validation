@@ -46,7 +46,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("isValid() describes the bean, the groups, and each violation")
     @Test
-    void isValid__() {
+    void should_describe_the_bean_the_groups_and_each_violation_if_isValid_fails() {
         final var user = User.of(null, 0);
         assertThatThrownBy(() -> assertThatBean(user).isValid())
                 .isInstanceOf(AssertionError.class)
@@ -61,7 +61,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("isValid() reports every violation")
     @Test
-    void isValid__multiple() {
+    void should_report_every_violation() {
         assertThatThrownBy(() -> assertThatBean(User.of(null, -1)).isValid())
                 .hasMessageContaining("expected to be empty but contains 2 element(s)")
                 .hasMessageContaining("propertyPath   : " + User.PROPERTY_NAME_NAME)
@@ -70,7 +70,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("isValid() names the groups it targeted")
     @Test
-    void isValid__groups() {
+    void should_name_the_targeted_groups() {
         final var senior = User.of(User.validName(), UserConstants.MIN_AGE_FOR_SENIOR);
         assertThatThrownBy(() -> assertThatBean(senior).targetingGroups(Junior.class).isValid())
                 .hasMessageContaining("groups: [" + Junior.class.getCanonicalName() + "]")
@@ -79,7 +79,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("isNotValid() says the set was empty")
     @Test
-    void isNotValid__() {
+    void should_say_the_set_was_empty_if_isNotValid_fails() {
         assertThatThrownBy(() -> assertThatBean(User.newValidUser()).isNotValid())
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining(DEFAULT_GROUPS)
@@ -88,7 +88,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("hasValidProperty(..) names the property")
     @Test
-    void hasValidProperty__() {
+    void should_name_the_property_if_hasValidProperty_fails() {
         assertThatThrownBy(() -> assertThatBean(User.of(null, 0)).hasValidProperty(User.PROPERTY_NAME_NAME))
                 .hasMessageContaining("property: \"" + User.PROPERTY_NAME_NAME + "\"")
                 .hasMessageContaining("expected to be empty but contains 1 element(s)")
@@ -97,7 +97,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("isValidFor(..) names the bean type and the property")
     @Test
-    void isValidFor__() {
+    void should_name_the_bean_type_and_the_property_if_isValidFor_fails() {
         assertThatThrownBy(() -> assertThatProperty((String) null).isValidFor(User.class, User.PROPERTY_NAME_NAME))
                 .hasMessageContaining(User.class.getName())
                 .hasMessageContaining(User.PROPERTY_NAME_NAME)
@@ -107,7 +107,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("an executable assertion names what of the executable it validated, alike for methods and constructors")
     @Test
-    void executable__() throws Exception {
+    void should_name_what_of_the_executable_was_validated() throws Exception {
         final var method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
         final var greeter = new Greeter("Jane");
         assertThatThrownBy(() -> assertThatBean(greeter).hasValidParameters(method, " ", 1))
@@ -127,7 +127,7 @@ class User_FailureMessages_Test {
 
     @DisplayName("the validated values and the groups are formatted with the assertion's representation")
     @Test
-    void representation__() throws Exception {
+    void should_format_values_and_groups_with_the_representation() throws Exception {
         final Representation representation = o -> "<<" + (o == null ? null : o.getClass().getSimpleName()) + ">>";
         assertThatThrownBy(() -> assertThatBean(User.of(null, 0)).withRepresentation(representation).isValid())
                 .hasMessageContaining("actual: <<User>>")

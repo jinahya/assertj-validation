@@ -40,7 +40,7 @@ class User_AttributeFailureMessages_Test {
 
     @DisplayName("each has…(expected) of a violation names its attribute")
     @Test
-    void violation__() {
+    void should_name_the_attribute_of_a_violation() {
         final var violation = violation();
         assertThatThrownBy(() -> assertThatConstraintViolation(violation).hasInvalidValue("x"))
                 .hasMessageStartingWith("[invalidValue]");
@@ -56,14 +56,14 @@ class User_AttributeFailureMessages_Test {
 
     @DisplayName("a description set by the caller is kept, followed by the attribute")
     @Test
-    void description__() {
+    void should_keep_the_callers_description() {
         assertThatThrownBy(() -> assertThatConstraintViolation(violation()).as("case 42").hasInvalidValue("x"))
                 .hasMessageStartingWith("[case 42: invalidValue]");
     }
 
     @DisplayName("a message overridden by the caller replaces the default one, prefixed by the description as AssertJ does")
     @Test
-    void override__() {
+    void should_keep_the_overriding_message() {
         assertThatThrownBy(() -> assertThatConstraintViolation(violation()).withFailMessage("OVERRIDE")
                 .hasInvalidValue("x"))
                 .hasMessage("[invalidValue] OVERRIDE");
@@ -71,7 +71,7 @@ class User_AttributeFailureMessages_Test {
 
     @DisplayName("a descriptor's has…(expected) names its attribute too")
     @Test
-    void descriptor__() {
+    void should_name_the_attribute_of_a_descriptor() {
         final var descriptor = applyValidator(
                 v -> v.getConstraintsForClass(User.class).getConstraintsForProperty(User.PROPERTY_NAME_NAME));
         assertThatThrownBy(() -> assertThatPropertyDescriptor(descriptor).hasPropertyName("x"))

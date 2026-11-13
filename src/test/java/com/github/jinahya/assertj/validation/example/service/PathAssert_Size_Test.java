@@ -55,7 +55,7 @@ class PathAssert_Size_Test {
 
     @DisplayName("the size assertions pass when the node count matches")
     @Test
-    void sizes__Pass() throws Exception {
+    void should_pass_if_the_node_count_matches() throws Exception {
         final Path path = methodParameterPath();
         assertThatCode(() -> {
             assertThatPath(path)
@@ -74,7 +74,7 @@ class PathAssert_Size_Test {
 
     @DisplayName("the size assertions fail as assertions when the node count does not match")
     @Test
-    void sizes__Fail() throws Exception {
+    void should_fail_if_the_node_count_differs() throws Exception {
         final Path path = methodParameterPath();
         // the messages are AssertJ's own, built by the same factories assertj-core's tests compare against
         assertThatThrownBy(() -> assertThatPath(path).isEmpty())
@@ -98,7 +98,7 @@ class PathAssert_Size_Test {
 
     @DisplayName("the size assertions fail as assertions on a null path")
     @Test
-    void sizes__FailOnNull() {
+    void should_fail_on_a_null_path() {
         assertThatThrownBy(() -> assertThatPath(null).hasSize(0)).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(null).isEmpty()).isInstanceOf(AssertionError.class);
     }

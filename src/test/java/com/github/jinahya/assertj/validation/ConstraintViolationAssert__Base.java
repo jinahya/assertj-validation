@@ -27,7 +27,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-abstract class ConstraintViolationAssert_$Test {
+abstract class ConstraintViolationAssert__Base {
 
     /**
      * Returns a mock violation, whose getters answer {@code null} until stubbed.

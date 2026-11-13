@@ -178,5 +178,20 @@ Wrap such a chain in `check(..)`, which collects its first failure and lets the 
 softly.check(() -> assertThatConstraintViolation(violation).extractingPropertyPath().hasSize(1));
 ```
 
+### Module path
+
+The jar is a named module, `com.github.jinahya.assertj.validation`, which requires `org.assertj.core` and
+`jakarta.validation` transitively. On the module path everything works as on the class path, except
+`SoftAssertions.proxy(..)`: on AssertJ 3.x and 4.0.0-M1, AssertJ generates the proxy into this module's package. The
+module opens that package to `org.assertj.core`, but AssertJ must also read this module, and on 3.27.7 the proxy needs
+an AssertJ package that AssertJ does not export:
+
+```text
+--add-reads org.assertj.core=com.github.jinahya.assertj.validation
+--add-exports org.assertj.core/org.assertj.core.api.recursive.assertion=com.github.jinahya.assertj.validation
+```
+
+[`.ci/jpms`](.ci/jpms) runs a module-path consumer on every push.
+
 More in the [wiki](https://github.com/jinahya/assertj-validation/wiki) and
 the [package-info](https://javadoc.io/doc/io.github.jinahya/assertj-validation/latest/com/github/jinahya/assertj/validation/package-summary.html).

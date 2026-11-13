@@ -272,16 +272,11 @@
         </executions>
       </plugin>
       <plugin>
+        <!-- no Automatic-Module-Name: src/main/java/module-info.java names the module, and a JVM ignores the manifest
+             entry once a descriptor is present -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${version.maven.jar}</version>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>com.github.jinahya.assertj.validation</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -319,6 +314,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${version.maven.surefire}</version>
         <configuration>
+          <!-- the suite runs on the class path: its fixtures live in packages outside the module, and JUnit, Mockito
+               and Lombok would otherwise need patching into it. The module itself is exercised from the module
+               path by .ci/jpms. -->
+          <useModulePath>false</useModulePath>
           <systemPropertyVariables>
             <jakarta.validation.spec.version>${jakarta.validation.spec.version}</jakarta.validation.spec.version>
           </systemPropertyVariables>

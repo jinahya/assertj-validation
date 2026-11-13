@@ -84,6 +84,13 @@ jobs:
         -Dvalidation.version=${{ matrix.jakarta.api }}
         -Dhibernate.version=${{ matrix.jakarta.hv }}
         -Dexpressly.version=${{ matrix.jakarta.el }}
+    - name: Compile and run the consumer on the module path, on Java 17
+      run: >-
+        .ci/jpms/run.sh
+        -Dassertj.version=${{ matrix.assertj }}
+        -Dvalidation.version=${{ matrix.jakarta.api }}
+        -Dhibernate.version=${{ matrix.jakarta.hv }}
+        -Dexpressly.version=${{ matrix.jakarta.el }}
 
   # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
   # Submitted once, from the default generation, so the two profiles do not overwrite each other's snapshot

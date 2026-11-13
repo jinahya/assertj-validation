@@ -112,19 +112,22 @@
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolationException(jakarta.validation.ConstraintViolationException)
  *       assertThatConstraintViolationException} for the exception a framework throws when it triggers validation, and
  *       {@code assertThatConstraintViolation}, {@code assertThatConstraintDescriptor},
- *       {@code assertThatPath} and {@code assertThatNode} with a typed variant for each of the nine
- *       {@link jakarta.validation.Path.Node} kinds.</li>
+ *       {@code assertThatPath}, and {@code assertThatNode} for any {@link jakarta.validation.Path.Node} with a typed
+ *       variant for each of the eight {@link jakarta.validation.ElementKind kinds}.</li>
  *   <li><b>Inspecting metadata</b> &mdash; {@code assertThatBeanDescriptor} for
  *       {@link jakarta.validation.Validator#getConstraintsForClass(Class) getConstraintsForClass}, and one
  *       entry point for each of the other descriptors: property, method, constructor, parameter, return
  *       value, cross parameter, container element type and group conversion.</li>
  * </ul>
  * <p>
- * Every assertion is reachable three ways: by navigation from a related assertion, by a static entry point,
- * and through an {@link org.assertj.core.api.InstanceOfAssertFactory} in
+ * Every assertion has a static entry point, and most are also reachable by navigation from a related assertion.
+ * Every assertion on a value that validation <em>produces</em> &mdash; violations, descriptors, paths, nodes and
+ * the exception &mdash; also has an {@link org.assertj.core.api.InstanceOfAssertFactory} in
  * {@link com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories}, for use with
  * {@link org.assertj.core.api.AbstractAssert#asInstanceOf(org.assertj.core.api.InstanceOfAssertFactory)
- * asInstanceOf}.
+ * asInstanceOf}. The assertions which <em>run</em> validation &mdash; on beans, property values and
+ * constructors &mdash; have none, and neither has the set of violations: those are the starting points of a test
+ * rather than values met while navigating, and a factory would have to fix their root bean type.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */

@@ -169,7 +169,7 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * @param propertyName the name of the property; must be not {@code null}.
      * @param <T>          type of the object to validate
      * @return this assertion object.
-     * @throws AssertionError when the {@code actual} is not valid for {@code beanType#propertyName}.
+     * @throws AssertionError when the {@code actual} is <em>valid</em> for {@code beanType#propertyName}.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this method
      * relies.

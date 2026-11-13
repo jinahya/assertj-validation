@@ -298,7 +298,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @param propertyName the name of the property to be verified as valid; not {@code null}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or its current value of the {@code propertyName}
-     *                        is not valid.
+     *                        is <em>valid</em>.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      * href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.

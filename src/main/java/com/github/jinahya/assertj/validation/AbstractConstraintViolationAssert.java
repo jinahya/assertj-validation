@@ -31,7 +31,7 @@ import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectArrayAssert;
-import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.ObjectAssert;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -191,7 +191,7 @@ public abstract class AbstractConstraintViolationAssert<
     public Assert<?, Object> extractingExecutableReturnValue() {
         return extractingExecutableReturnValue(
                 ConstraintViolation::getExecutableReturnValue,
-                new ObjectAssertFactory<>()
+                ObjectAssert::new
         );
     }
 
@@ -251,7 +251,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getInvalidValue()
      */
     public Assert<?, Object> extractingInvalidValue() {
-        return extractingInvalidValue(ConstraintViolation::getInvalidValue, new ObjectAssertFactory<>());
+        return extractingInvalidValue(ConstraintViolation::getInvalidValue, ObjectAssert::new);
     }
 
     /**
@@ -315,7 +315,7 @@ public abstract class AbstractConstraintViolationAssert<
      */
     public Assert<?, ?> extractingLeafBean() {
         return isNotNull()
-                .extracting(ConstraintViolation::getLeafBean, new ObjectAssertFactory<>());
+                .extracting(ConstraintViolation::getLeafBean, ObjectAssert::new);
     }
 
     /**
@@ -437,7 +437,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, new ObjectAssertFactory<>()),
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
                                                       "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
@@ -496,7 +496,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getRootBean()
      */
     public AbstractAssert<?, T> extractingRootBean() {
-        return extractingRootBean(new ObjectAssertFactory<>());
+        return extractingRootBean(ObjectAssert::new);
     }
 
     /**

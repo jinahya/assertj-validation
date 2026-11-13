@@ -35,7 +35,7 @@ import org.assertj.core.api.CollectionAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
-import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.ObjectAssert;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;
@@ -94,7 +94,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#getAnnotation()
      */
     public Assert<?, T> extractingAnnotation() {
-        return extractingAnnotation(ConstraintDescriptor::getAnnotation, new ObjectAssertFactory<>());
+        return extractingAnnotation(ConstraintDescriptor::getAnnotation, ObjectAssert::new);
     }
 
     // ------------------------------------------------------------------------------------------------------ attributes
@@ -272,7 +272,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      */
     public SELF hostsConstraintTarget(final ConstraintTarget constraintTarget) {
         isNotNull()
-                .extracting(ConstraintDescriptor::getValidationAppliesTo, new ObjectAssertFactory<>())
+                .extracting(ConstraintDescriptor::getValidationAppliesTo, ObjectAssert::new)
                 .isSameAs(constraintTarget);
         return myself;
     }
@@ -388,7 +388,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, new ObjectAssertFactory<>()),
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
                                                       "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;

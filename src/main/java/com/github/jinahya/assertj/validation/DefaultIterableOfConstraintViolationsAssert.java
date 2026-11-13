@@ -39,9 +39,25 @@ public class DefaultIterableOfConstraintViolationsAssert<T>
         super(actual, DefaultIterableOfConstraintViolationsAssert.class);
     }
 
+    /**
+     * Creates an assertion for specified element.
+     * <p>
+     * AssertJ 4 declares this method, and builds every element assertion through it; on AssertJ 3 it overrides
+     * nothing and serves {@link #toAssert(ConstraintViolation, String)}.
+     *
+     * @param value the element.
+     * @return an assertion for {@code value}.
+     */
+    @SuppressWarnings({
+            "java:S1161" // @Override; it overrides nothing on AssertJ 3
+    })
+    protected DefaultConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value) {
+        return new DefaultConstraintViolationAssert<>(value);
+    }
+
     @Override
     protected DefaultConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value, final String description) {
-        return new DefaultConstraintViolationAssert<>(value)
+        return toAssert(value)
                 .describedAs(description);
     }
 

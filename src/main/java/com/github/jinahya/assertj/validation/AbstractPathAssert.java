@@ -36,7 +36,7 @@ import org.assertj.core.api.ClassAssert;
 import org.assertj.core.api.EnumerableAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
-import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.api.WritableAssertionInfo;
 import org.assertj.core.error.ShouldBeEmpty;
 import org.assertj.core.error.ShouldBeNullOrEmpty;
@@ -573,7 +573,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @see #extractingKey()
          */
         public AbstractObjectAssert<?, Object> extractingKey() {
-            return extractingKey(Path.Node::getKey, new ObjectAssertFactory<>());
+            return extractingKey(Path.Node::getKey, ObjectAssert::new);
         }
 
         /**

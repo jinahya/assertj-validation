@@ -132,6 +132,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         default AbstractClassAssert<?> extractingContainerClass() {
             return extractingContainerClass(InstanceOfAssertFactories.CLASS);
         }
@@ -215,6 +216,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         default AbstractIntegerAssert<?> extractingTypeArgumentIndex() {
             return extractingTypeArgumentIndex(InstanceOfAssertFactories.INTEGER);
         }
@@ -294,6 +296,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         default AbstractListAssert<?, List<Class<?>>, Class<?>, ? extends AbstractClassAssert<?>> extractingParameterTypes() {
             return extractingParameterTypes(
                     a -> Assertions.<List<Class<?>>, Class<?>, ClassAssert>assertThat(a, ClassAssert::new)
@@ -374,6 +377,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         default AbstractIntegerAssert<?> extractingParameterIndex() {
             return extractingParameterIndex(InstanceOfAssertFactories.INTEGER);
         }
@@ -441,6 +445,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingIndex(
                 final AssertFactory<? super Integer, ? extends ASSERT> factory) {
             return isNotNull()
@@ -469,6 +474,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return an assert for verifying {@link Path.Node#getIndex() actual.index} value.
          * @see #extractingIndex(AssertFactory)
          */
+        @CheckReturnValue
         public AbstractIntegerAssert<?> extractingIndex() {
             return extractingIndex(InstanceOfAssertFactories.INTEGER);
         }
@@ -517,6 +523,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return an assert for verifying {@link Path.Node#getKey() actual.key} value.
          * @see #extractingKey()
          */
+        @CheckReturnValue
         public <KEY, ASSERT extends AbstractObjectAssert<ASSERT, ? extends KEY>>
         ASSERT extractingKey(final AssertFactory<? super KEY, ? extends ASSERT> factory) {
             return extractingKey(
@@ -539,6 +546,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return an assert for verifying {@link Path.Node#getKey() actual.key} value.
          * @see #extractingKey()
          */
+        @CheckReturnValue
         public <KEY, ASSERT extends AbstractObjectAssert<ASSERT, ? extends KEY>> ASSERT extractingKey(
                 final Function<? super Path.Node, ? extends KEY> extractor,
                 final AssertFactory<? super KEY, ? extends ASSERT> factory) {
@@ -572,6 +580,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @return an assert for verifying {@link Path.Node#getKey() actual.key} value.
          * @see #extractingKey()
          */
+        @CheckReturnValue
         public AbstractObjectAssert<?, Object> extractingKey() {
             return extractingKey(Path.Node::getKey, ObjectAssert::new);
         }
@@ -618,6 +627,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         public <ASSERT extends AbstractComparableAssert<?, ElementKind>> ASSERT extractingKind(
                 final AssertFactory<? super ElementKind, ? extends ASSERT> factory) {
             return isNotNull()
@@ -645,6 +655,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return an assert for verifying {@link Path.Node#getKind() actual.kind} value.
          */
+        @CheckReturnValue
         public AbstractComparableAssert<?, ElementKind> extractingKind() {
             return extractingKind(InstanceOfAssertFactories.comparable(ElementKind.class));
         }
@@ -680,6 +691,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         public <ASSERT extends AbstractStringAssert<? extends ASSERT>> ASSERT extractingName(
                 final AssertFactory<? super String, ? extends ASSERT> factory) {
             return isNotNull()
@@ -707,6 +719,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return an assert for verifying {@link Path.Node#getName() actual.name} value.
          */
+        @CheckReturnValue
         public AbstractStringAssert<?> extractingName() {
             return extractingName(InstanceOfAssertFactories.STRING);
         }
@@ -754,6 +767,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          * @param factory  the assertion factory.
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         public <ASSERT extends AbstractBooleanAssert<? extends ASSERT>> ASSERT extractingInIterable(
                 final AssertFactory<? super Boolean, ? extends ASSERT> factory) {
             return isNotNull()
@@ -781,6 +795,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
          *
          * @return the extracted assertion.
          */
+        @CheckReturnValue
         public AbstractBooleanAssert<?> extractingInIterable() {
             return extractingInIterable(InstanceOfAssertFactories.BOOLEAN);
         }
@@ -855,6 +870,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractClassAssert<? extends ASSERT>> ASSERT extractingContainerClass(
                 final AssertFactory<? super Class<?>, ? extends ASSERT> factory) {
             return isNotNull()
@@ -862,6 +878,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingTypeArgumentIndex(
                 final AssertFactory<? super Integer, ? extends ASSERT> factory) {
             return isNotNull()
@@ -891,6 +908,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractListAssert<?, List<Class<?>>, Class<?>, ? extends AbstractClassAssert<?>>>
         ASSERT extractingParameterTypes(final AssertFactory<? super List<Class<?>>, ? extends ASSERT> factory) {
             return isNotNull()
@@ -920,6 +938,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractClassAssert<? extends ASSERT>> ASSERT extractingContainerClass(
                 final AssertFactory<? super Class<?>, ? extends ASSERT> factory) {
             return isNotNull()
@@ -927,6 +946,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingTypeArgumentIndex(
                 final AssertFactory<? super Integer, ? extends ASSERT> factory) {
             return isNotNull()
@@ -978,6 +998,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractListAssert<?, List<Class<?>>, Class<?>, ? extends AbstractClassAssert<?>>>
         ASSERT extractingParameterTypes(final AssertFactory<? super List<Class<?>>, ? extends ASSERT> factory) {
             return isNotNull()
@@ -1007,6 +1028,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingParameterIndex(
                 final AssertFactory<? super Integer, ? extends ASSERT> factory) {
             return isNotNull()
@@ -1036,6 +1058,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractClassAssert<? extends ASSERT>> ASSERT extractingContainerClass(
                 final AssertFactory<? super Class<?>, ? extends ASSERT> factory) {
             return isNotNull()
@@ -1043,6 +1066,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         }
 
         @Override
+        @CheckReturnValue
         public <ASSERT extends AbstractIntegerAssert<? extends ASSERT>> ASSERT extractingTypeArgumentIndex(
                 final AssertFactory<? super Integer, ? extends ASSERT> factory) {
             return isNotNull()
@@ -1239,6 +1263,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @throws AssertionError           when the {@code actual} is {@code null}, has no node at {@code index}, or its
      *                                  node at {@code index} is not of the kind {@code nodeType} represents.
      */
+    @CheckReturnValue
     public <A extends AbstractAssert<?, ? extends N>, N extends Path.Node> A extractingNode(
             final int index, final Class<N> nodeType, final AssertFactory<? super N, ? extends A> factory) {
         if (index < 0) {
@@ -1291,6 +1316,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public <A extends AbstractNodeAssert<? extends A>> A extractingNode(
             final int index, final AssertFactory<? super Path.Node, ? extends A> factory) {
         return extractingNode(index, Path.Node.class, factory);
@@ -1302,6 +1328,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public AbstractNodeAssert<?> extractingNode(final int index) {
         return extractingNode(index, DefaultPathAssert.DefaultNodeAssert::new);
     }
@@ -1327,6 +1354,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public <A extends AbstractBeanNodeAssert<? extends A>> A extractingBeanNode(
             final int index, final AssertFactory<? super Path.BeanNode, ? extends A> factory) {
         return extractingNode(index, Path.BeanNode.class, factory);
@@ -1338,6 +1366,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public AbstractBeanNodeAssert<?> extractingBeanNode(final int index) {
         return extractingBeanNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultBeanNodeAssert::new);
     }
@@ -1350,6 +1379,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param factory the assertion factory.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public <A extends AbstractPropertyNodeAssert<? extends A>> A extractingPropertyNode(
             final int index, final AssertFactory<? super Path.PropertyNode, ? extends A> factory) {
         return extractingNode(index, Path.PropertyNode.class, factory);
@@ -1361,6 +1391,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return the extracted assertion.
      */
+    @CheckReturnValue
     public AbstractPropertyNodeAssert<?> extractingPropertyNode(final int index) {
         return extractingPropertyNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultPropertyNodeAssert::new);
     }
@@ -1388,6 +1419,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractConstructorNodeAssert<? extends A>> A extractingConstructorNode(
             final int index, final AssertFactory<? super Path.ConstructorNode, ? extends A> factory) {
         return extractingNode(index, Path.ConstructorNode.class, factory);
@@ -1399,6 +1431,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractConstructorNodeAssert<?> extractingConstructorNode(final int index) {
         return extractingConstructorNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultConstructorNodeAssert::new);
     }
@@ -1425,6 +1458,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractContainerElementNodeAssert<? extends A>> A extractingContainerElementNode(
             final int index, final AssertFactory<? super Path.ContainerElementNode, ? extends A> factory) {
         return extractingNode(index, Path.ContainerElementNode.class, factory);
@@ -1436,6 +1470,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractContainerElementNodeAssert<?> extractingContainerElementNode(final int index) {
         return extractingContainerElementNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultContainerElementNodeAssert::new);
     }
@@ -1462,6 +1497,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractCrossParameterNodeAssert<? extends A>> A extractingCrossParameterNode(
             final int index, final AssertFactory<? super Path.CrossParameterNode, ? extends A> factory) {
         return extractingNode(index, Path.CrossParameterNode.class, factory);
@@ -1473,6 +1509,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractCrossParameterNodeAssert<?> extractingCrossParameterNode(final int index) {
         return extractingCrossParameterNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultCrossParameterNodeAssert::new);
     }
@@ -1499,6 +1536,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractMethodNodeAssert<? extends A>> A extractingMethodNode(
             final int index, final AssertFactory<? super Path.MethodNode, ? extends A> factory) {
         return extractingNode(index, Path.MethodNode.class, factory);
@@ -1510,6 +1548,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractMethodNodeAssert<?> extractingMethodNode(final int index) {
         return extractingMethodNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultMethodNodeAssert::new);
     }
@@ -1536,6 +1575,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractParameterNodeAssert<? extends A>> A extractingParameterNode(
             final int index, final AssertFactory<? super Path.ParameterNode, ? extends A> factory) {
         return extractingNode(index, Path.ParameterNode.class, factory);
@@ -1547,6 +1587,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractParameterNodeAssert<?> extractingParameterNode(final int index) {
         return extractingParameterNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultParameterNodeAssert::new);
     }
@@ -1573,6 +1614,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
      */
+    @CheckReturnValue
     public <A extends AbstractReturnValueNodeAssert<? extends A>> A extractingReturnValueNode(
             final int index, final AssertFactory<? super Path.ReturnValueNode, ? extends A> factory) {
         return extractingNode(index, Path.ReturnValueNode.class, factory);
@@ -1584,6 +1626,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param index the index of the node.
      * @return an assertion for the node at {@code index}.
      */
+    @CheckReturnValue
     public AbstractReturnValueNodeAssert<?> extractingReturnValueNode(final int index) {
         return extractingReturnValueNode(index, DefaultPathAssert.DefaultNodeAssert.DefaultReturnValueNodeAssert::new);
     }

@@ -56,6 +56,7 @@ public abstract class AbstractGroupConversionDescriptorAssert<
      * @return a class assertion for the {@code actual} descriptor's source group.
      * @see GroupConversionDescriptor#getFrom()
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingFrom() {
         return isNotNull()
                 .extracting(GroupConversionDescriptor::getFrom, InstanceOfAssertFactories.CLASS);
@@ -68,6 +69,7 @@ public abstract class AbstractGroupConversionDescriptorAssert<
      * @return a class assertion for the {@code actual} descriptor's target group.
      * @see GroupConversionDescriptor#getTo()
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingTo() {
         return isNotNull()
                 .extracting(GroupConversionDescriptor::getTo, InstanceOfAssertFactories.CLASS);

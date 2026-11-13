@@ -64,6 +64,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a string assertion for the {@code actual} descriptor's name.
      * @see ExecutableDescriptor#getName()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingName() {
         return isNotNull()
                 .extracting(ExecutableDescriptor::getName, InstanceOfAssertFactories.STRING);
@@ -90,6 +91,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a list assertion for the {@code actual} descriptor's parameter descriptors.
      * @see ExecutableDescriptor#getParameterDescriptors()
      */
+    @CheckReturnValue
     public ListAssert<ParameterDescriptor> extractingParameterDescriptors() {
         return isNotNull()
                 .extracting(ExecutableDescriptor::getParameterDescriptors, ListAssert::new);
@@ -108,6 +110,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      *                                  {@code index}.
      * @see ExecutableDescriptor#getParameterDescriptors()
      */
+    @CheckReturnValue
     public <A extends AbstractParameterDescriptorAssert<? extends A>> A extractingParameterDescriptor(
             final int index, final AssertFactory<? super ParameterDescriptor, ? extends A> factory) {
         if (index < 0) {
@@ -129,6 +132,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a parameter-descriptor assertion.
      * @see ExecutableDescriptor#getParameterDescriptors()
      */
+    @CheckReturnValue
     public AbstractParameterDescriptorAssert<?> extractingParameterDescriptor(final int index) {
         return extractingParameterDescriptor(index, DefaultParameterDescriptorAssert::new);
     }
@@ -140,6 +144,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a boolean assertion for the {@code actual} descriptor's has-constrained-parameters flag.
      * @see ExecutableDescriptor#hasConstrainedParameters()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingHasConstrainedParameters() {
         return isNotNull()
                 .extracting(ExecutableDescriptor::hasConstrainedParameters, InstanceOfAssertFactories.BOOLEAN);
@@ -181,6 +186,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ExecutableDescriptor#getCrossParameterDescriptor()
      */
+    @CheckReturnValue
     public <A extends AbstractCrossParameterDescriptorAssert<? extends A>> A extractingCrossParameterDescriptor(
             final AssertFactory<? super CrossParameterDescriptor, ? extends A> factory) {
         return isNotNull()
@@ -194,6 +200,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a cross-parameter-descriptor assertion.
      * @see ExecutableDescriptor#getCrossParameterDescriptor()
      */
+    @CheckReturnValue
     public AbstractCrossParameterDescriptorAssert<?> extractingCrossParameterDescriptor() {
         return extractingCrossParameterDescriptor(DefaultCrossParameterDescriptorAssert::new);
     }
@@ -210,6 +217,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ExecutableDescriptor#getReturnValueDescriptor()
      */
+    @CheckReturnValue
     public <A extends AbstractReturnValueDescriptorAssert<? extends A>> A extractingReturnValueDescriptor(
             final AssertFactory<? super ReturnValueDescriptor, ? extends A> factory) {
         return isNotNull()
@@ -223,6 +231,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a return-value-descriptor assertion.
      * @see ExecutableDescriptor#getReturnValueDescriptor()
      */
+    @CheckReturnValue
     public AbstractReturnValueDescriptorAssert<?> extractingReturnValueDescriptor() {
         return extractingReturnValueDescriptor(DefaultReturnValueDescriptorAssert::new);
     }
@@ -234,6 +243,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @return a boolean assertion for the {@code actual} descriptor's has-constrained-return-value flag.
      * @see ExecutableDescriptor#hasConstrainedReturnValue()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingHasConstrainedReturnValue() {
         return isNotNull()
                 .extracting(ExecutableDescriptor::hasConstrainedReturnValue, InstanceOfAssertFactories.BOOLEAN);

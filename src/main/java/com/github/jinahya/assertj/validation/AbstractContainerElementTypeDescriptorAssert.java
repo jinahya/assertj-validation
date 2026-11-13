@@ -56,6 +56,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @return a class assertion for the {@code actual} descriptor's container class.
      * @see ContainerElementTypeDescriptor#getContainerClass()
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingContainerClass() {
         return isNotNull()
                 .extracting(ContainerElementTypeDescriptor::getContainerClass, InstanceOfAssertFactories.CLASS);
@@ -81,6 +82,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @return an integer assertion for the {@code actual} descriptor's type argument index.
      * @see ContainerElementTypeDescriptor#getTypeArgumentIndex()
      */
+    @CheckReturnValue
     public AbstractIntegerAssert<?> extractingTypeArgumentIndex() {
         return isNotNull()
                 .extracting(ContainerElementTypeDescriptor::getTypeArgumentIndex, InstanceOfAssertFactories.INTEGER);

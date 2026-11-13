@@ -79,6 +79,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ConstraintDescriptor#getAnnotation()
      */
+    @CheckReturnValue
     public <A extends AbstractAssert<?, T>> A extractingAnnotation(
             final Function<? super ACTUAL, ? extends T> extractor,
             final AssertFactory<? super T, ? extends A> factory) {
@@ -93,6 +94,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an assertion for the {@code actual} constraint descriptor's annotation.
      * @see ConstraintDescriptor#getAnnotation()
      */
+    @CheckReturnValue
     public Assert<?, T> extractingAnnotation() {
         return extractingAnnotation(ConstraintDescriptor::getAnnotation, ObjectAssert::new);
     }
@@ -106,6 +108,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a map assertion for the {@code actual} constraint descriptor's attributes.
      * @see ConstraintDescriptor#getAttributes()
      */
+    @CheckReturnValue
     public MapAssert<String, Object> extractingAttributes() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getAttributes, MapAssert<String, Object>::new);
@@ -135,6 +138,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's composing constraints.
      * @see ConstraintDescriptor#getComposingConstraints()
      */
+    @CheckReturnValue
     public CollectionAssert<ConstraintDescriptor<?>> extractingComposingConstraints() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getComposingConstraints, CollectionAssert::new);
@@ -161,6 +165,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a list assertion for the {@code actual} constraint descriptor's constraint validator classes.
      * @see ConstraintDescriptor#getConstraintValidatorClasses()
      */
+    @CheckReturnValue
     public ListAssert<Class<? extends ConstraintValidator<T, ?>>> extractingConstraintValidatorClasses() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getConstraintValidatorClasses, ListAssert::new);
@@ -189,6 +194,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's groups.
      * @see ConstraintDescriptor#getGroups()
      */
+    @CheckReturnValue
     public CollectionAssert<Class<?>> extractingGroups() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getGroups, CollectionAssert::new);
@@ -203,6 +209,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a string assertion for the {@code actual} constraint descriptor's message template.
      * @see ConstraintDescriptor#getMessageTemplate()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingMessageTemplate() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getMessageTemplate, InstanceOfAssertFactories.STRING);
@@ -230,6 +237,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's payload.
      * @see ConstraintDescriptor#getPayload()
      */
+    @CheckReturnValue
     public CollectionAssert<Class<? extends Payload>> extractingPayload() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getPayload, CollectionAssert::new);
@@ -299,6 +307,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a comparable assertion for the {@code actual} constraint descriptor's value-unwrapping mode.
      * @see ConstraintDescriptor#getValueUnwrapping()
      */
+    @CheckReturnValue
     public AbstractComparableAssert<?, ValidateUnwrappedValue> extractingValueUnwrapping() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getValueUnwrapping,
@@ -327,6 +336,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a boolean assertion for the {@code actual} constraint descriptor's report-as-single-violation flag.
      * @see ConstraintDescriptor#isReportAsSingleViolation()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingReportAsSingleViolation() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::isReportAsSingleViolation, InstanceOfAssertFactories.BOOLEAN);
@@ -369,6 +379,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ConstraintDescriptor#unwrap(Class)
      */
+    @CheckReturnValue
     public <U, A extends AbstractAssert<?, ? extends U>> A extractingAsUnwrapped(
             final Class<U> type,
             final AssertFactory<? super U, ? extends A> assertFactory) {

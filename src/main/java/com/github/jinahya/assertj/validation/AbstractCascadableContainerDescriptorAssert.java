@@ -71,6 +71,7 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
      * @return a boolean assertion for the {@code actual} descriptor's cascaded flag.
      * @see CascadableDescriptor#isCascaded()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingCascaded() {
         return isNotNull()
                 .extracting(CascadableDescriptor::isCascaded, InstanceOfAssertFactories.BOOLEAN);
@@ -108,6 +109,7 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
      * @return a collection assertion for the {@code actual} descriptor's group conversions.
      * @see CascadableDescriptor#getGroupConversions()
      */
+    @CheckReturnValue
     public CollectionAssert<GroupConversionDescriptor> extractingGroupConversions() {
         return isNotNull()
                 .extracting(CascadableDescriptor::getGroupConversions, CollectionAssert::new);
@@ -134,6 +136,7 @@ public abstract class AbstractCascadableContainerDescriptorAssert<
      * @return a collection assertion for the {@code actual} descriptor's constrained container element types.
      * @see ContainerDescriptor#getConstrainedContainerElementTypes()
      */
+    @CheckReturnValue
     public CollectionAssert<ContainerElementTypeDescriptor> extractingConstrainedContainerElementTypes() {
         return isNotNull()
                 .extracting(ContainerDescriptor::getConstrainedContainerElementTypes, CollectionAssert::new);

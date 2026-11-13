@@ -54,6 +54,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @return an integer assertion for the {@code actual} descriptor's index.
      * @see ParameterDescriptor#getIndex()
      */
+    @CheckReturnValue
     public AbstractIntegerAssert<?> extractingIndex() {
         return isNotNull()
                 .extracting(ParameterDescriptor::getIndex, InstanceOfAssertFactories.INTEGER);
@@ -77,6 +78,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @return a string assertion for the {@code actual} descriptor's name.
      * @see ParameterDescriptor#getName()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingName() {
         return isNotNull()
                 .extracting(ParameterDescriptor::getName, InstanceOfAssertFactories.STRING);

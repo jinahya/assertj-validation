@@ -65,6 +65,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return a boolean assertion for the {@code actual} descriptor's bean-constrained flag.
      * @see BeanDescriptor#isBeanConstrained()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingBeanConstrained() {
         return isNotNull()
                 .extracting(BeanDescriptor::isBeanConstrained, InstanceOfAssertFactories.BOOLEAN);
@@ -105,6 +106,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return an instance of {@link A}.
      * @see BeanDescriptor#getConstraintsForProperty(String)
      */
+    @CheckReturnValue
     public <A extends AbstractPropertyDescriptorAssert<? extends A>> A extractingConstraintsForProperty(
             final String propertyName, final AssertFactory<? super PropertyDescriptor, ? extends A> factory) {
         Objects.requireNonNull(propertyName, "propertyName is null");
@@ -120,6 +122,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * and is not cascaded.
      * @see BeanDescriptor#getConstraintsForProperty(String)
      */
+    @CheckReturnValue
     public AbstractPropertyDescriptorAssert<?> extractingConstraintsForProperty(final String propertyName) {
         return extractingConstraintsForProperty(propertyName, DefaultPropertyDescriptorAssert::new);
     }
@@ -143,6 +146,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return a collection assertion for the {@code actual} descriptor's constrained properties.
      * @see BeanDescriptor#getConstrainedProperties()
      */
+    @CheckReturnValue
     public CollectionAssert<PropertyDescriptor> extractingConstrainedProperties() {
         return isNotNull()
                 .extracting(BeanDescriptor::getConstrainedProperties, CollectionAssert::new);
@@ -161,6 +165,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return an instance of {@link A}.
      * @see BeanDescriptor#getConstraintsForMethod(String, Class[])
      */
+    @CheckReturnValue
     public <A extends AbstractMethodDescriptorAssert<? extends A>> A extractingConstraintsForMethod(
             final AssertFactory<? super MethodDescriptor, ? extends A> factory, final String name,
             final Class<?>... parameterTypes) {
@@ -178,6 +183,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return a method-descriptor assertion; its {@code actual} is {@code null} when the method is unconstrained.
      * @see BeanDescriptor#getConstraintsForMethod(String, Class[])
      */
+    @CheckReturnValue
     public AbstractMethodDescriptorAssert<?> extractingConstraintsForMethod(final String name,
                                                                             final Class<?>... parameterTypes) {
         return extractingConstraintsForMethod(DefaultMethodDescriptorAssert::new, name, parameterTypes);
@@ -192,6 +198,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return a collection assertion for the {@code actual} descriptor's constrained methods.
      * @see BeanDescriptor#getConstrainedMethods(MethodType, MethodType...)
      */
+    @CheckReturnValue
     public CollectionAssert<MethodDescriptor> extractingConstrainedMethods(final MethodType methodType,
                                                                            final MethodType... methodTypes) {
         Objects.requireNonNull(methodType, "methodType is null");
@@ -211,6 +218,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return an instance of {@link A}.
      * @see BeanDescriptor#getConstraintsForConstructor(Class[])
      */
+    @CheckReturnValue
     public <A extends AbstractConstructorDescriptorAssert<? extends A>> A extractingConstraintsForConstructor(
             final AssertFactory<? super ConstructorDescriptor, ? extends A> factory,
             final Class<?>... parameterTypes) {
@@ -226,6 +234,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * unconstrained.
      * @see BeanDescriptor#getConstraintsForConstructor(Class[])
      */
+    @CheckReturnValue
     public AbstractConstructorDescriptorAssert<?> extractingConstraintsForConstructor(
             final Class<?>... parameterTypes) {
         return extractingConstraintsForConstructor(DefaultConstructorDescriptorAssert::new, parameterTypes);
@@ -238,6 +247,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      * @return a collection assertion for the {@code actual} descriptor's constrained constructors.
      * @see BeanDescriptor#getConstrainedConstructors()
      */
+    @CheckReturnValue
     public CollectionAssert<ConstructorDescriptor> extractingConstrainedConstructors() {
         return isNotNull()
                 .extracting(BeanDescriptor::getConstrainedConstructors, CollectionAssert::new);

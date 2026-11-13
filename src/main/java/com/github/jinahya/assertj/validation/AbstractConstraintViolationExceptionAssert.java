@@ -66,6 +66,7 @@ public abstract class AbstractConstraintViolationExceptionAssert<
      * @return a collection assertion for the {@code actual} exception's constraint violations.
      * @see ConstraintViolationException#getConstraintViolations()
      */
+    @CheckReturnValue
     public CollectionAssert<ConstraintViolation<?>> extractingConstraintViolations() {
         return isNotNull()
                 .extracting(ConstraintViolationException::getConstraintViolations, CollectionAssert::new);

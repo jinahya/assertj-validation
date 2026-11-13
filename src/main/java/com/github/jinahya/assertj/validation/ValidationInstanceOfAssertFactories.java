@@ -71,6 +71,7 @@ public final class ValidationInstanceOfAssertFactories {
      * @return a factory for a constraint violation.
      */
     @SuppressWarnings({"unchecked"})
+    @CheckReturnValue
     public static <T>
     InstanceOfAssertFactory<ConstraintViolation<T>, AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T>>
     constraintViolation() {
@@ -85,6 +86,7 @@ public final class ValidationInstanceOfAssertFactories {
      * @return a factory for a constraint descriptor.
      */
     @SuppressWarnings({"unchecked"})
+    @CheckReturnValue
     public static <T extends Annotation>
     InstanceOfAssertFactory<ConstraintDescriptor<T>, AbstractConstraintDescriptorAssert<?, ?, T>>
     constraintDescriptor() {

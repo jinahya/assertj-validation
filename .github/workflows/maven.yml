@@ -45,6 +45,46 @@ jobs:
       if: matrix.profile == 'jakartaee-11'
       run: ./mvnw -B javadoc:javadoc -Dmaven.javadoc.failOnWarnings=true --file pom.xml -P ${{ matrix.profile }}
 
+  # The runtime baseline. The main suite is built at release 25 and cannot run on Java 17, so a small consumer is
+  # compiled and run there instead, against the jar as packaged (built on AssertJ 3), with each AssertJ line and
+  # each Jakarta generation.
+  java17-consumer:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        assertj: [ '3.27.7', '4.0.0-M1' ]
+        jakarta:
+          - { api: '3.0.2', hv: '8.0.5.Final', el: '5.0.0' }
+          - { api: '3.1.1', hv: '9.1.4.Final', el: '6.0.0' }
+
+    name: java17-consumer (assertj ${{ matrix.assertj }}, validation ${{ matrix.jakarta.api }})
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 25
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: maven
+    - name: Package
+      run: ./mvnw -B -Dmaven.test.skip=true package
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Compile and run the consumer on Java 17
+      run: >-
+        .ci/java17/run.sh
+        -Dassertj.version=${{ matrix.assertj }}
+        -Dvalidation.version=${{ matrix.jakarta.api }}
+        -Dhibernate.version=${{ matrix.jakarta.hv }}
+        -Dexpressly.version=${{ matrix.jakarta.el }}
+
   # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
   # Submitted once, from the default generation, so the two profiles do not overwrite each other's snapshot
   dependency-graph:

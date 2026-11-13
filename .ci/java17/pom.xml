@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The classpath of a Java 17 consumer of assertj-validation, resolved on its own, without this repository's parent:
+     the APIs this module leaves provided, plus an implementation for default validation. CI hands the packaged jar
+     to the consumer directly, so that what runs is the artifact, not the build's classes. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.jinahya</groupId>
+  <artifactId>assertj-validation-java17-consumer</artifactId>
+  <version>0</version>
+  <packaging>pom</packaging>
+
+  <!-- the defaults are the oldest pairing supported; CI overrides them, one combination per job -->
+  <properties>
+    <assertj.version>3.27.7</assertj.version>
+    <validation.version>3.0.2</validation.version>
+    <hibernate.version>8.0.5.Final</hibernate.version>
+    <expressly.version>5.0.0</expressly.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>${validation.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.expressly</groupId>
+      <artifactId>expressly</artifactId>
+      <version>${expressly.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+  </dependencies>
+</project>

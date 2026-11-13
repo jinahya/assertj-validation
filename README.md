@@ -21,15 +21,55 @@ An [AssertJ](https://assertj.github.io/doc/) extension for [Jakarta Validation](
 </dependency>
 ```
 
+The two APIs it extends are *provided*: bring your own, along with a validation provider for default validation.
+For Jakarta EE 11, e.g.,
+
+```xml
+<dependency>
+  <groupId>org.assertj</groupId>
+  <artifactId>assertj-core</artifactId>
+  <version>3.27.7</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>jakarta.validation</groupId>
+  <artifactId>jakarta.validation-api</artifactId>
+  <version>3.1.1</version>
+  <scope>provided</scope>
+</dependency>
+<!-- the provider, and the expression language it interpolates messages with; for Jakarta EE 10, use 8.0.x and 5.0.x -->
+<dependency>
+  <groupId>org.hibernate.validator</groupId>
+  <artifactId>hibernate-validator</artifactId>
+  <version>9.1.4.Final</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.glassfish.expressly</groupId>
+  <artifactId>expressly</artifactId>
+  <version>6.0.0</version>
+  <scope>test</scope>
+</dependency>
+```
+
+A test which only ever hands the assertions a validator of its own (`usingValidator`, `usingValidatorFactory`) still
+needs whatever produced that validator; no provider is reached for otherwise.
+
 ## Compatibilities
 
 Both APIs this module sits between are *provided*-scoped, so a consumer brings its own:
 
 | | |
 |---|---|
-| Java | 17 (tests are built at 25) |
+| Java | 17 or later at runtime; JDK 25 to build and run the test suite |
 | Jakarta Validation | 3.0 and 3.1 |
-| AssertJ | 3.27 and later, including 4 (built on 3, tested on both) |
+| AssertJ | 3.x from 3.27.7; 4.0.0-M1 is tested as a milestone, and later 4.x releases are verified as they come |
+
+What is tested, on every push:
+
+- the whole suite on JDK 25, for each Jakarta generation, with AssertJ 3.27.7 and with 4.0.0-M1;
+- a consumer on **Java 17**, against the jar as packaged (built on AssertJ 3), for each AssertJ line and each Jakarta
+  generation: [`.ci/java17`](.ci/java17).
 
 ### Jakarta EE generations
 

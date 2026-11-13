@@ -1,11 +1,11 @@
 # assertj-validation — TODO
 
 Open work only. Finished items, and the analysis behind them, are in the git history (`_ANALYSIS.md`, removed
-2026-11-14).
+2026-11-14). Every open item is tracked as a [GitHub issue](https://github.com/jinahya/assertj-validation/issues).
 
 ## 1. API consistency
 
-### 1.1 The consumer fires at a different point in each method
+### 1.1 The consumer fires at a different point in each method — [#9](https://github.com/jinahya/assertj-validation/issues/9)
 
 | method | consumer runs | on failure the consumer… |
 |---|---|---|
@@ -21,43 +21,73 @@ inherited the "after" shape, so they need the same decision applied.
 - [ ] Pick one — "before" reads better for a test library, since the violation set matters most exactly when
       the assertion is about to fail — apply it everywhere, and document it.
 
+Reviewed with Codex: "before" is recommended, but it is a **behaviour change for released 0.6.x** (both 0.6.0 and
+0.6.1 run these consumers after a passing assertion), so it waits for a maintainer decision. Signatures stay
+compatible. The overloads that would move are `AbstractBeanAssert.isNotValid(Consumer)`,
+`hasValidProperty(String, Consumer)`, `hasValidParameters(Method, Object[], Consumer)` and
+`hasValidReturnValue(Method, Object, Consumer)`, and `AbstractConstructorAssert.hasValidParameters(Object[], Consumer)`
+and `hasValidReturnValue(T, Consumer)` (through the private `executable(...)` and `validating(...)`). Decide also
+whether every consumer gets the unmodifiable view `acceptViolations(...)` gives; these six pass the provider's set.
+
 ## 2. Test coverage
 
-- [ ] **Assert on failure-message text.** The library's whole value is its failure output, yet the tests only
-      check that an `AssertionError` is thrown, never what it says.
-- [ ] **`DefaultIterableOfConstraintViolationsAssert.newAbstractIterableAssert`** — untested.
-- [ ] **`AbstractGroupConversionDescriptorAssert`** — no fixture declares a `@ConvertGroup`, so the assert is
-      compiled but never exercised.
-- [ ] **`AbstractContainerElementTypeDescriptorAssert`** — no fixture declares a container-element constraint
-      (`List<@NotBlank String>`).
-- [ ] Constructor return-value validation is exercised only through a custom `@Named` fixture constraint; add
-      a case through a standard constraint.
-- [ ] Move the tests which build a `ValidatorFactory` only to get at a validator onto
-      `JinahyaValidationTestUtils.applyCachedValidatorFactory`; keep the explicit setup in
-      `User_UsingValidatorFactory_Test` and `User_UsingValidator_Test`, which demonstrate it.
+- [x] ~~**Assert on failure-message text.**~~ — **done**, `User_FailureMessages_Test`: stable fragments of the
+      bean, property, group, method and constructor failures. It shows one inconsistency, pinned as it is: method
+      parameter failures label themselves `method: …`, while constructor ones say `parameters of` and
+      `return value of`; tracked as [#21](https://github.com/jinahya/assertj-validation/issues/21).
+- [x] ~~**`DefaultIterableOfConstraintViolationsAssert.newAbstractIterableAssert`** — untested.~~ — **done**,
+      through `filteredOn` in `ConstraintViolations_Test`, which keeps typed navigation.
+- [x] ([#11](https://github.com/jinahya/assertj-validation/issues/11)) ~~**`AbstractGroupConversionDescriptorAssert`** — no fixture declares a `@ConvertGroup`.~~ — **done**,
+      `GroupConversionDescriptorAssert_Test`.
+- [x] ([#11](https://github.com/jinahya/assertj-validation/issues/11)) ~~**`AbstractContainerElementTypeDescriptorAssert`** — never exercised.~~ — **done**,
+      `ContainerElementTypeDescriptorAssert_Test`, on `Bagged`'s existing `List<@NotBlank String>`.
+- [x] ~~Constructor return-value validation through a standard constraint.~~ — **done**, `Account` in
+      `ExecutableValidation_Test`: `@NotNull @Valid` on the constructor, `@NotBlank` reached by cascading.
+- [x] ~~Move the tests which build a `ValidatorFactory` only to get at a validator onto
+      `JinahyaValidationTestUtils.applyCachedValidatorFactory`.~~ — **done**, through
+      `ValidationAssertionsTestUtils.applyValidator`; `User_UsingValidatorFactory_Test` and `User_UsingValidator_Test`
+      keep their explicit setup, which they demonstrate.
 
 ## 3. Enhancements
 
-- [ ] **An assertion for `ConstraintViolationException`**, the last uncovered runtime type, e.g.
-      `assertThatConstraintViolationException(e).hasViolationOn("name")`, for validation triggered by a
-      framework rather than called from the test.
-- [ ] **Convenience assertions on the violation set**, each removing a `Consumer` lambda from caller code:
+- [x] ([#14](https://github.com/jinahya/assertj-validation/issues/14)) ~~**An assertion for `ConstraintViolationException`**~~ — **done**:
+      `assertThatConstraintViolationException(e)` with `hasViolationOn(String)` and
+      `extractingConstraintViolations()`, plus `CONSTRAINT_VIOLATION_EXCEPTION`. It extends `AbstractThrowableAssert`,
+      and its violations are a `CollectionAssert<ConstraintViolation<?>>`, since one exception may carry violations
+      of different root bean types.
+- [ ] [#13](https://github.com/jinahya/assertj-validation/issues/13) **Convenience assertions on the violation set**, each removing a `Consumer` lambda from caller code:
       ```java
       assertThatBean(user).isNotValid().hasViolationOn("name");
       assertThatBean(user).isNotValid().hasViolationWithMessageTemplate("{…NotBlank.message}");
       assertThatBean(user).hasExactlyViolationsOn("name", "age");
       ```
-- [ ] **A bean `Condition`** for `assertThat(users).are(valid)`, built on assertj's `VerboseCondition` so a
+      Needs a design decision first (Codex): `isNotValid()` returns the bean assertion and keeps no result, so a
+      chained shortcut must either validate again, cache the result (with rules for a changed bean, groups or
+      validator), or navigate explicitly to the result. Start in `AbstractIterableOfConstraintViolationsAssert`,
+      where results already exist, and decide whether `hasExactlyViolationsOn` compares distinct paths.
+- [ ] [#17](https://github.com/jinahya/assertj-validation/issues/17) **A bean `Condition`** for `assertThat(users).are(valid)`, built on assertj's `VerboseCondition` so a
       failure says why. Decide whether the collection form is worth it; a plain `is(valid)` adds nothing over
-      `assertThatBean(user).isValid()`.
-- [ ] **A JPMS `module-info`.** The jar carries only `Automatic-Module-Name`; at release 17 a real descriptor is
-      available, and both dependencies are named modules.
-- [ ] **`AbstractConstructorAssert` duplicates `AbstractBeanAssert`'s executable validation** (its private
-      `validating(...)` mirrors `executable(...)`); worth a shared helper.
+      `assertThatBean(user).isValid()`. If it goes ahead, take a caller-supplied `Validator`, rather than keep a
+      factory or "last violations" state only to describe the failure.
+- [ ] [#18](https://github.com/jinahya/assertj-validation/issues/18) **A JPMS `module-info`.** The jar carries only `Automatic-Module-Name`; at release 17 a real descriptor is
+      available, and both dependencies are named modules. Codex's draft, to be checked against module-path
+      consumers and the surefire setup before it ships, since an explicit module narrows readability and reflective
+      access:
+      ```java
+      module com.github.jinahya.assertj.validation {
+          requires transitive org.assertj.core;   // not static: provided means the caller supplies it, not optional
+          requires transitive jakarta.validation;
+          exports com.github.jinahya.assertj.validation;
+      }
+      ```
+- [ ] [#19](https://github.com/jinahya/assertj-validation/issues/19) **`AbstractConstructorAssert` duplicates `AbstractBeanAssert`'s executable validation** (its private
+      `validating(...)` mirrors `executable(...)`); worth a shared helper. After §1.1, so the helper does not
+      freeze the inconsistent consumer timing; a package-private helper for the violation check and the failure
+      text is enough.
 
 ## 4. Build
 
-- [ ] Move the default `version.org.assertj` to 4.x once 4.0.0 is released, and retire the `assertj-4` profile.
+- [ ] [#20](https://github.com/jinahya/assertj-validation/issues/20) Move the default `version.org.assertj` to 4.x once 4.0.0 is released, and retire the `assertj-4` profile.
 
 ## 5. Deliberately not doing
 

@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.ConstraintDescriptor;
@@ -117,6 +118,18 @@ public final class ValidationAssertions {
     public static <T> AbstractIterableOfConstraintViolationsAssert<?, T> assertThatConstraintViolations(
             final Set<? extends ConstraintViolation<T>> actual) {
         return assertThatIterableOfConstraintViolations(actual);
+    }
+
+    /**
+     * Creates a new assertion object for verifying specified constraint violation exception, which is what a
+     * framework throws when it, rather than the test, triggers validation.
+     *
+     * @param actual the constraint violation exception to verify.
+     * @return a new assertion instance for {@code actual}.
+     */
+    public static AbstractConstraintViolationExceptionAssert<?> assertThatConstraintViolationException(
+            final ConstraintViolationException actual) {
+        return new DefaultConstraintViolationExceptionAssert(actual);
     }
 
     /**

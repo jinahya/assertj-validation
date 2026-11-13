@@ -21,11 +21,11 @@ package com.github.jinahya.assertj.validation.example.service;
  */
 
 import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.MethodType;
 import org.junit.jupiter.api.Test;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBeanDescriptor;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,9 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class BeanDescriptorAssert_Test {
 
     private static BeanDescriptor descriptor() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator().getConstraintsForClass(Greeter.class);
-        }
+        return applyValidator(v -> v.getConstraintsForClass(Greeter.class));
     }
 
     @Test

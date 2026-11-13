@@ -21,8 +21,6 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -53,9 +52,7 @@ class ValidationAssertMessagesTest {
     }
 
     private static Set<ConstraintViolation<Bean>> validate(final Bean bean) {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator().validate(bean);
-        }
+        return applyValidator(v -> v.validate(bean));
     }
 
     // ------------------------------------------------------------------------------ format(ConstraintViolation)

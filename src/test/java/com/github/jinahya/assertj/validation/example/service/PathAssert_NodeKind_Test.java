@@ -23,13 +23,12 @@ package com.github.jinahya.assertj.validation.example.service;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ElementKind;
 import jakarta.validation.Path;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.METHOD_NODE;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.PROPERTY_NODE;
@@ -48,12 +47,10 @@ class PathAssert_NodeKind_Test {
 
     private static Path methodParameterPath() throws NoSuchMethodException {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            final ConstraintViolation<Greeter> violation = factory.getValidator().forExecutables()
-                    .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
-                    .iterator().next();
-            return violation.getPropertyPath();
-        }
+        final ConstraintViolation<Greeter> violation = applyValidator(v -> v.forExecutables()
+                .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
+                .iterator().next());
+        return violation.getPropertyPath();
     }
 
     @DisplayName("the premise: every node is an instanceof every node subtype")

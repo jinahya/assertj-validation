@@ -22,14 +22,13 @@ package com.github.jinahya.assertj.validation.example.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,12 +43,10 @@ class PathAssert_Size_Test {
      */
     private static Path methodParameterPath() throws NoSuchMethodException {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            final ConstraintViolation<Greeter> violation = factory.getValidator().forExecutables()
-                    .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
-                    .iterator().next();
-            return violation.getPropertyPath();
-        }
+        final ConstraintViolation<Greeter> violation = applyValidator(v -> v.forExecutables()
+                .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
+                .iterator().next());
+        return violation.getPropertyPath();
     }
 
     @DisplayName("the size assertions pass when the node count matches")

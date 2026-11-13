@@ -22,13 +22,12 @@ package com.github.jinahya.assertj.validation.example.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ElementKind;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,11 +39,9 @@ class PathAssert_NodeNavigation_Test {
 
     private static ConstraintViolation<Greeter> parameterViolation() throws NoSuchMethodException {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            final Set<ConstraintViolation<Greeter>> violations = factory.getValidator().forExecutables()
-                    .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1});
-            return violations.iterator().next();
-        }
+        final Set<ConstraintViolation<Greeter>> violations = applyValidator(v -> v.forExecutables()
+                .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1}));
+        return violations.iterator().next();
     }
 
     @Test

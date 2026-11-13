@@ -108,7 +108,9 @@
  *   <li><b>Inspecting what validation produced</b> &mdash;
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolations(java.util.Set)
  *       assertThatConstraintViolations} for the set
- *       {@link jakarta.validation.Validator#validate(Object, Class[]) validate} returns, and
+ *       {@link jakarta.validation.Validator#validate(Object, Class[]) validate} returns,
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolationException(jakarta.validation.ConstraintViolationException)
+ *       assertThatConstraintViolationException} for the exception a framework throws when it triggers validation, and
  *       {@code assertThatConstraintViolation}, {@code assertThatConstraintDescriptor},
  *       {@code assertThatPath} and {@code assertThatNode} with a typed variant for each of the nine
  *       {@link jakarta.validation.Path.Node} kinds.</li>

@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.ConstraintDescriptor;
@@ -83,6 +84,12 @@ public final class ValidationInstanceOfAssertFactories {
         final Class<ConstraintDescriptor<T>> type = (Class<ConstraintDescriptor<T>>) (Object) ConstraintDescriptor.class;
         return new InstanceOfAssertFactory<>(type, ValidationAssertions::assertThatConstraintDescriptor);
     }
+
+    /**
+     * A factory for a {@link ConstraintViolationException}.
+     */
+    public static final InstanceOfAssertFactory<ConstraintViolationException, AbstractConstraintViolationExceptionAssert<?>> CONSTRAINT_VIOLATION_EXCEPTION =
+            new InstanceOfAssertFactory<>(ConstraintViolationException.class, ValidationAssertions::assertThatConstraintViolationException);
 
     /**
      * A factory for a {@link Path}.

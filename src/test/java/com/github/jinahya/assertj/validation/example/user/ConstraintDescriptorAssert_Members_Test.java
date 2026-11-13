@@ -21,11 +21,10 @@ package com.github.jinahya.assertj.validation.example.user;
  */
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import jakarta.validation.metadata.ValidateUnwrappedValue;
 import org.junit.jupiter.api.Test;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintDescriptor;
 
 /**
@@ -35,11 +34,9 @@ import static com.github.jinahya.assertj.validation.ValidationAssertions.assertT
 class ConstraintDescriptorAssert_Members_Test {
 
     private static ConstraintViolation<User> blankNameViolation() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator()
-                    .validateValue(User.class, User.PROPERTY_NAME_NAME, null)
-                    .iterator().next();
-        }
+        return applyValidator(v -> v
+                .validateValue(User.class, User.PROPERTY_NAME_NAME, null)
+                .iterator().next());
     }
 
     @Test

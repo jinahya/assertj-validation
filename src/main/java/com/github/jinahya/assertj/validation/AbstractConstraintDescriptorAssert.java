@@ -217,7 +217,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#getMessageTemplate()
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        extractingMessageTemplate().isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -388,7 +388,8 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        extractingAsUnwrapped(type, new ObjectAssertFactory<>())
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, new ObjectAssertFactory<>()),
+                                                      "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

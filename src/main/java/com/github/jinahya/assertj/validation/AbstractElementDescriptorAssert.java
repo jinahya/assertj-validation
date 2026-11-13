@@ -147,7 +147,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @see ElementDescriptor#getElementClass()
      */
     public SELF hasElementClass(final Class<?> expectedElementClass) {
-        extractingElementClass().isEqualTo(expectedElementClass);
+        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass").isEqualTo(expectedElementClass);
         return myself;
     }
 }

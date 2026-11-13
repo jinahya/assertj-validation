@@ -67,7 +67,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @see ParameterDescriptor#getIndex()
      */
     public SELF hasIndex(final int expectedIndex) {
-        extractingIndex().isEqualTo(expectedIndex);
+        ValidationAssertMessages.describedAsAttribute(extractingIndex(), "index").isEqualTo(expectedIndex);
         return myself;
     }
 
@@ -90,7 +90,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @see ParameterDescriptor#getName()
      */
     public SELF hasName(final String expectedName) {
-        extractingName().isEqualTo(expectedName);
+        ValidationAssertMessages.describedAsAttribute(extractingName(), "name").isEqualTo(expectedName);
         return myself;
     }
 }

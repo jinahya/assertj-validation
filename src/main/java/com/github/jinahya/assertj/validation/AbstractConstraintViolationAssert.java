@@ -144,7 +144,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #extractingExecutableParameters()
      */
     public SELF hasExecutableParameters(final Object[] expectedExecutableParameters) {
-        extractingExecutableParameters().isEqualTo(expectedExecutableParameters);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableParameters(), "executableParameters").isEqualTo(expectedExecutableParameters);
         return myself;
     }
 
@@ -206,7 +206,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getExecutableReturnValue()
      */
     public SELF hasExecutableReturnValue(final Object expectedExecutableReturnValue) {
-        extractingExecutableReturnValue().isEqualTo(expectedExecutableReturnValue);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableReturnValue(), "executableReturnValue").isEqualTo(expectedExecutableReturnValue);
         return myself;
     }
 
@@ -264,7 +264,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getInvalidValue()
      */
     public SELF hasInvalidValue(final Object expectedInvalidValue) {
-        extractingInvalidValue().isEqualTo(expectedInvalidValue);
+        ValidationAssertMessages.describedAsAttribute(extractingInvalidValue(), "invalidValue").isEqualTo(expectedInvalidValue);
         return myself;
     }
 
@@ -327,7 +327,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #extractingLeafBean()
      */
     public SELF hasLeafBean(final Object expectedLeafBean) {
-        extractingLeafBean().isEqualTo(expectedLeafBean);
+        ValidationAssertMessages.describedAsAttribute(extractingLeafBean(), "leafBean").isEqualTo(expectedLeafBean);
         return myself;
     }
 
@@ -351,9 +351,10 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getMessage()
      */
     public SELF hasMessage(final String expectedMessage) {
-        isNotNull()
-                .extracting(ConstraintViolation::getMessage, InstanceOfAssertFactories.STRING)
-                .isEqualTo(expectedMessage);
+        ValidationAssertMessages.describedAsAttribute(
+                isNotNull().extracting(ConstraintViolation::getMessage, InstanceOfAssertFactories.STRING),
+                "message"
+        ).isEqualTo(expectedMessage);
         return myself;
     }
 
@@ -400,7 +401,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #hasMessage(String)
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        extractingMessageTemplate().isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -436,7 +437,8 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        extractingAsUnwrapped(type, new ObjectAssertFactory<>())
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, new ObjectAssertFactory<>()),
+                                                      "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }
@@ -505,7 +507,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getRootBean()
      */
     public SELF hasRootBean(final T expectedRootBean) {
-        extractingRootBean().isEqualTo(expectedRootBean);
+        ValidationAssertMessages.describedAsAttribute(extractingRootBean(), "rootBean").isEqualTo(expectedRootBean);
         return myself;
     }
 
@@ -554,7 +556,7 @@ public abstract class AbstractConstraintViolationAssert<
      */
     public SELF hasRootBeanClass(final Class<T> expectedRootBeanClass) {
         Objects.requireNonNull(expectedRootBeanClass, "expectedRootBeanClass is null");
-        extractingRootBeanClass().isEqualTo(expectedRootBeanClass);
+        ValidationAssertMessages.describedAsAttribute(extractingRootBeanClass(), "rootBeanClass").isEqualTo(expectedRootBeanClass);
         return myself;
     }
 }

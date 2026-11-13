@@ -83,8 +83,8 @@ public abstract class AbstractGroupConversionDescriptorAssert<
      * @see GroupConversionDescriptor#getTo()
      */
     public SELF convertsGroup(final Class<?> expectedFrom, final Class<?> expectedTo) {
-        extractingFrom().isEqualTo(expectedFrom);
-        extractingTo().isEqualTo(expectedTo);
+        ValidationAssertMessages.describedAsAttribute(extractingFrom(), "from").isEqualTo(expectedFrom);
+        ValidationAssertMessages.describedAsAttribute(extractingTo(), "to").isEqualTo(expectedTo);
         return myself;
     }
 }

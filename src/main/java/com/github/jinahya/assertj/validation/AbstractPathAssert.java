@@ -156,7 +156,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
                 "unchecked"
         })
         default SELF hasContainerClass(final Class<?> expectedContainerClass) {
-            extractingContainerClass().isEqualTo(expectedContainerClass);
+            ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass").isEqualTo(expectedContainerClass);
             return (SELF) this;
         }
 
@@ -239,7 +239,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
                 "unchecked"
         })
         default SELF hasTypeArgumentIndex(final Integer expectedTypeArgumentIndex) {
-            extractingTypeArgumentIndex().isEqualTo(expectedTypeArgumentIndex);
+            ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex").isEqualTo(expectedTypeArgumentIndex);
             return (SELF) this;
         }
 
@@ -398,7 +398,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
                 "unchecked"
         })
         default SELF hasParameterIndex(final Integer expectedParameterIndex) {
-            extractingParameterIndex().isEqualTo(expectedParameterIndex);
+            ValidationAssertMessages.describedAsAttribute(extractingParameterIndex(), "parameterIndex").isEqualTo(expectedParameterIndex);
             return (SELF) this;
         }
 

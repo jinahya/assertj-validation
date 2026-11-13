@@ -77,7 +77,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      * @see ExecutableDescriptor#getName()
      */
     public SELF hasName(final String expectedName) {
-        extractingName().isEqualTo(expectedName);
+        ValidationAssertMessages.describedAsAttribute(extractingName(), "name").isEqualTo(expectedName);
         return myself;
     }
 

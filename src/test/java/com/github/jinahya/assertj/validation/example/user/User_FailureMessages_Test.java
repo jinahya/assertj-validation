@@ -22,6 +22,7 @@ package com.github.jinahya.assertj.validation.example.user;
 
 import com.github.jinahya.assertj.validation.example.service.Greeter;
 import jakarta.validation.groups.Default;
+import org.assertj.core.presentation.Representation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +40,9 @@ class User_FailureMessages_Test {
 
     private static final String NOT_BLANK = "{jakarta.validation.constraints.NotBlank.message}";
 
-    // no group given means the default group, which the description names explicitly
-    private static final String DEFAULT_GROUPS = "groups: [" + Default.class + "]";
+    // no group given means the default group, which the description names explicitly; classes are formatted with
+    // the assertion's representation, which prints their canonical names
+    private static final String DEFAULT_GROUPS = "groups: [" + Default.class.getCanonicalName() + "]";
 
     @DisplayName("isValid() describes the bean, the groups, and each violation")
     @Test
@@ -71,7 +73,7 @@ class User_FailureMessages_Test {
     void isValid__groups() {
         final var senior = User.of(User.validName(), UserConstants.MIN_AGE_FOR_SENIOR);
         assertThatThrownBy(() -> assertThatBean(senior).targetingGroups(Junior.class).isValid())
-                .hasMessageContaining("groups: [" + Junior.class + "]")
+                .hasMessageContaining("groups: [" + Junior.class.getCanonicalName() + "]")
                 .hasMessageContaining("propertyPath   : " + User.PROPERTY_NAME_AGE);
     }
 
@@ -88,7 +90,7 @@ class User_FailureMessages_Test {
     @Test
     void hasValidProperty__() {
         assertThatThrownBy(() -> assertThatBean(User.of(null, 0)).hasValidProperty(User.PROPERTY_NAME_NAME))
-                .hasMessageContaining("property: '" + User.PROPERTY_NAME_NAME + "'")
+                .hasMessageContaining("property: \"" + User.PROPERTY_NAME_NAME + "\"")
                 .hasMessageContaining("expected to be empty but contains 1 element(s)")
                 .hasMessageContaining("messageTemplate: " + NOT_BLANK);
     }
@@ -121,5 +123,26 @@ class User_FailureMessages_Test {
                 .hasMessageContaining("return value of")
                 .hasMessageContaining("constructor: " + constructor)
                 .hasMessageContaining("expected to be not empty but empty");
+    }
+
+    @DisplayName("the validated values and the groups are formatted with the assertion's representation")
+    @Test
+    void representation__() throws Exception {
+        final Representation representation = o -> "<<" + (o == null ? null : o.getClass().getSimpleName()) + ">>";
+        assertThatThrownBy(() -> assertThatBean(User.of(null, 0)).withRepresentation(representation).isValid())
+                .hasMessageContaining("actual: <<User>>")
+                .hasMessageContaining("groups: <<");
+        assertThatThrownBy(() -> assertThatProperty((String) null).withRepresentation(representation)
+                .isValidFor(User.class, User.PROPERTY_NAME_NAME))
+                .hasMessageContaining("beanType: <<Class>>")
+                .hasMessageContaining("property: <<String>>");
+        final var method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
+        assertThatThrownBy(() -> assertThatBean(new Greeter("Jane")).withRepresentation(representation)
+                .hasValidParameters(method, " ", 1))
+                .hasMessageContaining("parameters of method: <<Method>>");
+        final var constructor = Greeter.class.getConstructor(String.class);
+        assertThatThrownBy(() -> assertThatConstructor(constructor).withRepresentation(representation)
+                .hasValidParameters((Object) " "))
+                .hasMessageContaining("parameters of constructor: <<Constructor>>");
     }
 }

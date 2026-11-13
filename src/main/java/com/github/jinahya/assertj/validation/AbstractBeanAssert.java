@@ -26,9 +26,9 @@ import jakarta.validation.executable.ExecutableValidator;
 
 import java.lang.reflect.Method;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 
@@ -67,26 +67,16 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * Verifies that the {@code actual} value is valid, while accepting the set of constraint violations, which may be
      * empty, to specified consumer.
      *
-     * @param consumer the consumer accepts the set of constraint violations which may be empty.
+     * @param consumer the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or invalid.
      * @see #isValid()
      * @see #isNotValid()
      */
-    public final SELF isValid(final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
+    public SELF isValid(final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<ACTUAL>> violations = applyValidator(v -> v.validate(actual, groups));
-        acceptViolations(consumer, violations);
-        checkViolations(violations, true, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "targeting%n"
-                    + "\tgroups: %s%n",
-                    actual,
-                    Arrays.asList(groups)
-        ));
+        validate((v, g) -> v.validate(actual, g), consumer, true, "actual", actual);
         return myself;
     }
 
@@ -113,7 +103,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see #isValid(Consumer)
      * @see #isNotValid()
      */
-    public final SELF isValid() {
+    public SELF isValid() {
         return isValid(
                 i -> {
                     // does nothing
@@ -144,7 +134,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see #isValid(Consumer)
      * @see #isValid()
      */
-    public final SELF isNotValid() {
+    public SELF isNotValid() {
         return isNotValid(s -> {
             // does nothing
         });
@@ -154,25 +144,15 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * Verifies that the {@code actual} value is <em>not valid</em>, while accepts a set of constraint violations, which
      * should be not empty, to specified consumer.
      *
-     * @param consumer the consumer accepts the set of constraint violations.
+     * @param consumer the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or <em>valid</em>.
      * @see #isNotValid()
      */
-    public final SELF isNotValid(final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
+    public SELF isNotValid(final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<ACTUAL>> violations = applyValidator(v -> v.validate(actual, groups));
-        checkViolations(violations, false, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "targeting%n"
-                    + "\tgroups: %s%n",
-                    actual,
-                    Arrays.asList(groups)
-        ));
-        consumer.accept(violations);
+        validate((v, g) -> v.validate(actual, g), consumer, false, "actual", actual);
         return myself;
     }
 
@@ -182,7 +162,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * specified consumer.
      *
      * @param propertyName the name of the property to be verified as valid; not {@code null}.
-     * @param consumer     the consumer accepts the set of constraint violations.
+     * @param consumer     the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or its current value of {@code propertyName} is
      *                        not valid.
@@ -193,26 +173,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see #hasValidProperty(String)
      * @see #doesNotHaveValidProperty(String)
      */
-    public final SELF hasValidProperty(final String propertyName,
+    public SELF hasValidProperty(final String propertyName,
                                        final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<ACTUAL>> violations =
-                applyValidator(v -> v.validateProperty(actual, propertyName, groups));
-        checkViolations(violations, true, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "for its%n"
-                    + "\tproperty: '%s'%n"
-                    + "targeting %n"
-                    + "\tgroups: %s%n",
-                    actual,
-                    propertyName,
-                    Arrays.asList(groups)
-        ));
-        consumer.accept(violations);
+        validate((v, g) -> v.validateProperty(actual, propertyName, g), consumer, true,
+                 "actual", actual, "property", propertyName);
         return myself;
     }
 
@@ -248,7 +215,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see #hasValidProperty(String, Consumer)
      * @see #doesNotHaveValidProperty(String)
      */
-    public final SELF hasValidProperty(final String propertyName) {
+    public SELF hasValidProperty(final String propertyName) {
         return hasValidProperty(
                 propertyName,
                 s -> {
@@ -289,52 +256,26 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see #hasValidProperty(String, Consumer)
      * @see #hasValidProperty(String)
      */
-    public final SELF doesNotHaveValidProperty(final String propertyName) {
+    public SELF doesNotHaveValidProperty(final String propertyName) {
         Objects.requireNonNull(propertyName, "propertyName is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<ACTUAL>> violations =
-                applyValidator(v -> v.validateProperty(actual, propertyName, groups));
-        checkViolations(violations, false, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "for its%n"
-                    + "\tproperty: '%s'%n"
-                    + "targeting %n"
-                    + "\tgroups: %s%n",
-                    actual,
-                    propertyName,
-                    Arrays.asList(groups)
-        ));
+        validate((v, g) -> v.validateProperty(actual, propertyName, g), s -> {
+        }, false, "actual", actual, "property", propertyName);
         return myself;
     }
 
     // ----------------------------------------------------------------------------------------- executable validation
 
-    private SELF executable(final String what, final String detail,
-                            final java.util.function.Function<? super ExecutableValidator,
+    private SELF executable(final String what, final Method method,
+                            final BiFunction<? super ExecutableValidator, ? super Class<?>[],
                                     ? extends Set<ConstraintViolation<ACTUAL>>> validation,
                             final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer,
                             final boolean expectedEmpty) {
+        Objects.requireNonNull(method, "method is null");
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<ACTUAL>> violations =
-                applyValidator(v -> validation.apply(v.forExecutables()));
-        checkViolations(violations, expectedEmpty, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "for the%n"
-                    + "\t%s of%n"
-                    + "\tmethod: %s%n"
-                    + "targeting%n"
-                    + "\tgroups: %s%n",
-                    actual,
-                    what,
-                    detail,
-                    Arrays.asList(groups)
-        ));
-        consumer.accept(violations);
+        validate((v, g) -> validation.apply(v.forExecutables(), g), consumer, expectedEmpty,
+                 "actual", actual, what + " of method", method);
         return myself;
     }
 
@@ -344,16 +285,15 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *
      * @param method          the method whose parameters are validated; must be not {@code null}.
      * @param parameterValues the parameter values to validate.
-     * @param consumer        the consumer accepts the set of constraint violations.
+     * @param consumer        the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or any parameter value is not valid.
      * @see ExecutableValidator#validateParameters(Object, Method, Object[], Class[])
      */
-    public final SELF hasValidParameters(final Method method, final Object[] parameterValues,
+    public SELF hasValidParameters(final Method method, final Object[] parameterValues,
                                          final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
-        Objects.requireNonNull(method, "method is null");
-        return executable("parameters", method.toString(),
-                          v -> v.validateParameters(actual, method, parameterValues, groups()),
+        return executable("parameters", method,
+                          (v, g) -> v.validateParameters(actual, method, parameterValues, g),
                           consumer, true);
     }
 
@@ -366,7 +306,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @throws AssertionError when the {@code actual} is {@code null} or any parameter value is not valid.
      * @see ExecutableValidator#validateParameters(Object, Method, Object[], Class[])
      */
-    public final SELF hasValidParameters(final Method method, final Object... parameterValues) {
+    public SELF hasValidParameters(final Method method, final Object... parameterValues) {
         return hasValidParameters(method, parameterValues, s -> {
             // does nothing
         });
@@ -382,10 +322,9 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @throws AssertionError when the {@code actual} is {@code null} or every parameter value is valid.
      * @see ExecutableValidator#validateParameters(Object, Method, Object[], Class[])
      */
-    public final SELF doesNotHaveValidParameters(final Method method, final Object... parameterValues) {
-        Objects.requireNonNull(method, "method is null");
-        return executable("parameters", method.toString(),
-                          v -> v.validateParameters(actual, method, parameterValues, groups()),
+    public SELF doesNotHaveValidParameters(final Method method, final Object... parameterValues) {
+        return executable("parameters", method,
+                          (v, g) -> v.validateParameters(actual, method, parameterValues, g),
                           s -> {
                           }, false);
     }
@@ -396,16 +335,15 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *
      * @param method      the method whose return value is validated; must be not {@code null}.
      * @param returnValue the return value to validate.
-     * @param consumer    the consumer accepts the set of constraint violations.
+     * @param consumer    the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or the return value is not valid.
      * @see ExecutableValidator#validateReturnValue(Object, Method, Object, Class[])
      */
-    public final SELF hasValidReturnValue(final Method method, final Object returnValue,
+    public SELF hasValidReturnValue(final Method method, final Object returnValue,
                                           final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
-        Objects.requireNonNull(method, "method is null");
-        return executable("return value", method.toString(),
-                          v -> v.validateReturnValue(actual, method, returnValue, groups()),
+        return executable("return value", method,
+                          (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
                           consumer, true);
     }
 
@@ -418,7 +356,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @throws AssertionError when the {@code actual} is {@code null} or the return value is not valid.
      * @see ExecutableValidator#validateReturnValue(Object, Method, Object, Class[])
      */
-    public final SELF hasValidReturnValue(final Method method, final Object returnValue) {
+    public SELF hasValidReturnValue(final Method method, final Object returnValue) {
         return hasValidReturnValue(method, returnValue, s -> {
             // does nothing
         });
@@ -433,10 +371,9 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @throws AssertionError when the {@code actual} is {@code null} or the return value is valid.
      * @see ExecutableValidator#validateReturnValue(Object, Method, Object, Class[])
      */
-    public final SELF doesNotHaveValidReturnValue(final Method method, final Object returnValue) {
-        Objects.requireNonNull(method, "method is null");
-        return executable("return value", method.toString(),
-                          v -> v.validateReturnValue(actual, method, returnValue, groups()),
+    public SELF doesNotHaveValidReturnValue(final Method method, final Object returnValue) {
+        return executable("return value", method,
+                          (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
                           s -> {
                           }, false);
     }

@@ -24,11 +24,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.executable.ExecutableValidator;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 /**
@@ -62,25 +61,14 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
     }
 
     private SELF validating(final String what,
-                            final Function<? super ExecutableValidator, ? extends Set<ConstraintViolation<T>>> validation,
+                            final BiFunction<? super ExecutableValidator, ? super Class<?>[],
+                                    ? extends Set<ConstraintViolation<T>>> validation,
                             final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                             final boolean expectedEmpty) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<T>> violations =
-                applyValidator(v -> validation.apply(v.forExecutables()));
-        checkViolations(violations, expectedEmpty, () -> String.format(
-                "%nThe set of constraint violations resulted while validating%n"
-                    + "\t%s of%n"
-                    + "\tconstructor: %s%n"
-                    + "targeting%n"
-                    + "\tgroups: %s%n",
-                    what,
-                    actual,
-                    Arrays.asList(groups)
-        ));
-        consumer.accept(violations);
+        validate((v, g) -> validation.apply(v.forExecutables(), g), consumer, expectedEmpty,
+                 what + " of constructor", actual);
         return myself;
     }
 
@@ -89,15 +77,15 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * resulting set of constraint violations, which may be empty, to specified consumer.
      *
      * @param parameterValues the parameter values to validate.
-     * @param consumer        the consumer accepts the set of constraint violations.
+     * @param consumer        the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or any parameter value is not valid.
      * @see ExecutableValidator#validateConstructorParameters(Constructor, Object[], Class[])
      */
-    public final SELF hasValidParameters(final Object[] parameterValues,
+    public SELF hasValidParameters(final Object[] parameterValues,
                                          final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("parameters",
-                          v -> v.validateConstructorParameters(actual, parameterValues, groups()),
+                          (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
                           consumer, true);
     }
 
@@ -109,7 +97,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @throws AssertionError when the {@code actual} is {@code null} or any parameter value is not valid.
      * @see ExecutableValidator#validateConstructorParameters(Constructor, Object[], Class[])
      */
-    public final SELF hasValidParameters(final Object... parameterValues) {
+    public SELF hasValidParameters(final Object... parameterValues) {
         return hasValidParameters(parameterValues, s -> {
             // does nothing
         });
@@ -123,9 +111,9 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @throws AssertionError when the {@code actual} is {@code null} or every parameter value is valid.
      * @see ExecutableValidator#validateConstructorParameters(Constructor, Object[], Class[])
      */
-    public final SELF doesNotHaveValidParameters(final Object... parameterValues) {
+    public SELF doesNotHaveValidParameters(final Object... parameterValues) {
         return validating("parameters",
-                          v -> v.validateConstructorParameters(actual, parameterValues, groups()),
+                          (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
                           s -> {
                           }, false);
     }
@@ -135,15 +123,15 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * the resulting set of constraint violations, which may be empty, to specified consumer.
      *
      * @param createdObject the object created by the {@code actual} constructor.
-     * @param consumer      the consumer accepts the set of constraint violations.
+     * @param consumer      the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is {@code null} or the created object is not valid.
      * @see ExecutableValidator#validateConstructorReturnValue(Constructor, Object, Class[])
      */
-    public final SELF hasValidReturnValue(final T createdObject,
+    public SELF hasValidReturnValue(final T createdObject,
                                           final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("return value",
-                          v -> v.validateConstructorReturnValue(actual, createdObject, groups()),
+                          (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
                           consumer, true);
     }
 
@@ -155,7 +143,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @throws AssertionError when the {@code actual} is {@code null} or the created object is not valid.
      * @see ExecutableValidator#validateConstructorReturnValue(Constructor, Object, Class[])
      */
-    public final SELF hasValidReturnValue(final T createdObject) {
+    public SELF hasValidReturnValue(final T createdObject) {
         return hasValidReturnValue(createdObject, s -> {
             // does nothing
         });
@@ -169,9 +157,9 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @throws AssertionError when the {@code actual} is {@code null} or the created object is valid.
      * @see ExecutableValidator#validateConstructorReturnValue(Constructor, Object, Class[])
      */
-    public final SELF doesNotHaveValidReturnValue(final T createdObject) {
+    public SELF doesNotHaveValidReturnValue(final T createdObject) {
         return validating("return value",
-                          v -> v.validateConstructorReturnValue(actual, createdObject, groups()),
+                          (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
                           s -> {
                           }, false);
     }

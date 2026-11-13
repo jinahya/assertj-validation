@@ -22,6 +22,10 @@ package com.github.jinahya.assertj.validation.example.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
+import org.assertj.core.error.ShouldBeEmpty;
+import org.assertj.core.error.ShouldHaveSize;
+import org.assertj.core.error.ShouldHaveSizeGreaterThan;
+import org.assertj.core.error.ShouldHaveSizeLessThan;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -72,15 +76,18 @@ class PathAssert_Size_Test {
     @Test
     void sizes__Fail() throws Exception {
         final Path path = methodParameterPath();
-        assertThatThrownBy(() -> assertThatPath(path).isEmpty()).isInstanceOf(AssertionError.class);
+        // the messages are AssertJ's own, built by the same factories assertj-core's tests compare against
+        assertThatThrownBy(() -> assertThatPath(path).isEmpty())
+                .hasMessage(ShouldBeEmpty.shouldBeEmpty(path).create());
         assertThatThrownBy(() -> assertThatPath(path).isNullOrEmpty()).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(path).hasSize(3))
-                .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("3");
-        assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThan(2)).isInstanceOf(AssertionError.class);
+                .hasMessage(ShouldHaveSize.shouldHaveSize(path, 2, 3).create());
+        assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThan(2))
+                .hasMessage(ShouldHaveSizeGreaterThan.shouldHaveSizeGreaterThan(path, 2, 2).create());
         assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThanOrEqualTo(3))
                 .isInstanceOf(AssertionError.class);
-        assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThan(2)).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThan(2))
+                .hasMessage(ShouldHaveSizeLessThan.shouldHaveSizeLessThan(path, 2, 2).create());
         assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThanOrEqualTo(1))
                 .isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(path).hasSizeBetween(3, 4)).isInstanceOf(AssertionError.class);

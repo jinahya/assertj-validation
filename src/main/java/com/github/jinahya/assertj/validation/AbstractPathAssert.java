@@ -73,6 +73,11 @@ import java.util.function.Supplier;
  * &mdash; without that obligation, exactly as {@code AbstractCharSequenceAssert} uses it for the characters of a
  * {@code String}. The full collection surface is reached through {@link #nodes()}, where filtering nodes yields nodes
  * and nothing has to be fabricated.
+ * <p>
+ * The node assertions' {@code has…Satisfying(Consumer)} methods, such as {@code hasNameSatisfying(..)}, hand the
+ * consumer an <em>assertion</em> on the attribute, carrying the node assertion's description and
+ * representation, not the attribute's value as AssertJ's own {@code hasValueSatisfying(..)} does:
+ * {@code hasNameSatisfying(a -> a.startsWith("na"))}.
  *
  * @param <SELF> self type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;

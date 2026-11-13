@@ -22,7 +22,27 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
+import java.util.function.Function;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 abstract class ConstraintViolationAssert_$Test {
+
+    /**
+     * Returns a mock violation, whose getters answer {@code null} until stubbed.
+     */
+    @SuppressWarnings({"unchecked"})
+    static <T> ConstraintViolation<T> violation() {
+        return mock(ConstraintViolation.class);
+    }
+
+    /**
+     * Verifies that specified call on specified assertion returns the assertion itself, so that it chains.
+     */
+    static <A> void returnsSelf(final A assertion, final Function<? super A, ?> call) {
+        assertThat(call.apply(assertion)).isSameAs(assertion);
+    }
 
     <T> AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T> assertion(final ConstraintViolation<T> actual) {
         return new DefaultConstraintViolationAssert<>(actual);

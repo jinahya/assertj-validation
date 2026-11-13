@@ -20,6 +20,40 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-class ConstraintViolationAssert_ExecutableReturnValue_Test {
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+class ConstraintViolationAssert_ExecutableReturnValue_Test
+        extends ConstraintViolationAssert_$Test {
+
+    @Test
+    void should_pass_if_executable_return_value_is_equal() {
+        final var actual = violation();
+        when(actual.getExecutableReturnValue()).thenReturn("r");
+        assertThatCode(() -> assertion(actual).hasExecutableReturnValue("r")).doesNotThrowAnyException();
+        returnsSelf(assertion(actual), a -> a.hasExecutableReturnValue("r"));
+    }
+
+    @Test
+    void should_fail_naming_the_attribute_if_executable_return_value_differs() {
+        final var actual = violation();
+        when(actual.getExecutableReturnValue()).thenReturn("r");
+        assertThatThrownBy(() -> assertion(actual).hasExecutableReturnValue("s"))
+                .hasMessageStartingWith("[executableReturnValue]");
+    }
+
+    @Test
+    void should_pass_if_there_is_no_executable_return_value() {
+        assertThatCode(() -> assertion(violation()).hasNoExecutableReturnValue()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void should_fail_if_actual_is_null() {
+        assertThatThrownBy(() -> assertion(null).hasNoExecutableReturnValue())
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting actual not to be null");
+    }
 }

@@ -51,6 +51,27 @@ Suggested order:
 3. #24 alongside #20.
 4. Everything else.
 
+## Status
+
+Fixed on branch `assertj-alignment`, one commit per issue. The suite has 248 tests, which pass on AssertJ 3.27.7 and
+4.0.0-M1, and the Java 17 consumer passes on both. Decisions the issues left open were settled with Codex.
+
+| # | outcome |
+|---|---|
+| #23 | Fixed. Methods are no longer `final`, so `proxy()` collects them. Navigation chains on released AssertJ use `check(..)` (README). |
+| #9 | Fixed. Every consumer runs before the check, with an unmodifiable view. |
+| #27 | Fixed. One shared `validate(..)` helper; values and groups print through the `Representation`. |
+| #26 | Fixed. 21 `has…` methods name their attribute, keeping the caller's description. |
+| #25 | Null is fixed. Wrong-kind context is documented: AssertJ applies state after the factory returns, and the check stays eager. |
+| #24 | Partly done: `ObjectAssertFactory` replaced, one-argument `toAssert` added. The handler parts wait for 4.0.0 (#20); still open. |
+| #28 | Fixed. The empty test classes are filled, and a navigation contract test and exact-message checks are added. |
+| #29 | Fixed. A project-owned `@CheckReturnValue`, checked in IntelliJ. |
+| #30 | Fixed. |
+| #31 | Fixed: `extractingViolations()`, `hasValidationAppliesTo(..)`, `…Satisfying` docs. The return-type narrowing moved to #33. |
+| #32 | Fixed for the classes this branch touched; no mass rename. |
+| #34 | Fixed: `ValidationBDDAssertions`, `WithValidationAssertions`, and a reflective parity test. |
+| #33 | Not done (user's decision): it breaks callers' source, so it waits for 1.0. |
+
 ## Key findings
 
 ### Soft assertions (#23, #24)

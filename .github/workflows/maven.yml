@@ -37,8 +37,13 @@ jobs:
         java-version: '25'
         distribution: 'temurin'
         cache: maven
+    # the checked-in wrapper, so CI runs the same Maven as a local build
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -P ${{ matrix.profile }}
+      run: ./mvnw -B verify --file pom.xml -P ${{ matrix.profile }}
+    # the javadoc builds with zero warnings; keep it that way, once, on the default generation
+    - name: Check Javadoc
+      if: matrix.profile == 'jakartaee-11'
+      run: ./mvnw -B javadoc:javadoc -Dmaven.javadoc.failOnWarnings=true --file pom.xml -P ${{ matrix.profile }}
 
   # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
   # Submitted once, from the default generation, so the two profiles do not overwrite each other's snapshot

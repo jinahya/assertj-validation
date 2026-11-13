@@ -54,6 +54,9 @@
     <version.maven.compiler>3.16.0</version.maven.compiler>
     <version.maven.surefire>3.6.0</version.maven.surefire>
     <version.maven.failsafe>${version.maven.surefire}</version.maven.failsafe>
+    <!-- pinned here: neither jinahya-parent nor its parents manage it, so Maven would otherwise warn and fall back to
+         the version its lifecycle happens to bind -->
+    <version.maven.jar>3.5.1</version.maven.jar>
 
     <!-- Jakarta Validation is the API this module extends, so unlike the test tooling below it is compiled
          against. It stays provided: a consumer already has the API on its classpath, and pinning one version
@@ -271,6 +274,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>${version.maven.jar}</version>
         <configuration>
           <archive>
             <manifestEntries>

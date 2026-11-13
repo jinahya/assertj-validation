@@ -32,9 +32,8 @@ whether every consumer gets the unmodifiable view `acceptViolations(...)` gives;
 ## 2. Test coverage
 
 - [x] ~~**Assert on failure-message text.**~~ — **done**, `User_FailureMessages_Test`: stable fragments of the
-      bean, property, group, method and constructor failures. It shows one inconsistency, pinned as it is: method
-      parameter failures label themselves `method: …`, while constructor ones say `parameters of` and
-      `return value of`; tracked as [#21](https://github.com/jinahya/assertj-validation/issues/21).
+      bean, property, group, method and constructor failures. It showed method failures labelled differently from constructor ones; aligned in
+      [#21](https://github.com/jinahya/assertj-validation/issues/21).
 - [x] ~~**`DefaultIterableOfConstraintViolationsAssert.newAbstractIterableAssert`** — untested.~~ — **done**,
       through `filteredOn` in `ConstraintViolations_Test`, which keeps typed navigation.
 - [x] ([#11](https://github.com/jinahya/assertj-validation/issues/11)) ~~**`AbstractGroupConversionDescriptorAssert`** — no fixture declares a `@ConvertGroup`.~~ — **done**,

@@ -103,15 +103,19 @@ class User_FailureMessages_Test {
                 .hasMessageContaining("messageTemplate: " + NOT_BLANK);
     }
 
-    @DisplayName("an executable assertion names what of the executable it validated")
+    @DisplayName("an executable assertion names what of the executable it validated, alike for methods and constructors")
     @Test
     void executable__() throws Exception {
         final var method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
         final var greeter = new Greeter("Jane");
         assertThatThrownBy(() -> assertThatBean(greeter).hasValidParameters(method, " ", 1))
+                .hasMessageContaining("parameters of")
                 .hasMessageContaining("method: " + method)
                 .hasMessageContaining("expected to be empty but contains 1 element(s)")
                 .hasMessageContaining("messageTemplate: " + NOT_BLANK);
+        assertThatThrownBy(() -> assertThatBean(greeter).hasValidReturnValue(method, " "))
+                .hasMessageContaining("return value of")
+                .hasMessageContaining("method: " + method);
         final var constructor = Greeter.class.getConstructor(String.class);
         assertThatThrownBy(() -> assertThatConstructor(constructor).doesNotHaveValidReturnValue(greeter))
                 .hasMessageContaining("return value of")

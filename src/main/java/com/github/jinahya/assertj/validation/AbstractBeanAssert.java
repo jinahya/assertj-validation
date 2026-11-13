@@ -343,8 +343,9 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         final var assertion = assertThat(violations)
                 .as("%nThe set of constraint violations resulted while validating%n"
                     + "\tactual: %s%n"
-                    + "for its%n"
-                    + "\t%s: %s%n"
+                    + "for the%n"
+                    + "\t%s of%n"
+                    + "\tmethod: %s%n"
                     + "targeting%n"
                     + "\tgroups: %s%n",
                     actual,
@@ -384,7 +385,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
     public final SELF hasValidParameters(final Method method, final Object[] parameterValues,
                                          final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(method, "method is null");
-        return executable("method", method.toString(),
+        return executable("parameters", method.toString(),
                           v -> v.validateParameters(actual, method, parameterValues, groups()),
                           consumer, true);
     }
@@ -416,7 +417,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      */
     public final SELF doesNotHaveValidParameters(final Method method, final Object... parameterValues) {
         Objects.requireNonNull(method, "method is null");
-        return executable("method", method.toString(),
+        return executable("parameters", method.toString(),
                           v -> v.validateParameters(actual, method, parameterValues, groups()),
                           s -> {
                           }, false);
@@ -436,7 +437,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
     public final SELF hasValidReturnValue(final Method method, final Object returnValue,
                                           final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
         Objects.requireNonNull(method, "method is null");
-        return executable("method return value", method.toString(),
+        return executable("return value", method.toString(),
                           v -> v.validateReturnValue(actual, method, returnValue, groups()),
                           consumer, true);
     }
@@ -467,7 +468,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      */
     public final SELF doesNotHaveValidReturnValue(final Method method, final Object returnValue) {
         Objects.requireNonNull(method, "method is null");
-        return executable("method return value", method.toString(),
+        return executable("return value", method.toString(),
                           v -> v.validateReturnValue(actual, method, returnValue, groups()),
                           s -> {
                           }, false);

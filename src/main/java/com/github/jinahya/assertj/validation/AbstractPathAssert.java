@@ -51,7 +51,6 @@ import org.assertj.core.error.ShouldNotBeEmpty;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1077,20 +1076,36 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * Returns the node at specified index of specified iterable of nodes.
      *
      * @param iterable the iterable of nodes; must be not {@code null}.
-     * @param index    the index of the node.
+     * @param index    the index of the node; must be not negative.
      * @return the extracted assertion.
+     * @throws IllegalArgumentException when {@code index} is negative.
+     * @throws AssertionError           when {@code iterable} has no node at {@code index}.
      */
     protected static Path.Node nodeAt(final Iterable<? extends Path.Node> iterable, final int index) {
         Objects.requireNonNull(iterable, "iterable is null");
         if (index < 0) {
             throw new IllegalArgumentException("negative index: " + index);
         }
-        final Iterator<? extends Path.Node> iterator = iterable.iterator();
-        Path.Node node = iterator.next(); // NoSuchElementException
-        for (int i = 0; i < index; i++) {
-            node = iterator.next(); // NoSuchElementException
+        int i = 0;
+        for (final Path.Node node : iterable) {
+            if (i++ == index) {
+                return node;
+            }
         }
-        return node;
+        throw new AssertionError(noNodeAt(iterable, index, i));
+    }
+
+    /**
+     * Returns the message of a failure for a node missing at specified index.
+     *
+     * @param iterable the iterable of nodes.
+     * @param index    the index of the missing node.
+     * @param size     the number of nodes {@code iterable} has.
+     * @return the failure message.
+     */
+    private static String noNodeAt(final Iterable<? extends Path.Node> iterable, final int index, final int size) {
+        return String.format("%nExpecting a node at index %1$d of%n  <%2$s>%nbut it has %3$d node(s)",
+                             index, iterable, size);
     }
 
     /**
@@ -1191,15 +1206,28 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      *
      * @param <A>      assertion type parameter
      * @param <N>      node type parameter
-     * @param index    the index of the node.
+     * @param index    the index of the node; must be not negative.
      * @param nodeType the type of the node.
      * @param factory  the assertion factory.
      * @return the extracted assertion.
+     * @throws IllegalArgumentException when {@code index} is negative.
+     * @throws AssertionError           when the {@code actual} is {@code null}, has no node at {@code index}, or its
+     *                                  node at {@code index} is not of the kind {@code nodeType} represents.
      */
     public <A extends AbstractAssert<?, ? extends N>, N extends Path.Node> A extractingNode(
             final int index, final Class<N> nodeType, final AssertFactory<? super N, ? extends A> factory) {
-        return isNotNull()
-                .extracting(a -> nodeAt(a, index, nodeType), factory);
+        if (index < 0) {
+            throw new IllegalArgumentException("negative index: " + index);
+        }
+        isNotNull();
+        int size = 0;
+        for (final Path.Node ignored : actual) {
+            size++;
+        }
+        if (index >= size) {
+            failWithMessage("%s", noNodeAt(actual, index, size)); // preformatted; a path may contain a '%'
+        }
+        return extracting(a -> nodeAt(a, index, nodeType), factory);
     }
 
     /**

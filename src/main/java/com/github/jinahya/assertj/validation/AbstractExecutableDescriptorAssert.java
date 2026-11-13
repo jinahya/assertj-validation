@@ -30,6 +30,8 @@ import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 
+import java.util.List;
+
 /**
  * An abstract assertion class for verifying {@link ExecutableDescriptor} values.
  *
@@ -97,10 +99,13 @@ public abstract class AbstractExecutableDescriptorAssert<
      * Extracts an assertion for verifying the parameter descriptor at specified index, using specified assertion
      * factory.
      *
-     * @param index   the index of the parameter.
+     * @param index   the index of the parameter; must be not negative.
      * @param factory the assertion factory.
      * @param <A>     assertion type parameter
      * @return an instance of {@link A}.
+     * @throws IllegalArgumentException when {@code index} is negative.
+     * @throws AssertionError           when the {@code actual} is {@code null}, or the executable has no parameter at
+     *                                  {@code index}.
      * @see ExecutableDescriptor#getParameterDescriptors()
      */
     public <A extends AbstractParameterDescriptorAssert<? extends A>> A extractingParameterDescriptor(
@@ -108,8 +113,13 @@ public abstract class AbstractExecutableDescriptorAssert<
         if (index < 0) {
             throw new IllegalArgumentException("negative index: " + index);
         }
-        return isNotNull()
-                .extracting(a -> a.getParameterDescriptors().get(index), factory);
+        isNotNull();
+        final List<ParameterDescriptor> parameters = actual.getParameterDescriptors();
+        if (index >= parameters.size()) {
+            failWithMessage("%nExpecting a parameter at index %1$d of%n  <%2$s>%nbut it has %3$d parameter(s)",
+                            index, actual.getName(), parameters.size());
+        }
+        return extracting(a -> a.getParameterDescriptors().get(index), factory);
     }
 
     /**

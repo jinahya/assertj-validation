@@ -22,14 +22,17 @@ package com.github.jinahya.assertj.validation.example.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ElementKind;
+import jakarta.validation.Path;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.Collections;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests the typed node navigation on {@code AbstractPathAssert}, including the node kinds that previously had no entry
@@ -87,5 +90,49 @@ class PathAssert_NodeNavigation_Test {
         final var path = parameterViolation().getPropertyPath();
         assertThat(path).hasSize(2);
         assertThatPath(path).hasSize(2);
+    }
+
+    // ---------------------------------------------------------------------------------------------- absent nodes
+    // the path of a method parameter violation, greet.arg0, has two nodes
+
+    @Test
+    void __absentNode_atSize() throws Exception {
+        final var path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> assertThatPath(path).extractingNode(2))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting a node at index 2 of")
+                .hasMessageContaining(path.toString())
+                .hasMessageContaining("but it has 2 node(s)");
+    }
+
+    @Test
+    void __absentNode_beyondSize() throws Exception {
+        final var path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> assertThatPath(path).extractingParameterNode(5))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting a node at index 5 of");
+    }
+
+    @Test
+    void __absentNode_emptyPath() {
+        final Path empty = Collections::emptyIterator;
+        assertThatThrownBy(() -> assertThatPath(empty).extractingNode(0))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("but it has 0 node(s)");
+    }
+
+    @Test
+    void __absentNode_keepsDescription() throws Exception {
+        final var path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> assertThatPath(path).as("case 42").extractingNode(2))
+                .hasMessageContaining("[case 42]")
+                .hasMessageContaining("Expecting a node at index 2 of");
+    }
+
+    @Test
+    void __negativeIndex() throws Exception {
+        final var path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> assertThatPath(path).extractingNode(-1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

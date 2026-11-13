@@ -264,6 +264,37 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         return myself;
     }
 
+    // ------------------------------------------------------------------------------------------------- violations
+
+    /**
+     * Validates the {@code actual} value, with the validator and the groups configured on this assertion object, and
+     * returns an assertion on the resulting set of constraint violations, which may be empty.
+     * <p>
+     * {@snippet lang = "java" id = "extractingViolations":
+     * assertThatBean(new User(null, -1))
+     *         .extractingViolations()
+     *         .extracting(v -> v.getPropertyPath().toString())
+     *         .containsExactlyInAnyOrder("name", "age");
+     *}
+     * <p>
+     * The returned assertion carries this assertion object's description, overriding message and representation. It
+     * stands beside the {@code Consumer} overloads, such as {@link #isValid(Consumer)}, which assert validity and hand
+     * the violations over; this one asserts nothing about validity. On AssertJ 3.x and 4.0.0-M1, a chain navigating
+     * from a soft-assertion proxy through this method is not soft; see {@link AbstractValidationAssert}.
+     *
+     * @return an assertion on the constraint violations of the {@code actual} value.
+     * @throws AssertionError when the {@code actual} is {@code null}.
+     * @see Validator#validate(Object, Class[])
+     */
+    @CheckReturnValue
+    public AbstractIterableOfConstraintViolationsAssert<?, ACTUAL> extractingViolations() {
+        final Class<?>[] groups = groups();
+        return isNotNull().extracting(
+                b -> applyValidator(v -> v.validate(b, groups)),
+                (Set<ConstraintViolation<ACTUAL>> s) -> ValidationAssertions.assertThatConstraintViolations(s)
+        );
+    }
+
     // ----------------------------------------------------------------------------------------- executable validation
 
     private SELF executable(final String what, final Method method,

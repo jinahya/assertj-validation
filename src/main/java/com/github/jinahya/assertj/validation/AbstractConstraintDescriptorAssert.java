@@ -277,12 +277,27 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @param constraintTarget the expected value of {@code actual.validationAppliesTo}.
      * @return this assertion object.
      * @see ConstraintDescriptor#getValidationAppliesTo()
+     * @see #hasValidationAppliesTo(ConstraintTarget)
      */
     public SELF hostsConstraintTarget(final ConstraintTarget constraintTarget) {
-        isNotNull()
-                .extracting(ConstraintDescriptor::getValidationAppliesTo, ObjectAssert::new)
-                .isSameAs(constraintTarget);
+        ValidationAssertMessages.describedAsAttribute(
+                isNotNull().extracting(ConstraintDescriptor::getValidationAppliesTo, ObjectAssert::new),
+                "validationAppliesTo"
+        ).isSameAs(constraintTarget);
         return myself;
+    }
+
+    /**
+     * Verifies that the {@code actual} constraint descriptor's
+     * {@link ConstraintDescriptor#getValidationAppliesTo() validationAppliesTo} is same as specified value; an alias of
+     * {@link #hostsConstraintTarget(ConstraintTarget)}, named after the attribute.
+     *
+     * @param expectedValidationAppliesTo the expected value of {@code actual.validationAppliesTo}.
+     * @return this assertion object.
+     * @see ConstraintDescriptor#getValidationAppliesTo()
+     */
+    public SELF hasValidationAppliesTo(final ConstraintTarget expectedValidationAppliesTo) {
+        return hostsConstraintTarget(expectedValidationAppliesTo);
     }
 
     /**

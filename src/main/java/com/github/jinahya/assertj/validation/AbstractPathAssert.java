@@ -117,6 +117,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Verifies that the {@code actual} node's {@code containerClass} satisfies specified consumer, using an
          * assertion created by specified factory.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the container class, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasContainerClassSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -144,6 +147,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code containerClass} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the container class, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasContainerClassSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -201,6 +207,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Verifies that the {@code actual} node's {@code typeArgumentIndex} satisfies specified consumer, using an
          * assertion created by specified factory.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the type argument index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasTypeArgumentIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -228,6 +237,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code typeArgumentIndex} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the type argument index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasTypeArgumentIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -281,6 +293,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Verifies that the {@code actual} node's {@code parameterTypes} satisfies specified consumer, using an
          * assertion created by specified factory.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the parameter types, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasParameterTypesSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -310,6 +325,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} node's {@code parameterTypes} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the parameter types, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasParameterTypesSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion; must be not {@code null}.
          * @return this assertion object.
@@ -362,6 +380,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         /**
          * Verifies that the {@code actual} node's {@code parameterIndex} satisfies specified consumer, using an
          * assertion created by specified factory.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the parameter index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasParameterIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -389,6 +410,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code parameterIndex} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the parameter index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasParameterIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -459,6 +483,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code index} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -486,6 +513,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that {@link Path.Node#getIndex() actual.index} value satisfies according to specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the index, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasIndexSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer verifies the {@link Path.Node#getIndex() actual.index} value.
          * @return this assertion object
@@ -562,6 +592,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code key} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
          *
          * @param <KEY>     key type parameter
          * @param <ASSERT>  assertion type parameter
@@ -592,6 +625,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code key} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -641,6 +677,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code kind} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the kind, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasKindSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -667,6 +706,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code kind} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the kind, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasKindSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -705,6 +747,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code name} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the name, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasNameSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -731,6 +776,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code name} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the name, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasNameSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -781,6 +829,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code inIterable} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
          *
          * @param <ASSERT> assertion type parameter
          * @param factory  the assertion factory.
@@ -807,6 +858,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
         /**
          * Verifies that the {@code actual} value's {@code inIterable} satisfies specified consumer.
+         * <p>
+         * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description and
+         * representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
          *
          * @param consumer the consumer accepting the extracted assertion.
          * @return this assertion object.
@@ -1296,6 +1350,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@code actual} value's {@code node} satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param <A>      assertion type parameter
      * @param <N>      node type parameter
@@ -1340,6 +1397,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@code actual} value's {@code node} satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer accepting the extracted assertion.
@@ -1403,6 +1463,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@code actual} value's {@code propertyNode} satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the property node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasPropertyNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer accepting the extracted assertion.
@@ -1443,6 +1506,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.ConstructorNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the constructor node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasConstructorNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
@@ -1482,6 +1548,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.ContainerElementNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the container element node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasContainerElementNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
@@ -1521,6 +1590,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.CrossParameterNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the cross parameter node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasCrossParameterNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
@@ -1560,6 +1632,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.MethodNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the method node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasMethodNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
@@ -1599,6 +1674,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.ParameterNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the parameter node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasParameterNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
@@ -1638,6 +1716,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
 
     /**
      * Verifies that the {@link Path.ReturnValueNode node} at specified index satisfies specified consumer.
+     * <p>
+     * The consumer receives an <em>assertion</em> on the return value node, carrying this assertion's description and
+     * representation, not the value itself, e.g. {@code hasReturnValueNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.

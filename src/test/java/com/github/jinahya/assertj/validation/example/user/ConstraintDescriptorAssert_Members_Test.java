@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintDescriptor;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests the {@link jakarta.validation.metadata.ConstraintDescriptor} members that previously had only empty section
@@ -74,5 +75,15 @@ class ConstraintDescriptorAssert_Members_Test {
         assertThatConstraintDescriptor(blankNameViolation().getConstraintDescriptor())
                 .extractingConstraintValidatorClasses()
                 .isNotEmpty();
+    }
+
+    @Test
+    void should_verify_validationAppliesTo_through_the_alias_as_hostsConstraintTarget_does() {
+        // a property constraint applies to no constraint target
+        final var descriptor = blankNameViolation().getConstraintDescriptor();
+        assertThatConstraintDescriptor(descriptor).hasValidationAppliesTo(null).hostsConstraintTarget(null);
+        assertThatThrownBy(() -> assertThatConstraintDescriptor(descriptor)
+                .hasValidationAppliesTo(jakarta.validation.ConstraintTarget.PARAMETERS))
+                .hasMessageStartingWith("[validationAppliesTo]");
     }
 }

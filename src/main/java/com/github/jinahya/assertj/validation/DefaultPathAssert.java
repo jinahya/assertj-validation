@@ -23,7 +23,7 @@ package com.github.jinahya.assertj.validation;
 import jakarta.validation.Path;
 
 /**
- * A class for verifying values against specified properties of specified bean types.
+ * A class for verifying {@link Path} values.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
@@ -31,13 +31,13 @@ public class DefaultPathAssert
         extends AbstractPathAssert<DefaultPathAssert> {
 
     /**
-     * An abstract assertion class for verifying {@code DefaultNode} values.
+     * A class for verifying {@link Path.Node} values, of any kind.
      */
     public static class DefaultNodeAssert
             extends AbstractNodeAssert<DefaultNodeAssert> {
 
         /**
-         * An abstract assertion class for verifying {@code DefaultBeanNode} values.
+         * A class for verifying {@link Path.BeanNode} values.
          */
         public static class DefaultBeanNodeAssert
                 extends AbstractBeanNodeAssert<DefaultBeanNodeAssert> {
@@ -53,7 +53,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultConstructorNode} values.
+         * A class for verifying {@link Path.ConstructorNode} values.
          */
         public static class DefaultConstructorNodeAssert
                 extends AbstractConstructorNodeAssert<DefaultConstructorNodeAssert> {
@@ -69,7 +69,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultCrossParameterNode} values.
+         * A class for verifying {@link Path.CrossParameterNode} values.
          */
         public static class DefaultCrossParameterNodeAssert
                 extends AbstractCrossParameterNodeAssert<DefaultCrossParameterNodeAssert> {
@@ -85,7 +85,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultMethodNode} values.
+         * A class for verifying {@link Path.MethodNode} values.
          */
         public static class DefaultMethodNodeAssert
                 extends AbstractMethodNodeAssert<DefaultMethodNodeAssert> {
@@ -101,7 +101,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultParameterNode} values.
+         * A class for verifying {@link Path.ParameterNode} values.
          */
         public static class DefaultParameterNodeAssert
                 extends AbstractParameterNodeAssert<DefaultParameterNodeAssert> {
@@ -117,7 +117,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultContainerElementNode} values.
+         * A class for verifying {@link Path.ContainerElementNode} values.
          */
         public static class DefaultContainerElementNodeAssert
                 extends AbstractContainerElementNodeAssert<DefaultContainerElementNodeAssert> {
@@ -133,7 +133,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultReturnValueNode} values.
+         * A class for verifying {@link Path.ReturnValueNode} values.
          */
         public static class DefaultReturnValueNodeAssert
                 extends AbstractReturnValueNodeAssert<DefaultReturnValueNodeAssert> {
@@ -149,7 +149,7 @@ public class DefaultPathAssert
         }
 
         /**
-         * An abstract assertion class for verifying {@code DefaultPropertyNode} values.
+         * A class for verifying {@link Path.PropertyNode} values.
          */
         public static class DefaultPropertyNodeAssert
                 extends AbstractPropertyNodeAssert<DefaultPropertyNodeAssert> {

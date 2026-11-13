@@ -25,9 +25,9 @@ import jakarta.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
 
 /**
- * An abstract assertion class for verifying {@code DefaultConstraintDescriptor} values.
+ * A class for verifying {@link ConstraintDescriptor} values.
  *
- * @param <T> root bean type parameter
+ * @param <T> the type of the constraint annotation
  */
 public class DefaultConstraintDescriptorAssert<T extends Annotation>
         extends AbstractConstraintDescriptorAssert<DefaultConstraintDescriptorAssert<T>, ConstraintDescriptor<T>, T> {

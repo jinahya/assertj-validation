@@ -23,7 +23,7 @@ package com.github.jinahya.assertj.validation;
 import jakarta.validation.ConstraintViolation;
 
 /**
- * An abstract assertion class for verifying {@code DefaultIterableOfConstraintViolations} values.
+ * A class for verifying iterables of {@link ConstraintViolation}s.
  *
  * @param <T> root bean type parameter
  */

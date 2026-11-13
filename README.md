@@ -29,7 +29,7 @@ Both APIs this module sits between are *provided*-scoped, so a consumer brings i
 |---|---|
 | Java | 17 (tests are built at 25) |
 | Jakarta Validation | 3.0 and 3.1 |
-| AssertJ | the latest [org.assertj:assertj-core](https://javadoc.io/doc/org.assertj/assertj-core/latest/index.html) |
+| AssertJ | 3.27 and later, including 4 (built on 3, tested on both) |
 
 ### Jakarta EE generations
 
@@ -38,11 +38,20 @@ turn pins `jakarta.validation-api` — along with the Hibernate Validator and Ex
 
 | profile | `jakarta.validation-api` | Hibernate Validator | Expressly |
 |---|---|---|---|
-| `jakarta-ee-11` (default) | 3.1.1 | 9 | 6 |
-| `jakarta-ee-10` | 3.0.2 | 8 | 5 |
+| `jakartaee-11` (default) | 3.1.1 | 9 | 6 |
+| `jakartaee-10` | 3.0.2 | 8 | 5 |
 
 ```shell
-./mvnw -P jakarta-ee-10 test
+./mvnw -P jakartaee-10 test
+```
+
+### AssertJ
+
+The build compiles against AssertJ 3, which every consumer can run, and targets AssertJ 4: the `assertj-4` profile
+runs the same build against it. Combine it with a generation.
+
+```shell
+./mvnw -P jakartaee-11,assertj-4 test
 ```
 
 Only Hibernate Validator and Expressly are test-scoped: nothing under `src/main` references an implementation,

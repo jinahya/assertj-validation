@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.github.jinahya</groupId>
     <artifactId>jinahya-parent</artifactId>
-    <version>1.0.9</version>
+    <version>1.1.4</version>
   </parent>
 
   <artifactId>assertj-validation</artifactId>
@@ -59,11 +59,14 @@
          against. It stays provided: a consumer already has the API on its classpath, and pinning one version
          here would drag it onto theirs. The generation is an axis, though, so the versions below move together
          and a profile overrides them; see <profiles>.
-         The defaults are Jakarta EE 11, which is what jakarta-ee-11 selects. -->
+         The defaults are Jakarta EE 11, which is what jakartaee-11 selects. -->
     <!-- https://jakarta.ee/specifications/platform/11/ -->
     <!-- https://central.sonatype.com/artifact/jakarta.platform/jakarta.jakartaee-bom/versions -->
     <!-- 11.0.0 manages: jakarta.validation-api 3.1.1 -->
     <version.jakarta.jakartaee-bom>11.0.0</version.jakarta.jakartaee-bom>
+    <!-- the generation itself, the NN of the generation-suffixed jinahya-* artifacts: jinahyaee-bom-NN and the
+         jinahya-validation-*-NN it manages -->
+    <jakarta.ee.generation>11</jakarta.ee.generation>
     <!-- the Jakarta Validation specification of the active generation; surefire hands it to the tests, so that
          a test can assert which generation it is running against -->
     <jakarta.validation.spec.version>3.1</jakarta.validation.spec.version>
@@ -74,9 +77,19 @@
     <version.org.hibernate.validator>9.1.4.Final</version.org.hibernate.validator>
     <!-- https://central.sonatype.com/artifact/org.glassfish.expressly/expressly -->
     <version.org.glassfish.expressly>6.0.0</version.org.glassfish.expressly>
+    <!-- the bill of materials of the jinahya-* artifacts for the active generation, jinahyaee-bom-NN; it manages the
+         jinahya-validation test utilities, which are test-scope only, like the implementation above -->
+    <!-- https://github.com/jinahya/jinahyaee-bom -->
+    <!-- https://central.sonatype.com/artifact/io.github.jinahya/jinahyaee-bom-11/versions -->
+    <version.io.github.jinahya.jinahyaee-bom>0.0.2</version.io.github.jinahya.jinahyaee-bom>
 
     <version.ch.qos.logback>1.6.5</version.ch.qos.logback>
-    <version.org.assertj>4.0.0-M1</version.org.assertj>
+    <!-- the other API this module extends, compiled against at 3.x: the line every consumer can run, and the one this
+         module's main classes are built on. 4.x is the target — 4.0.0-M1 is binary incompatible with 3.x, yet not in
+         the members this module calls, so a jar built on 3.x runs on either — and the assertj-4 profile tests it.
+         Move the default to 4.x once 4.0.0 is released; until then versions:display-property-updates offers only
+         3.x, since ignoredVersions hides the milestones. -->
+    <version.org.assertj>3.27.7</version.org.assertj>
     <!-- held at 5.x until Mockito moves. mockito-junit-jupiter 5.24.0 still declares junit-jupiter-api 5.13.4,
          so junit-bom 6.x does not update Mockito's JUnit integration, it overrides it: the BOM pulls the API up
          to 6.x under a Mockito artifact built and tested against 5.x. It passes here only because these tests
@@ -93,6 +106,13 @@
   <dependencyManagement>
     <!-- sorted by groupId, then artifactId -->
     <dependencies>
+      <dependency>
+        <groupId>io.github.jinahya</groupId>
+        <artifactId>jinahyaee-bom-${jakarta.ee.generation}</artifactId>
+        <version>${version.io.github.jinahya.jinahyaee-bom}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>jakarta.platform</groupId>
         <artifactId>jakarta.jakartaee-bom</artifactId>
@@ -142,7 +162,18 @@
       <version>${version.ch.qos.logback}</version>
       <scope>test</scope>
     </dependency>
-    <!-- the API this module extends; its version is pinned by the active jakarta-ee-NN profile -->
+    <!-- validator factory and validator helpers for the tests; the -utils artifact is what -test-utils builds on -->
+    <dependency>
+      <groupId>io.github.jinahya</groupId>
+      <artifactId>jinahya-validation-test-utils-${jakarta.ee.generation}</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.jinahya</groupId>
+      <artifactId>jinahya-validation-utils-${jakarta.ee.generation}</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- the API this module extends; its version is pinned by the active jakartaee-NN profile -->
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
@@ -296,7 +327,7 @@
           <!-- Nothing here should be offered a pre-release. Two reasons, and the second is the one that
                bites: a build does not want to track someone else's beta, and Maven orders a qualifier
                BELOW the release it precedes, so 11.0.0-RC1 sits inside the range [10,11) that the
-               jakarta-ee-10 profile uses to stay on generation 10. Ranges alone therefore do not hold
+               jakartaee-10 profile uses to stay on generation 10. Ranges alone therefore do not hold
                the generation line; this does. -->
           <ignoredVersions>
             <ignoredVersion>(?i).*[-.](alpha|beta|m|rc|cr)[-.]?\d*</ignoredVersion>
@@ -307,26 +338,37 @@
   </build>
 
   <profiles>
+    <!-- ============================================== AssertJ ============================================== -->
+    <!-- Runs the build against AssertJ 4, the line this module targets, while the default stays on 3.x; see
+         version.org.assertj. Combine it with a generation, e.g. -P jakartaee-11,assertj-4: naming any profile
+         deactivates jakartaee-11's activeByDefault. -->
+    <profile>
+      <id>assertj-4</id>
+      <!-- https://github.com/assertj/assertj/releases/tag/assertj-build-4.0.0-M1 -->
+      <properties>
+        <version.org.assertj>4.0.0-M1</version.org.assertj>
+      </properties>
+    </profile>
     <!-- ============================================== Jakarta EE generation ================ -->
     <!-- The only implementation axis in this build. Jakarta Validation has a single implementation,
          Hibernate Validator with Expressly for the expression language, so a profile does not choose
          an implementation. It chooses a GENERATION, and the three versions that move with it: the
          platform BOM, which pins jakarta.validation-api, and the release of each of those two
          aligned with it.
-         The defaults in <properties> are jakarta-ee-11's, so that profile overrides nothing, while
-         jakarta-ee-10 overrides all three. Unlike the sibling builds, the API here is compiled
+         The defaults in <properties> are jakartaee-11's, so that profile overrides nothing, while
+         jakartaee-10 overrides all three. Unlike the sibling builds, the API here is compiled
          against rather than merely read reflectively, so the profile also decides what the main
          sources see: 3.1 adds no member this module uses, which is why one source tree serves both.
 
          Each profile also pins its three axis properties to a MAJOR RANGE for versions-maven-plugin.
-         Left alone the plugin reads each property on its own and, under jakarta-ee-10, proposes
+         Left alone the plugin reads each property on its own and, under jakartaee-10, proposes
          jakartaee-bom 10 -> 11, hibernate-validator 8 -> 9 and expressly 5 -> 6 — which would not
-         update that profile so much as collapse it into a copy of jakarta-ee-11. The ranges keep
+         update that profile so much as collapse it into a copy of jakartaee-11. The ranges keep
          versions:update-properties inside the generation, so it still offers the patch releases that
          matter (8.0.3 -> 8.0.5) and never the ones that cross. Moving a generation is a deliberate
          edit of these four lines, not something a bulk update does. -->
     <profile>
-      <id>jakarta-ee-11</id>
+      <id>jakartaee-11</id>
       <!-- https://jakarta.ee/specifications/platform/11/ -->
       <!-- jakarta.validation-api 3.1.1 / hibernate-validator 9 / expressly 6 -->
       <activation>
@@ -358,11 +400,12 @@
       </build>
     </profile>
     <profile>
-      <id>jakarta-ee-10</id>
+      <id>jakartaee-10</id>
       <!-- https://jakarta.ee/specifications/platform/10/ -->
       <!-- jakarta.validation-api 3.0.2 / hibernate-validator 8 / expressly 5 -->
       <properties>
         <version.jakarta.jakartaee-bom>10.0.0</version.jakarta.jakartaee-bom>
+        <jakarta.ee.generation>10</jakarta.ee.generation>
         <jakarta.validation.spec.version>3.0</jakarta.validation.spec.version>
         <version.org.hibernate.validator>8.0.5.Final</version.org.hibernate.validator>
         <version.org.glassfish.expressly>5.0.0</version.org.glassfish.expressly>

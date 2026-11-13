@@ -19,12 +19,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # one run per Jakarta EE generation; each profile pins its own platform BOM,
-    # which in turn pins jakarta.validation-api, plus Hibernate Validator and Expressly
+    # one run per Jakarta EE generation and AssertJ line; each generation profile pins its own platform BOM,
+    # which in turn pins jakarta.validation-api, plus Hibernate Validator and Expressly, and assertj-4 moves
+    # AssertJ from the 3.x the module is built on to the 4.x it targets
     strategy:
       fail-fast: false
       matrix:
-        profile: [ jakarta-ee-11, jakarta-ee-10 ]
+        profile: [ jakartaee-11, jakartaee-10, 'jakartaee-11,assertj-4', 'jakartaee-10,assertj-4' ]
 
     name: build (${{ matrix.profile }})
 

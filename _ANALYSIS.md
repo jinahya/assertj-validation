@@ -46,7 +46,7 @@ Two causes, both structural:
 | validation API | `javax.validation:validation-api:2.0.1` | `jakarta.validation-api`, from `jakarta.jakartaee-bom` |
 | main / test release | 8 / 17 | 17 / 25 |
 | jars published | 8 (1 plain + 7 classifiers) | 1 |
-| generation axis | `attach-jakarta-transformed` + transformer | `jakarta-ee-11` (default) / `jakarta-ee-10` profiles |
+| generation axis | `attach-jakarta-transformed` + transformer | `jakartaee-11` (default) / `jakartaee-10` profiles |
 | CI | single JDK 18 job | matrix over both generations on JDK 25 |
 | pom size | 922 lines | 300 lines |
 
@@ -57,7 +57,7 @@ Concretely:
   directly against the API it documents.
 - **`jakarta.platform:jakarta.jakartaee-bom` imported.** A profile chooses a *generation*, and the three
   versions that move with it — the platform BOM (which pins `jakarta.validation-api`), Hibernate Validator, and
-  Expressly. `jakarta-ee-11` holds the defaults and so overrides nothing; `jakarta-ee-10` overrides all three.
+  Expressly. `jakartaee-11` holds the defaults and so overrides nothing; `jakartaee-10` overrides all three.
 - **`jakarta.validation-api` and `assertj-core` are `provided`.** Both are APIs this module sits between, and a
   consumer brings its own. Hibernate Validator and Expressly are `test` only — nothing under `src/main`
   references an implementation, which is the point of extending the API rather than the engine.
@@ -75,8 +75,8 @@ Concretely:
 
 | profile | `jakarta.validation-api` | Hibernate Validator | Expressly | result |
 |---|---|---|---|---|
-| `jakarta-ee-11` | 3.1.1 | 9.1.3.Final | 6.0.0 | `package` ✅ 64/64 tests |
-| `jakarta-ee-10` | 3.0.2 | 8.0.3.Final | 5.0.0 | `package` ✅ 64/64 tests |
+| `jakartaee-11` | 3.1.1 | 9.1.3.Final | 6.0.0 | `package` ✅ 64/64 tests |
+| `jakartaee-10` | 3.0.2 | 8.0.3.Final | 5.0.0 | `package` ✅ 64/64 tests |
 
 `mvn javadoc:javadoc` also succeeds — after the fix in §2.1.
 
@@ -113,7 +113,7 @@ and `assertj` 4.0.0-M1 (already current — 4.0.0-M1 is deliberately a milestone
 
 #### The Jakarta axis is where a bulk update goes wrong
 
-Run against `jakarta-ee-10`, the plugin proposed:
+Run against `jakartaee-10`, the plugin proposed:
 
 ```
 ${version.jakarta.jakartaee-bom} ................... 10.0.0 -> 11.0.0
@@ -121,7 +121,7 @@ ${version.org.glassfish.expressly} ................... 5.0.0 -> 6.0.0
 ${version.org.hibernate.validator} ....... 8.0.3.Final -> 9.1.4.Final
 ```
 
-Taken, that would not have updated the profile — it would have collapsed it into a copy of `jakarta-ee-11`,
+Taken, that would not have updated the profile — it would have collapsed it into a copy of `jakartaee-11`,
 and the two-generation matrix would have gone on reporting green while testing one generation twice. The
 plugin reads each property independently and cannot know the three move together.
 
@@ -130,8 +130,8 @@ behind the 9.x proposal.
 
 Two guards now, in the pom:
 
-1. **Per-profile major ranges** on the three axis properties — `[11,12)`/`[9,10)`/`[6,7)` under `jakarta-ee-11`,
-   `[10,11)`/`[8,9)`/`[5,6)` under `jakarta-ee-10`.
+1. **Per-profile major ranges** on the three axis properties — `[11,12)`/`[9,10)`/`[6,7)` under `jakartaee-11`,
+   `[10,11)`/`[8,9)`/`[5,6)` under `jakartaee-10`.
 2. **A pre-release filter** (`ignoredVersions`) on the plugin. Ranges alone are not enough: Maven orders a
    qualifier *below* the release it precedes, so `11.0.0-RC1` still satisfies `[10,11)`. Without the filter the
    guarded ee-10 build still proposed `jakartaee-bom → 11.0.0-RC1`, `expressly → 6.0.0-M1` and

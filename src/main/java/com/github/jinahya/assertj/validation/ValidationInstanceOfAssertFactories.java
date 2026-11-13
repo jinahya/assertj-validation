@@ -50,6 +50,13 @@ import java.lang.annotation.Annotation;
  * discriminate them: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so without
  * the kind check {@code asInstanceOf(PROPERTY_NODE)} would accept a method node and fail later, from inside the
  * provider, rather than as an assertion.
+ * <p>
+ * A node factory builds an assertion over a {@code null} node, as AssertJ's own factories do. A node of the wrong
+ * kind fails at once, but that failure cannot carry a description or an overriding message set on the assertion
+ * {@code asInstanceOf} was called on: AssertJ applies that assertion's state only after the factory returns. For a
+ * described failure, navigate from the path instead, e.g.
+ * {@code assertThatPath(path).as("case 42").extractingMethodNode(0)}, whose kind check fails through the path
+ * assertion.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */

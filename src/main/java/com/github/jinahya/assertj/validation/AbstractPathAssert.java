@@ -1196,12 +1196,18 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * navigation &mdash; the assertion factories in {@link ValidationInstanceOfAssertFactories}, which cannot rely on
      * {@code instanceof}.
      *
-     * @param node     the node to check.
+     * <p>
+     * A {@code null} node passes as {@code null}, as AssertJ's own factories build an assertion over {@code null}.
+     *
+     * @param node     the node to check; may be {@code null}.
      * @param nodeType the node type it is about to be narrowed to.
      * @param <N>      node type parameter
-     * @return {@code node}, narrowed.
+     * @return {@code node}, narrowed; {@code null} when {@code node} is {@code null}.
      */
     static <N extends Path.Node> N requireKind(final Path.Node node, final Class<N> nodeType) {
+        if (node == null) {
+            return null;
+        }
         requireKindOf(node, nodeType, () -> "the node");
         return node.as(nodeType);
     }

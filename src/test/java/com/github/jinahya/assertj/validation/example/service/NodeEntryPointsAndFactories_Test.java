@@ -118,6 +118,40 @@ class NodeEntryPointsAndFactories_Test {
     }
 
     @Test
+    void factory__typedNodeFactoriesAcceptNull() throws Exception {
+        // as AssertJ's own factories do: the assertion is built over null, and fails only when asked to
+        for (final var f : ValidationInstanceOfAssertFactories.class.getFields()) {
+            if (!f.getName().endsWith("_NODE")) {
+                continue;
+            }
+            final var factory = (org.assertj.core.api.InstanceOfAssertFactory<?, ?>) f.get(null);
+            final Object nothing = null;
+            final var assertion = factory.createAssert(nothing);
+            assertThat(assertion).as(f.getName()).isNotNull();
+            assertThatThrownBy(assertion::isNotNull).as(f.getName()).isInstanceOf(AssertionError.class);
+        }
+    }
+
+    @Test
+    void factory__wrongKindFailsAtOnce() throws Exception {
+        final Path.Node parameter = parameterViolation().getPropertyPath().iterator().next(); // the method node
+        assertThatThrownBy(() -> assertThat((Object) parameter).asInstanceOf(
+                ValidationInstanceOfAssertFactories.PROPERTY_NODE))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("PROPERTY");
+    }
+
+    @Test
+    void navigation__wrongKindFailureCarriesTheDescription() throws Exception {
+        final Path path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath(path)
+                .as("case 42")
+                .extractingPropertyNode(0))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageStartingWith("[case 42]");
+    }
+
+    @Test
     void factories__cannotBeInstantiated() throws Exception {
         final var constructor = ValidationInstanceOfAssertFactories.class.getDeclaredConstructor();
         constructor.setAccessible(true);

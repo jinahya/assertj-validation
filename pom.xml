@@ -69,8 +69,8 @@
     <!-- https://central.sonatype.com/artifact/jakarta.platform/jakarta.jakartaee-bom/versions -->
     <!-- 11.0.0 manages: jakarta.validation-api 3.1.1 -->
     <version.jakarta.jakartaee-bom>11.0.0</version.jakarta.jakartaee-bom>
-    <!-- the generation itself, the NN of the generation-suffixed jinahya-* artifacts: jinahyaee-bom-NN and the
-         jinahya-validation-*-NN it manages -->
+    <!-- the generation itself, the NN of the generation-suffixed jinahya-* artifacts, the
+         jinahya-validation-*-NN test utilities -->
     <jakarta.ee.generation>11</jakarta.ee.generation>
     <!-- the Jakarta Validation specification of the active generation; surefire hands it to the tests, so that
          a test can assert which generation it is running against -->
@@ -82,11 +82,14 @@
     <version.org.hibernate.validator>9.1.4.Final</version.org.hibernate.validator>
     <!-- https://central.sonatype.com/artifact/org.glassfish.expressly/expressly -->
     <version.org.glassfish.expressly>6.0.0</version.org.glassfish.expressly>
-    <!-- the bill of materials of the jinahya-* artifacts for the active generation, jinahyaee-bom-NN; it manages the
-         jinahya-validation test utilities, which are test-scope only, like the implementation above -->
-    <!-- https://github.com/jinahya/jinahyaee-bom -->
-    <!-- https://central.sonatype.com/artifact/io.github.jinahya/jinahyaee-bom-11/versions -->
-    <version.io.github.jinahya.jinahyaee-bom>0.0.3</version.io.github.jinahya.jinahyaee-bom>
+    <!-- the jinahya-validation test utilities for the active generation, jinahya-validation-*-NN; test-scope only,
+         like the implementation above. Managed here directly rather than through jinahyaee-bom-NN: these two are
+         the only jinahya-* artifacts this module uses, and the BOM would put a release of its own between every
+         jinahya-validation release and this build. Nor is jinahya-validation-NN imported as a BOM, since its
+         <dependencyManagement> also pins the platform BOM and the implementations this build pins itself. -->
+    <!-- https://github.com/jinahya/jinahya-validation -->
+    <!-- https://central.sonatype.com/artifact/io.github.jinahya/jinahya-validation-utils-11/versions -->
+    <version.io.github.jinahya.jinahya-validation>0.0.4</version.io.github.jinahya.jinahya-validation>
 
     <version.ch.qos.logback>1.6.5</version.ch.qos.logback>
     <!-- the other API this module extends, compiled against at 3.x: the line every consumer can run, and the one this
@@ -113,10 +116,13 @@
     <dependencies>
       <dependency>
         <groupId>io.github.jinahya</groupId>
-        <artifactId>jinahyaee-bom-${jakarta.ee.generation}</artifactId>
-        <version>${version.io.github.jinahya.jinahyaee-bom}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <artifactId>jinahya-validation-test-utils-${jakarta.ee.generation}</artifactId>
+        <version>${version.io.github.jinahya.jinahya-validation}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.jinahya</groupId>
+        <artifactId>jinahya-validation-utils-${jakarta.ee.generation}</artifactId>
+        <version>${version.io.github.jinahya.jinahya-validation}</version>
       </dependency>
       <dependency>
         <groupId>jakarta.platform</groupId>

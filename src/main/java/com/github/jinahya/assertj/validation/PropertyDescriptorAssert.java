@@ -20,22 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.ContainerElementTypeDescriptor;
+import jakarta.validation.metadata.PropertyDescriptor;
 
 /**
- * A class for verifying {@link ContainerElementTypeDescriptor} values.
+ * A class for verifying {@link PropertyDescriptor} values.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultContainerElementTypeDescriptorAssert
-        extends AbstractContainerElementTypeDescriptorAssert<DefaultContainerElementTypeDescriptorAssert> {
+public class PropertyDescriptorAssert
+        extends AbstractPropertyDescriptorAssert<PropertyDescriptorAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultContainerElementTypeDescriptorAssert(final ContainerElementTypeDescriptor actual) {
-        super(actual, DefaultContainerElementTypeDescriptorAssert.class);
+    public PropertyDescriptorAssert(final PropertyDescriptor actual) {
+        super(actual, PropertyDescriptorAssert.class);
     }
 }

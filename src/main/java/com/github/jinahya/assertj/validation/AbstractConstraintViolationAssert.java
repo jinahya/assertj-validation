@@ -485,7 +485,7 @@ public abstract class AbstractConstraintViolationAssert<
      */
     @CheckReturnValue
     public AbstractPathAssert<?> extractingPropertyPath() {
-        return extractingPropertyPath(pp -> new DefaultPathAssert(pp));
+        return extractingPropertyPath(pp -> new PathAssert(pp));
     }
 
     // -------------------------------------------------------------------------------------------------------- rootBean

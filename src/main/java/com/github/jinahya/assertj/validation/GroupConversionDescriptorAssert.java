@@ -20,22 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.ReturnValueDescriptor;
+import jakarta.validation.metadata.GroupConversionDescriptor;
 
 /**
- * A class for verifying {@link ReturnValueDescriptor} values.
+ * A class for verifying {@link GroupConversionDescriptor} values.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultReturnValueDescriptorAssert
-        extends AbstractReturnValueDescriptorAssert<DefaultReturnValueDescriptorAssert> {
+public class GroupConversionDescriptorAssert
+        extends AbstractGroupConversionDescriptorAssert<GroupConversionDescriptorAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultReturnValueDescriptorAssert(final ReturnValueDescriptor actual) {
-        super(actual, DefaultReturnValueDescriptorAssert.class);
+    public GroupConversionDescriptorAssert(final GroupConversionDescriptor actual) {
+        super(actual, GroupConversionDescriptorAssert.class);
     }
 }

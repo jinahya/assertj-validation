@@ -45,6 +45,6 @@ abstract class ConstraintViolationAssert__Base {
     }
 
     <T> AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T> assertion(final ConstraintViolation<T> actual) {
-        return new DefaultConstraintViolationAssert<>(actual);
+        return new ConstraintViolationAssert<>(actual);
     }
 }

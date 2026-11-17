@@ -20,11 +20,11 @@ package com.github.jinahya.assertj.validation.example.user;
  * #L%
  */
 
-import com.github.jinahya.assertj.validation.DefaultBeanAssert;
-import com.github.jinahya.assertj.validation.DefaultConstraintViolationAssert;
-import com.github.jinahya.assertj.validation.DefaultConstructorAssert;
-import com.github.jinahya.assertj.validation.DefaultPathAssert;
-import com.github.jinahya.assertj.validation.DefaultPropertyAssert;
+import com.github.jinahya.assertj.validation.BeanAssert;
+import com.github.jinahya.assertj.validation.ConstraintViolationAssert;
+import com.github.jinahya.assertj.validation.ConstructorAssert;
+import com.github.jinahya.assertj.validation.PathAssert;
+import com.github.jinahya.assertj.validation.PropertyAssert;
 import com.github.jinahya.assertj.validation.example.service.Greeter;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
@@ -56,14 +56,14 @@ class User_SoftAssertions_Test {
     void should_collect_bean_property_and_constructor_failures() throws Exception {
         final var softly = new SoftAssertions();
         final var invalid = User.of(null, -1);
-        softly.proxy(DefaultBeanAssert.class, Object.class, invalid).isValid();
-        softly.proxy(DefaultBeanAssert.class, Object.class, invalid).hasValidProperty(User.PROPERTY_NAME_AGE);
-        softly.proxy(DefaultBeanAssert.class, Object.class, User.newValidUser()).isNotValid();
-        softly.proxy(DefaultPropertyAssert.class, Object.class, null).isValidFor(User.class, User.PROPERTY_NAME_NAME);
-        softly.proxy(DefaultBeanAssert.class, Object.class, new Greeter("Jane"))
+        softly.proxy(BeanAssert.class, Object.class, invalid).isValid();
+        softly.proxy(BeanAssert.class, Object.class, invalid).hasValidProperty(User.PROPERTY_NAME_AGE);
+        softly.proxy(BeanAssert.class, Object.class, User.newValidUser()).isNotValid();
+        softly.proxy(PropertyAssert.class, Object.class, null).isValidFor(User.class, User.PROPERTY_NAME_NAME);
+        softly.proxy(BeanAssert.class, Object.class, new Greeter("Jane"))
                 .hasValidParameters(Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class),
                                     " ", 1);
-        softly.proxy(DefaultConstructorAssert.class, Constructor.class, Greeter.class.getConstructor(String.class))
+        softly.proxy(ConstructorAssert.class, Constructor.class, Greeter.class.getConstructor(String.class))
                 .hasValidParameters((Object) " ");
         assertThat(softly.errorsCollected()).hasSize(6);
         assertThatThrownBy(softly::assertAll).isInstanceOf(AssertionError.class);
@@ -73,7 +73,7 @@ class User_SoftAssertions_Test {
     @Test
     void should_collect_a_null_bean_as_one_failure() {
         final var softly = new SoftAssertions();
-        softly.proxy(DefaultBeanAssert.class, Object.class, null).isValid();
+        softly.proxy(BeanAssert.class, Object.class, null).isValid();
         assertThat(softly.errorsCollected()).hasSize(1);
     }
 
@@ -81,10 +81,10 @@ class User_SoftAssertions_Test {
     @Test
     void should_collect_through_BDDSoftAssertions() {
         final var softly = new BDDSoftAssertions();
-        softly.proxy(DefaultBeanAssert.class, Object.class, User.newValidUser()).isValid().hasValidProperty(
+        softly.proxy(BeanAssert.class, Object.class, User.newValidUser()).isValid().hasValidProperty(
                 User.PROPERTY_NAME_NAME);
         assertThat(softly.errorsCollected()).isEmpty();
-        softly.proxy(DefaultBeanAssert.class, Object.class, User.of(null, 0)).isValid().isNotValid();
+        softly.proxy(BeanAssert.class, Object.class, User.of(null, 0)).isValid().isNotValid();
         assertThat(softly.errorsCollected()).hasSize(1);
     }
 
@@ -93,7 +93,7 @@ class User_SoftAssertions_Test {
     void should_collect_violation_failures() {
         final ConstraintViolation<User> violation = violationOf(User.of(null, 0));
         final var softly = new SoftAssertions();
-        softly.proxy(DefaultConstraintViolationAssert.class, ConstraintViolation.class, violation)
+        softly.proxy(ConstraintViolationAssert.class, ConstraintViolation.class, violation)
                 .hasMessageTemplate("{wrong}")
                 .hasInvalidValue("wrong");
         assertThat(softly.errorsCollected()).hasSize(2);
@@ -104,7 +104,7 @@ class User_SoftAssertions_Test {
     void should_collect_path_failures() {
         final Path path = violationOf(User.of(null, 0)).getPropertyPath();
         final var softly = new SoftAssertions();
-        softly.proxy(DefaultPathAssert.class, Path.class, path).hasSize(2);
+        softly.proxy(PathAssert.class, Path.class, path).hasSize(2);
         assertThat(softly.errorsCollected()).hasSize(1);
     }
 

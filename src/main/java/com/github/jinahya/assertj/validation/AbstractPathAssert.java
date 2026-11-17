@@ -315,7 +315,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractNodeAssert<?, Path.Node> extractingNode(final int index) {
-        return extractingNode(index, DefaultNodeAssert::new);
+        return extractingNode(index, NodeAssert::new);
     }
 
     /**
@@ -356,7 +356,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractBeanNodeAssert<?> extractingBeanNode(final int index) {
-        return extractingBeanNode(index, DefaultBeanNodeAssert::new);
+        return extractingBeanNode(index, BeanNodeAssert::new);
     }
 
     /**
@@ -381,7 +381,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractPropertyNodeAssert<?> extractingPropertyNode(final int index) {
-        return extractingPropertyNode(index, DefaultPropertyNodeAssert::new);
+        return extractingPropertyNode(index, PropertyNodeAssert::new);
     }
 
     /**
@@ -424,7 +424,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractConstructorNodeAssert<?> extractingConstructorNode(final int index) {
-        return extractingConstructorNode(index, DefaultConstructorNodeAssert::new);
+        return extractingConstructorNode(index, ConstructorNodeAssert::new);
     }
 
     /**
@@ -466,7 +466,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractContainerElementNodeAssert<?> extractingContainerElementNode(final int index) {
-        return extractingContainerElementNode(index, DefaultContainerElementNodeAssert::new);
+        return extractingContainerElementNode(index, ContainerElementNodeAssert::new);
     }
 
     /**
@@ -508,7 +508,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractCrossParameterNodeAssert<?> extractingCrossParameterNode(final int index) {
-        return extractingCrossParameterNode(index, DefaultCrossParameterNodeAssert::new);
+        return extractingCrossParameterNode(index, CrossParameterNodeAssert::new);
     }
 
     /**
@@ -550,7 +550,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractMethodNodeAssert<?> extractingMethodNode(final int index) {
-        return extractingMethodNode(index, DefaultMethodNodeAssert::new);
+        return extractingMethodNode(index, MethodNodeAssert::new);
     }
 
     /**
@@ -592,7 +592,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractParameterNodeAssert<?> extractingParameterNode(final int index) {
-        return extractingParameterNode(index, DefaultParameterNodeAssert::new);
+        return extractingParameterNode(index, ParameterNodeAssert::new);
     }
 
     /**
@@ -634,7 +634,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     @CheckReturnValue
     public AbstractReturnValueNodeAssert<?> extractingReturnValueNode(final int index) {
-        return extractingReturnValueNode(index, DefaultReturnValueNodeAssert::new);
+        return extractingReturnValueNode(index, ReturnValueNodeAssert::new);
     }
 
     /**

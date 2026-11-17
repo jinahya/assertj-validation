@@ -37,7 +37,7 @@ import org.assertj.core.api.AbstractIterableAssert;
 public abstract class AbstractIterableOfConstraintViolationsAssert<
         SELF extends AbstractIterableOfConstraintViolationsAssert<SELF, T>, T>
         extends AbstractIterableAssert<
-        SELF, Iterable<? extends ConstraintViolation<T>>, ConstraintViolation<T>, DefaultConstraintViolationAssert<T>> {
+        SELF, Iterable<? extends ConstraintViolation<T>>, ConstraintViolation<T>, ConstraintViolationAssert<T>> {
 
     /**
      * Creates a new instance with specified arguments.

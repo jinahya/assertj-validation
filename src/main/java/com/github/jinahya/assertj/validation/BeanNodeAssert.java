@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2022 Jinahya, Inc.
+ * Copyright (C) 2021 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,20 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.BeanDescriptor;
+import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link BeanDescriptor} values.
- *
- * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * A class for verifying {@link Path.BeanNode} values.
  */
-public class DefaultBeanDescriptorAssert
-        extends AbstractBeanDescriptorAssert<DefaultBeanDescriptorAssert> {
+public class BeanNodeAssert
+        extends AbstractBeanNodeAssert<BeanNodeAssert> {
 
     /**
-     * Creates a new instance for verifying specified actual value.
+     * Creates a new instance for verifying specified bean node.
      *
-     * @param actual the actual value to verify.
+     * @param actual the bean node to verify.
      */
-    public DefaultBeanDescriptorAssert(final BeanDescriptor actual) {
-        super(actual, DefaultBeanDescriptorAssert.class);
+    public BeanNodeAssert(final Path.BeanNode actual) {
+        super(actual, BeanNodeAssert.class);
     }
 }

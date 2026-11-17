@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2022 Jinahya, Inc.
+ * Copyright (C) 2021 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import java.lang.reflect.Constructor;
+import jakarta.validation.ConstraintViolation;
 
 /**
- * A class for verifying constructor parameters and constructor return values.
+ * A class for verifying {@link ConstraintViolation} values.
  *
- * @param <T> the type declaring the constructor
- * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @param <T> root bean type parameter
  */
-public class DefaultConstructorAssert<T>
-        extends AbstractConstructorAssert<DefaultConstructorAssert<T>, T> {
+public class ConstraintViolationAssert<T>
+        extends AbstractConstraintViolationAssert<ConstraintViolationAssert<T>, ConstraintViolation<T>, T> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
-     * @param actual the constructor to verify.
+     * @param actual the actual value to verify.
      */
-    public DefaultConstructorAssert(final Constructor<? extends T> actual) {
-        super(actual, DefaultConstructorAssert.class);
+    public ConstraintViolationAssert(final ConstraintViolation<T> actual) {
+        super(actual, ConstraintViolationAssert.class);
     }
 }

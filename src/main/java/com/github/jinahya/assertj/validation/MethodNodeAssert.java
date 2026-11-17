@@ -23,17 +23,17 @@ package com.github.jinahya.assertj.validation;
 import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link Path.ContainerElementNode} values.
+ * A class for verifying {@link Path.MethodNode} values.
  */
-public class DefaultContainerElementNodeAssert
-        extends AbstractContainerElementNodeAssert<DefaultContainerElementNodeAssert> {
+public class MethodNodeAssert
+        extends AbstractMethodNodeAssert<MethodNodeAssert> {
 
     /**
-     * Creates a new instance for verifying specified container element node.
+     * Creates a new instance for verifying specified method node.
      *
-     * @param actual the container element node to verify.
+     * @param actual the method node to verify.
      */
-    public DefaultContainerElementNodeAssert(final Path.ContainerElementNode actual) {
-        super(actual, DefaultContainerElementNodeAssert.class);
+    public MethodNodeAssert(final Path.MethodNode actual) {
+        super(actual, MethodNodeAssert.class);
     }
 }

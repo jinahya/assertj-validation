@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 Jinahya, Inc.
+ * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,23 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.Path;
+import java.lang.reflect.Constructor;
 
 /**
- * A class for verifying {@link Path.ReturnValueNode} values.
+ * A class for verifying constructor parameters and constructor return values.
+ *
+ * @param <T> the type declaring the constructor
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultReturnValueNodeAssert
-        extends AbstractReturnValueNodeAssert<DefaultReturnValueNodeAssert> {
+public class ConstructorAssert<T>
+        extends AbstractConstructorAssert<ConstructorAssert<T>, T> {
 
     /**
-     * Creates a new instance for verifying specified return value node.
+     * Creates a new instance for verifying specified actual value.
      *
-     * @param actual the return value node to verify.
+     * @param actual the constructor to verify.
      */
-    public DefaultReturnValueNodeAssert(final Path.ReturnValueNode actual) {
-        super(actual, DefaultReturnValueNodeAssert.class);
+    public ConstructorAssert(final Constructor<? extends T> actual) {
+        super(actual, ConstructorAssert.class);
     }
 }

@@ -23,17 +23,17 @@ package com.github.jinahya.assertj.validation;
 import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link Path.ParameterNode} values.
+ * A class for verifying {@link Path.CrossParameterNode} values.
  */
-public class DefaultParameterNodeAssert
-        extends AbstractParameterNodeAssert<DefaultParameterNodeAssert> {
+public class CrossParameterNodeAssert
+        extends AbstractCrossParameterNodeAssert<CrossParameterNodeAssert> {
 
     /**
-     * Creates a new instance for verifying specified parameter node.
+     * Creates a new instance for verifying specified cross parameter node.
      *
-     * @param actual the parameter node to verify.
+     * @param actual the cross parameter node to verify.
      */
-    public DefaultParameterNodeAssert(final Path.ParameterNode actual) {
-        super(actual, DefaultParameterNodeAssert.class);
+    public CrossParameterNodeAssert(final Path.CrossParameterNode actual) {
+        super(actual, CrossParameterNodeAssert.class);
     }
 }

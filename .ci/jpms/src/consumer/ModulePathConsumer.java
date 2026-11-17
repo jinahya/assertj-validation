@@ -1,6 +1,6 @@
 package consumer;
 
-import com.github.jinahya.assertj.validation.DefaultBeanAssert;
+import com.github.jinahya.assertj.validation.BeanAssert;
 import com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -31,7 +31,7 @@ public class ModulePathConsumer {
 
     @SuppressWarnings({"unchecked"}) // SoftAssertions.proxy(..) with a raw assertion class
     public static void main(final String... args) {
-        final Module module = DefaultBeanAssert.class.getModule();
+        final Module module = BeanAssert.class.getModule();
         if (!module.isNamed() || module.getDescriptor().isAutomatic()) {
             throw new AssertionError("expected an explicit module, but was " + module.getDescriptor());
         }
@@ -52,8 +52,8 @@ public class ModulePathConsumer {
 
         // soft assertions: AssertJ subclasses the assertion class, in its own package
         final var softly = new SoftAssertions();
-        softly.proxy(DefaultBeanAssert.class, Object.class, new Bean("")).isValid();
-        softly.proxy(DefaultBeanAssert.class, Object.class, new Bean(" ")).hasValidProperty("name");
+        softly.proxy(BeanAssert.class, Object.class, new Bean("")).isValid();
+        softly.proxy(BeanAssert.class, Object.class, new Bean(" ")).hasValidProperty("name");
         if (softly.errorsCollected().size() != 2) {
             throw new AssertionError("expected 2 collected errors, but was " + softly.errorsCollected().size());
         }

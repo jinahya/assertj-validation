@@ -134,7 +134,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      */
     @CheckReturnValue
     public AbstractParameterDescriptorAssert<?> extractingParameterDescriptor(final int index) {
-        return extractingParameterDescriptor(index, DefaultParameterDescriptorAssert::new);
+        return extractingParameterDescriptor(index, ParameterDescriptorAssert::new);
     }
 
     /**
@@ -202,7 +202,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      */
     @CheckReturnValue
     public AbstractCrossParameterDescriptorAssert<?> extractingCrossParameterDescriptor() {
-        return extractingCrossParameterDescriptor(DefaultCrossParameterDescriptorAssert::new);
+        return extractingCrossParameterDescriptor(CrossParameterDescriptorAssert::new);
     }
 
     // --------------------------------------------------------------------------------------------------- returnValue
@@ -233,7 +233,7 @@ public abstract class AbstractExecutableDescriptorAssert<
      */
     @CheckReturnValue
     public AbstractReturnValueDescriptorAssert<?> extractingReturnValueDescriptor() {
-        return extractingReturnValueDescriptor(DefaultReturnValueDescriptorAssert::new);
+        return extractingReturnValueDescriptor(ReturnValueDescriptorAssert::new);
     }
 
     /**

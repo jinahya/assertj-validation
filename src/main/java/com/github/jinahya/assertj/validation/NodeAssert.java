@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2022 Jinahya, Inc.
+ * Copyright (C) 2021 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,20 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.GroupConversionDescriptor;
+import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link GroupConversionDescriptor} values.
- *
- * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * A class for verifying {@link Path.Node} values, of any kind.
  */
-public class DefaultGroupConversionDescriptorAssert
-        extends AbstractGroupConversionDescriptorAssert<DefaultGroupConversionDescriptorAssert> {
+public class NodeAssert
+        extends AbstractNodeAssert<NodeAssert, Path.Node> {
 
     /**
-     * Creates a new instance for verifying specified actual value.
+     * Creates a new instance for verifying specified node.
      *
-     * @param actual the actual value to verify.
+     * @param actual the node to verify.
      */
-    public DefaultGroupConversionDescriptorAssert(final GroupConversionDescriptor actual) {
-        super(actual, DefaultGroupConversionDescriptorAssert.class);
+    public NodeAssert(final Path.Node actual) {
+        super(actual, NodeAssert.class);
     }
 }

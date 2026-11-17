@@ -165,8 +165,8 @@ Each assertion method can be intercepted by `SoftAssertions.proxy(..)`, so a fai
 
 ```java
 SoftAssertions softly = new SoftAssertions();
-softly.proxy(DefaultBeanAssert.class, Object.class, user).isValid();
-softly.proxy(DefaultBeanAssert.class, Object.class, user).hasValidProperty("age");
+softly.proxy(BeanAssert.class, Object.class, user).isValid();
+softly.proxy(BeanAssert.class, Object.class, user).hasValidProperty("age");
 softly.assertAll(); // reports both
 ```
 

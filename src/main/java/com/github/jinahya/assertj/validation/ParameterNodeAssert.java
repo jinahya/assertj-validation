@@ -20,22 +20,20 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link ConstraintViolation} values.
- *
- * @param <T> root bean type parameter
+ * A class for verifying {@link Path.ParameterNode} values.
  */
-public class DefaultConstraintViolationAssert<T>
-        extends AbstractConstraintViolationAssert<DefaultConstraintViolationAssert<T>, ConstraintViolation<T>, T> {
+public class ParameterNodeAssert
+        extends AbstractParameterNodeAssert<ParameterNodeAssert> {
 
     /**
-     * Creates a new instance for verifying specified actual value.
+     * Creates a new instance for verifying specified parameter node.
      *
-     * @param actual the actual value to verify.
+     * @param actual the parameter node to verify.
      */
-    public DefaultConstraintViolationAssert(final ConstraintViolation<T> actual) {
-        super(actual, DefaultConstraintViolationAssert.class);
+    public ParameterNodeAssert(final Path.ParameterNode actual) {
+        super(actual, ParameterNodeAssert.class);
     }
 }

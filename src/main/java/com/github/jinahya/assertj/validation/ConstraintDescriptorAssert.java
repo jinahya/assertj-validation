@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2022 Jinahya, Inc.
+ * Copyright (C) 2021 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,24 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.ParameterDescriptor;
+import jakarta.validation.metadata.ConstraintDescriptor;
+
+import java.lang.annotation.Annotation;
 
 /**
- * A class for verifying {@link ParameterDescriptor} values.
+ * A class for verifying {@link ConstraintDescriptor} values.
  *
- * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @param <T> the type of the constraint annotation
  */
-public class DefaultParameterDescriptorAssert
-        extends AbstractParameterDescriptorAssert<DefaultParameterDescriptorAssert> {
+public class ConstraintDescriptorAssert<T extends Annotation>
+        extends AbstractConstraintDescriptorAssert<ConstraintDescriptorAssert<T>, ConstraintDescriptor<T>, T> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultParameterDescriptorAssert(final ParameterDescriptor actual) {
-        super(actual, DefaultParameterDescriptorAssert.class);
+    public ConstraintDescriptorAssert(final ConstraintDescriptor<T> actual) {
+        super(actual, ConstraintDescriptorAssert.class);
     }
 }

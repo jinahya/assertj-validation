@@ -124,7 +124,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      */
     @CheckReturnValue
     public AbstractPropertyDescriptorAssert<?> extractingConstraintsForProperty(final String propertyName) {
-        return extractingConstraintsForProperty(propertyName, DefaultPropertyDescriptorAssert::new);
+        return extractingConstraintsForProperty(propertyName, PropertyDescriptorAssert::new);
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
     @CheckReturnValue
     public AbstractMethodDescriptorAssert<?> extractingConstraintsForMethod(final String name,
                                                                             final Class<?>... parameterTypes) {
-        return extractingConstraintsForMethod(DefaultMethodDescriptorAssert::new, name, parameterTypes);
+        return extractingConstraintsForMethod(MethodDescriptorAssert::new, name, parameterTypes);
     }
 
     /**
@@ -237,7 +237,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
     @CheckReturnValue
     public AbstractConstructorDescriptorAssert<?> extractingConstraintsForConstructor(
             final Class<?>... parameterTypes) {
-        return extractingConstraintsForConstructor(DefaultConstructorDescriptorAssert::new, parameterTypes);
+        return extractingConstraintsForConstructor(ConstructorDescriptorAssert::new, parameterTypes);
     }
 
     /**

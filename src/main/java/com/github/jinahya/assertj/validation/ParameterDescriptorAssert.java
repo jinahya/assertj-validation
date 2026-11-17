@@ -20,22 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.CrossParameterDescriptor;
+import jakarta.validation.metadata.ParameterDescriptor;
 
 /**
- * A class for verifying {@link CrossParameterDescriptor} values.
+ * A class for verifying {@link ParameterDescriptor} values.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultCrossParameterDescriptorAssert
-        extends AbstractCrossParameterDescriptorAssert<DefaultCrossParameterDescriptorAssert> {
+public class ParameterDescriptorAssert
+        extends AbstractParameterDescriptorAssert<ParameterDescriptorAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultCrossParameterDescriptorAssert(final CrossParameterDescriptor actual) {
-        super(actual, DefaultCrossParameterDescriptorAssert.class);
+    public ParameterDescriptorAssert(final ParameterDescriptor actual) {
+        super(actual, ParameterDescriptorAssert.class);
     }
 }

@@ -20,22 +20,21 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.Path;
-
 /**
- * A class for verifying {@link Path} values.
+ * A class for verifying values against specified properties of specified bean types.
  *
+ * @param <ACTUAL> the type of value to verify
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultPathAssert
-        extends AbstractPathAssert<DefaultPathAssert> {
+public class PropertyAssert<ACTUAL>
+        extends AbstractPropertyAssert<PropertyAssert<ACTUAL>, ACTUAL> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultPathAssert(final Path actual) {
-        super(actual, DefaultPathAssert.class);
+    public PropertyAssert(final ACTUAL actual) {
+        super(actual, PropertyAssert.class);
     }
 }

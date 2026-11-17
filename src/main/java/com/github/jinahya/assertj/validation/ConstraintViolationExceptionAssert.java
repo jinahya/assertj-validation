@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 Jinahya, Inc.
+ * Copyright (C) 2021 - 2026 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import jakarta.validation.ConstraintViolationException;
+
 /**
- * A default assertion class for verifying bean values.
+ * A class for verifying {@link ConstraintViolationException} values.
  *
- * @param <ACTUAL> actual type parameter
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-@SuppressWarnings({
-        "java:S119" // <ACTUAL>
-})
-public class DefaultBeanAssert<ACTUAL>
-        extends AbstractBeanAssert<DefaultBeanAssert<ACTUAL>, ACTUAL> {
+public class ConstraintViolationExceptionAssert
+        extends AbstractConstraintViolationExceptionAssert<ConstraintViolationExceptionAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultBeanAssert(final ACTUAL actual) {
-        super(actual, DefaultBeanAssert.class);
+    public ConstraintViolationExceptionAssert(final ConstraintViolationException actual) {
+        super(actual, ConstraintViolationExceptionAssert.class);
     }
 }

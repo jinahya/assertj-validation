@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 - 2022 Jinahya, Inc.
+ * Copyright (C) 2021 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,20 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.MethodDescriptor;
+import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link MethodDescriptor} values.
- *
- * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * A class for verifying {@link Path.ContainerElementNode} values.
  */
-public class DefaultMethodDescriptorAssert
-        extends AbstractMethodDescriptorAssert<DefaultMethodDescriptorAssert> {
+public class ContainerElementNodeAssert
+        extends AbstractContainerElementNodeAssert<ContainerElementNodeAssert> {
 
     /**
-     * Creates a new instance for verifying specified actual value.
+     * Creates a new instance for verifying specified container element node.
      *
-     * @param actual the actual value to verify.
+     * @param actual the container element node to verify.
      */
-    public DefaultMethodDescriptorAssert(final MethodDescriptor actual) {
-        super(actual, DefaultMethodDescriptorAssert.class);
+    public ContainerElementNodeAssert(final Path.ContainerElementNode actual) {
+        super(actual, ContainerElementNodeAssert.class);
     }
 }

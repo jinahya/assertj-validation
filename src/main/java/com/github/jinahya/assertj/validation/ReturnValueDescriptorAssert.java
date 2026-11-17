@@ -20,22 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.ConstructorDescriptor;
+import jakarta.validation.metadata.ReturnValueDescriptor;
 
 /**
- * A class for verifying {@link ConstructorDescriptor} values.
+ * A class for verifying {@link ReturnValueDescriptor} values.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultConstructorDescriptorAssert
-        extends AbstractConstructorDescriptorAssert<DefaultConstructorDescriptorAssert> {
+public class ReturnValueDescriptorAssert
+        extends AbstractReturnValueDescriptorAssert<ReturnValueDescriptorAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultConstructorDescriptorAssert(final ConstructorDescriptor actual) {
-        super(actual, DefaultConstructorDescriptorAssert.class);
+    public ReturnValueDescriptorAssert(final ReturnValueDescriptor actual) {
+        super(actual, ReturnValueDescriptorAssert.class);
     }
 }

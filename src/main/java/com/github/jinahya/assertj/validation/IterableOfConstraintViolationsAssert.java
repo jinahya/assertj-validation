@@ -27,16 +27,16 @@ import jakarta.validation.ConstraintViolation;
  *
  * @param <T> root bean type parameter
  */
-public class DefaultIterableOfConstraintViolationsAssert<T>
-        extends AbstractIterableOfConstraintViolationsAssert<DefaultIterableOfConstraintViolationsAssert<T>, T> {
+public class IterableOfConstraintViolationsAssert<T>
+        extends AbstractIterableOfConstraintViolationsAssert<IterableOfConstraintViolationsAssert<T>, T> {
 
     /**
      * Creates a new instance with specified arguments.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultIterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
-        super(actual, DefaultIterableOfConstraintViolationsAssert.class);
+    public IterableOfConstraintViolationsAssert(final Iterable<? extends ConstraintViolation<T>> actual) {
+        super(actual, IterableOfConstraintViolationsAssert.class);
     }
 
     /**
@@ -51,19 +51,19 @@ public class DefaultIterableOfConstraintViolationsAssert<T>
     @SuppressWarnings({
             "java:S1161" // @Override; it overrides nothing on AssertJ 3
     })
-    protected DefaultConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value) {
-        return new DefaultConstraintViolationAssert<>(value);
+    protected ConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value) {
+        return new ConstraintViolationAssert<>(value);
     }
 
     @Override
-    protected DefaultConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value, final String description) {
+    protected ConstraintViolationAssert<T> toAssert(final ConstraintViolation<T> value, final String description) {
         return toAssert(value)
                 .describedAs(description);
     }
 
     @Override
-    protected DefaultIterableOfConstraintViolationsAssert<T> newAbstractIterableAssert(
+    protected IterableOfConstraintViolationsAssert<T> newAbstractIterableAssert(
             final Iterable<? extends ConstraintViolation<T>> iterable) {
-        return new DefaultIterableOfConstraintViolationsAssert<>(iterable);
+        return new IterableOfConstraintViolationsAssert<>(iterable);
     }
 }

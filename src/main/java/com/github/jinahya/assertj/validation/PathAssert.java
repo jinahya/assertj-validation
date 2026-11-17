@@ -20,24 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.metadata.ConstraintDescriptor;
-
-import java.lang.annotation.Annotation;
+import jakarta.validation.Path;
 
 /**
- * A class for verifying {@link ConstraintDescriptor} values.
+ * A class for verifying {@link Path} values.
  *
- * @param <T> the type of the constraint annotation
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultConstraintDescriptorAssert<T extends Annotation>
-        extends AbstractConstraintDescriptorAssert<DefaultConstraintDescriptorAssert<T>, ConstraintDescriptor<T>, T> {
+public class PathAssert
+        extends AbstractPathAssert<PathAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultConstraintDescriptorAssert(final ConstraintDescriptor<T> actual) {
-        super(actual, DefaultConstraintDescriptorAssert.class);
+    public PathAssert(final Path actual) {
+        super(actual, PathAssert.class);
     }
 }

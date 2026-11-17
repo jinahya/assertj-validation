@@ -4,7 +4,7 @@ package com.github.jinahya.assertj.validation;
  * #%L
  * assertj-validation
  * %%
- * Copyright (C) 2021 Jinahya, Inc.
+ * Copyright (C) 2021 - 2022 Jinahya, Inc.
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,22 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import jakarta.validation.metadata.ContainerElementTypeDescriptor;
+
 /**
- * A class for verifying values against specified properties of specified bean types.
+ * A class for verifying {@link ContainerElementTypeDescriptor} values.
  *
- * @param <ACTUAL> the type of value to verify
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public class DefaultPropertyAssert<ACTUAL>
-        extends AbstractPropertyAssert<DefaultPropertyAssert<ACTUAL>, ACTUAL> {
+public class ContainerElementTypeDescriptorAssert
+        extends AbstractContainerElementTypeDescriptorAssert<ContainerElementTypeDescriptorAssert> {
 
     /**
      * Creates a new instance for verifying specified actual value.
      *
      * @param actual the actual value to verify.
      */
-    public DefaultPropertyAssert(final ACTUAL actual) {
-        super(actual, DefaultPropertyAssert.class);
+    public ContainerElementTypeDescriptorAssert(final ContainerElementTypeDescriptor actual) {
+        super(actual, ContainerElementTypeDescriptorAssert.class);
     }
 }

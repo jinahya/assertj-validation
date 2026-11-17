@@ -20,20 +20,23 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.Path;
-
 /**
- * A class for verifying {@link Path.BeanNode} values.
+ * A default assertion class for verifying bean values.
+ *
+ * @param <ACTUAL> actual type parameter
  */
-public class DefaultBeanNodeAssert
-        extends AbstractBeanNodeAssert<DefaultBeanNodeAssert> {
+@SuppressWarnings({
+        "java:S119" // <ACTUAL>
+})
+public class BeanAssert<ACTUAL>
+        extends AbstractBeanAssert<BeanAssert<ACTUAL>, ACTUAL> {
 
     /**
-     * Creates a new instance for verifying specified bean node.
+     * Creates a new instance for verifying specified actual value.
      *
-     * @param actual the bean node to verify.
+     * @param actual the actual value to verify.
      */
-    public DefaultBeanNodeAssert(final Path.BeanNode actual) {
-        super(actual, DefaultBeanNodeAssert.class);
+    public BeanAssert(final ACTUAL actual) {
+        super(actual, BeanAssert.class);
     }
 }

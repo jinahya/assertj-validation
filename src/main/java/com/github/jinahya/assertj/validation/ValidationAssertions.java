@@ -54,7 +54,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static <ACTUAL> AbstractBeanAssert<?, ACTUAL> assertThatBean(final ACTUAL actual) {
-        return new DefaultBeanAssert<>(actual);
+        return new BeanAssert<>(actual);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static <ACTUAL> AbstractPropertyAssert<?, ACTUAL> assertThatProperty(final ACTUAL actual) {
-        return new DefaultPropertyAssert<>(actual);
+        return new PropertyAssert<>(actual);
     }
 
     /**
@@ -79,7 +79,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static <T extends Annotation> AbstractConstraintDescriptorAssert<?, ?, T> assertThatConstraintDescriptor(
             final ConstraintDescriptor<T> actual) {
-        return new DefaultConstraintDescriptorAssert<>(actual);
+        return new ConstraintDescriptorAssert<>(actual);
     }
 
     /**
@@ -92,7 +92,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static <T> AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T> assertThatConstraintViolation(
             final ConstraintViolation<T> actual) {
-        return new DefaultConstraintViolationAssert<>(actual);
+        return new ConstraintViolationAssert<>(actual);
     }
 
     /**
@@ -106,7 +106,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static <T> AbstractIterableOfConstraintViolationsAssert<?, T> assertThatIterableOfConstraintViolations(
             final Iterable<? extends ConstraintViolation<T>> actual) {
-        return new DefaultIterableOfConstraintViolationsAssert<>(actual);
+        return new IterableOfConstraintViolationsAssert<>(actual);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractConstraintViolationExceptionAssert<?> assertThatConstraintViolationException(
             final ConstraintViolationException actual) {
-        return new DefaultConstraintViolationExceptionAssert(actual);
+        return new ConstraintViolationExceptionAssert(actual);
     }
 
     /**
@@ -147,7 +147,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractPathAssert<?> assertThatPath(final Path actual) {
-        return new DefaultPathAssert(actual);
+        return new PathAssert(actual);
     }
 
     // ------------------------------------------------------------------------------------------ executable validation
@@ -162,7 +162,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static <T> AbstractConstructorAssert<?, T> assertThatConstructor(final Constructor<? extends T> actual) {
-        return new DefaultConstructorAssert<>(actual);
+        return new ConstructorAssert<>(actual);
     }
 
     // ----------------------------------------------------------------------------------------------------- metadata
@@ -176,7 +176,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractBeanDescriptorAssert<?> assertThatBeanDescriptor(final BeanDescriptor actual) {
-        return new DefaultBeanDescriptorAssert(actual);
+        return new BeanDescriptorAssert(actual);
     }
 
     /**
@@ -187,7 +187,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractPropertyDescriptorAssert<?> assertThatPropertyDescriptor(final PropertyDescriptor actual) {
-        return new DefaultPropertyDescriptorAssert(actual);
+        return new PropertyDescriptorAssert(actual);
     }
 
     /**
@@ -198,7 +198,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractMethodDescriptorAssert<?> assertThatMethodDescriptor(final MethodDescriptor actual) {
-        return new DefaultMethodDescriptorAssert(actual);
+        return new MethodDescriptorAssert(actual);
     }
 
     /**
@@ -210,7 +210,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractConstructorDescriptorAssert<?> assertThatConstructorDescriptor(
             final ConstructorDescriptor actual) {
-        return new DefaultConstructorDescriptorAssert(actual);
+        return new ConstructorDescriptorAssert(actual);
     }
 
     /**
@@ -222,7 +222,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractParameterDescriptorAssert<?> assertThatParameterDescriptor(
             final ParameterDescriptor actual) {
-        return new DefaultParameterDescriptorAssert(actual);
+        return new ParameterDescriptorAssert(actual);
     }
 
     /**
@@ -234,7 +234,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractReturnValueDescriptorAssert<?> assertThatReturnValueDescriptor(
             final ReturnValueDescriptor actual) {
-        return new DefaultReturnValueDescriptorAssert(actual);
+        return new ReturnValueDescriptorAssert(actual);
     }
 
     /**
@@ -246,7 +246,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractCrossParameterDescriptorAssert<?> assertThatCrossParameterDescriptor(
             final CrossParameterDescriptor actual) {
-        return new DefaultCrossParameterDescriptorAssert(actual);
+        return new CrossParameterDescriptorAssert(actual);
     }
 
     /**
@@ -258,7 +258,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractContainerElementTypeDescriptorAssert<?> assertThatContainerElementTypeDescriptor(
             final ContainerElementTypeDescriptor actual) {
-        return new DefaultContainerElementTypeDescriptorAssert(actual);
+        return new ContainerElementTypeDescriptorAssert(actual);
     }
 
     /**
@@ -270,7 +270,7 @@ public final class ValidationAssertions {
     @CheckReturnValue
     public static AbstractGroupConversionDescriptorAssert<?> assertThatGroupConversionDescriptor(
             final GroupConversionDescriptor actual) {
-        return new DefaultGroupConversionDescriptorAssert(actual);
+        return new GroupConversionDescriptorAssert(actual);
     }
 
     // --------------------------------------------------------------------------------------------------- nodes
@@ -284,7 +284,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractNodeAssert<?, Path.Node> assertThatNode(final Path.Node actual) {
-        return new DefaultNodeAssert(actual);
+        return new NodeAssert(actual);
     }
 
     /**
@@ -296,7 +296,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
-        return new DefaultBeanNodeAssert(actual);
+        return new BeanNodeAssert(actual);
     }
 
     /**
@@ -308,7 +308,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractConstructorNodeAssert<?> assertThatConstructorNode(final Path.ConstructorNode actual) {
-        return new DefaultConstructorNodeAssert(actual);
+        return new ConstructorNodeAssert(actual);
     }
 
     /**
@@ -320,7 +320,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(final Path.ContainerElementNode actual) {
-        return new DefaultContainerElementNodeAssert(actual);
+        return new ContainerElementNodeAssert(actual);
     }
 
     /**
@@ -332,7 +332,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(final Path.CrossParameterNode actual) {
-        return new DefaultCrossParameterNodeAssert(actual);
+        return new CrossParameterNodeAssert(actual);
     }
 
     /**
@@ -344,7 +344,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
-        return new DefaultMethodNodeAssert(actual);
+        return new MethodNodeAssert(actual);
     }
 
     /**
@@ -356,7 +356,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
-        return new DefaultParameterNodeAssert(actual);
+        return new ParameterNodeAssert(actual);
     }
 
     /**
@@ -368,7 +368,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
-        return new DefaultPropertyNodeAssert(actual);
+        return new PropertyNodeAssert(actual);
     }
 
     /**
@@ -380,7 +380,7 @@ public final class ValidationAssertions {
      */
     @CheckReturnValue
     public static AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(final Path.ReturnValueNode actual) {
-        return new DefaultReturnValueNodeAssert(actual);
+        return new ReturnValueNodeAssert(actual);
     }
 
     /**

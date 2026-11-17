@@ -47,6 +47,15 @@ class ConstraintViolationAssert_LeafBean_Test
     }
 
     @Test
+    void should_extract_the_leaf_bean_as_an_object_assertion() {
+        final var actual = violation();
+        when(actual.getLeafBean()).thenReturn("leaf");
+        // returns(..) is declared on AbstractObjectAssert, not on Assert
+        assertThatCode(() -> assertion(actual).extractingLeafBean().returns("leaf", String::valueOf))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void should_pass_if_there_is_no_leaf_bean() {
         assertThatCode(() -> assertion(violation()).doesNotHaveLeafBean()).doesNotThrowAnyException();
     }

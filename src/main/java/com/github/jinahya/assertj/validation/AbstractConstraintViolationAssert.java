@@ -26,6 +26,7 @@ import jakarta.validation.metadata.ConstraintDescriptor;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
@@ -194,7 +195,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getExecutableReturnValue()
      */
     @CheckReturnValue
-    public Assert<?, Object> extractingExecutableReturnValue() {
+    public AbstractObjectAssert<?, Object> extractingExecutableReturnValue() {
         return extractingExecutableReturnValue(
                 ConstraintViolation::getExecutableReturnValue,
                 ObjectAssert::new
@@ -258,7 +259,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getInvalidValue()
      */
     @CheckReturnValue
-    public Assert<?, Object> extractingInvalidValue() {
+    public AbstractObjectAssert<?, Object> extractingInvalidValue() {
         return extractingInvalidValue(ConstraintViolation::getInvalidValue, ObjectAssert::new);
     }
 
@@ -324,7 +325,7 @@ public abstract class AbstractConstraintViolationAssert<
      * {@link ConstraintViolation#getLeafBean() leafBean}.
      */
     @CheckReturnValue
-    public Assert<?, ?> extractingLeafBean() {
+    public AbstractObjectAssert<?, Object> extractingLeafBean() {
         return isNotNull()
                 .extracting(ConstraintViolation::getLeafBean, ObjectAssert::new);
     }

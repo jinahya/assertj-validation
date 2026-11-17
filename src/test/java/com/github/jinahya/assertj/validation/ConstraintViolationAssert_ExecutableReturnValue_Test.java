@@ -46,6 +46,15 @@ class ConstraintViolationAssert_ExecutableReturnValue_Test
     }
 
     @Test
+    void should_extract_the_executable_return_value_as_an_object_assertion() {
+        final var actual = violation();
+        when(actual.getExecutableReturnValue()).thenReturn("r");
+        // returns(..) is declared on AbstractObjectAssert, not on Assert
+        assertThatCode(() -> assertion(actual).extractingExecutableReturnValue().returns("r", String::valueOf))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void should_pass_if_there_is_no_executable_return_value() {
         assertThatCode(() -> assertion(violation()).hasNoExecutableReturnValue()).doesNotThrowAnyException();
     }

@@ -243,11 +243,50 @@
   <build><!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
          safe where declaration order carries no meaning, and here it carries none: Maven falls back to POM
          order for executions bound to the SAME phase, and no two plugins below share one — compiler is at
-         compile/test-compile, surefire at test, jar at package, and javadoc and versions declare no execution
-         at all. Add an execution that collides with an existing phase and the order stops being free, so
-         pin the pair's relative position then and say why.
-         None of these carry a <version> they do not need: versions-maven-plugin and maven-javadoc-plugin
-         merge their configuration onto the parent's declaration, which already pins them. -->
+         compile/test-compile, surefire at test, jar at package, and versions declares no execution at all.
+         Add an execution that collides with an existing phase and the order stops being free, so pin the
+         pair's relative position then and say why.
+         None of these carry a <version> they do not need: versions-maven-plugin, and maven-javadoc-plugin under
+         <pluginManagement>, merge their configuration onto the parent's declaration, which already pins them. -->
+    <!-- maven-javadoc-plugin is configured here rather than under <plugins>, because <pluginManagement> is the
+         one place both of its uses read from: a goal run from the command line, or bound by the parent, such
+         as javadoc:jar, and the javadoc report under <reporting>, which inherits nothing from <build><plugins>.
+         Configured under <plugins> instead, the site's Javadoc would go without the links and the tags. -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <links>
+              <link>https://javadoc.io/static/org.assertj/assertj-core/${version.org.assertj}</link>
+              <link>https://jakarta.ee/specifications/bean-validation/${jakarta.validation.spec.version}/apidocs/</link>
+            </links>
+            <!-- @apiNote, @implSpec and @implNote are documented by JEP 8068562, yet the standard
+                 doclet registers none of them for code outside the JDK: left alone, every one of
+                 them is rejected as an "unknown tag". They are registered here, in the order, and
+                 with the headings, the JDK itself uses. -->
+            <tags>
+              <tag>
+                <name>apiNote</name>
+                <placement>a</placement>
+                <head>API Note:</head>
+              </tag>
+              <tag>
+                <name>implSpec</name>
+                <placement>a</placement>
+                <head>Implementation Requirements:</head>
+              </tag>
+              <tag>
+                <name>implNote</name>
+                <placement>a</placement>
+                <head>Implementation Note:</head>
+              </tag>
+            </tags>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -282,37 +321,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>
-            <link>https://javadoc.io/static/org.assertj/assertj-core/${version.org.assertj}</link>
-            <link>https://jakarta.ee/specifications/bean-validation/${jakarta.validation.spec.version}/apidocs/</link>
-          </links>
-          <!-- @apiNote, @implSpec and @implNote are documented by JEP 8068562, yet the standard
-               doclet registers none of them for code outside the JDK: left alone, every one of
-               them is rejected as an "unknown tag". They are registered here, in the order, and
-               with the headings, the JDK itself uses. -->
-          <tags>
-            <tag>
-              <name>apiNote</name>
-              <placement>a</placement>
-              <head>API Note:</head>
-            </tag>
-            <tag>
-              <name>implSpec</name>
-              <placement>a</placement>
-              <head>Implementation Requirements:</head>
-            </tag>
-            <tag>
-              <name>implNote</name>
-              <placement>a</placement>
-              <head>Implementation Note:</head>
-            </tag>
-          </tags>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${version.maven.surefire}</version>
         <configuration>
@@ -341,6 +349,25 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- puts the API documentation on the site, as Project Reports > Javadoc; its version and its configuration
+       both come from <build><pluginManagement>. The single reportSet keeps the site to the main sources'
+       javadoc report, where the default would add test-javadoc as well. -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <profiles>
     <!-- ============================================== AssertJ ============================================== -->

@@ -283,8 +283,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractNodeAssert<?> assertThatNode(final Path.Node actual) {
-        return new DefaultPathAssert.DefaultNodeAssert(actual);
+    public static AbstractNodeAssert<?, Path.Node> assertThatNode(final Path.Node actual) {
+        return new DefaultNodeAssert(actual);
     }
 
     /**
@@ -295,8 +295,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingBeanNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultBeanNodeAssert(actual);
+    public static AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
+        return new DefaultBeanNodeAssert(actual);
     }
 
     /**
@@ -307,8 +307,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingConstructorNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractConstructorNodeAssert<?> assertThatConstructorNode(final Path.ConstructorNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultConstructorNodeAssert(actual);
+    public static AbstractConstructorNodeAssert<?> assertThatConstructorNode(final Path.ConstructorNode actual) {
+        return new DefaultConstructorNodeAssert(actual);
     }
 
     /**
@@ -319,8 +319,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingContainerElementNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(final Path.ContainerElementNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultContainerElementNodeAssert(actual);
+    public static AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(final Path.ContainerElementNode actual) {
+        return new DefaultContainerElementNodeAssert(actual);
     }
 
     /**
@@ -331,8 +331,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingCrossParameterNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(final Path.CrossParameterNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultCrossParameterNodeAssert(actual);
+    public static AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(final Path.CrossParameterNode actual) {
+        return new DefaultCrossParameterNodeAssert(actual);
     }
 
     /**
@@ -343,8 +343,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingMethodNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultMethodNodeAssert(actual);
+    public static AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
+        return new DefaultMethodNodeAssert(actual);
     }
 
     /**
@@ -355,8 +355,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingParameterNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultParameterNodeAssert(actual);
+    public static AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
+        return new DefaultParameterNodeAssert(actual);
     }
 
     /**
@@ -367,8 +367,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingPropertyNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultPropertyNodeAssert(actual);
+    public static AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
+        return new DefaultPropertyNodeAssert(actual);
     }
 
     /**
@@ -379,8 +379,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingReturnValueNode(int)
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(final Path.ReturnValueNode actual) {
-        return new DefaultPathAssert.DefaultNodeAssert.DefaultReturnValueNodeAssert(actual);
+    public static AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(final Path.ReturnValueNode actual) {
+        return new DefaultReturnValueNodeAssert(actual);
     }
 
     /**

@@ -272,7 +272,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractNodeAssert<?> assertThatNode(final Path.Node actual) {
+    default AbstractNodeAssert<?, Path.Node> assertThatNode(final Path.Node actual) {
         return ValidationAssertions.assertThatNode(actual);
     }
 
@@ -283,7 +283,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
+    default AbstractBeanNodeAssert<?> assertThatBeanNode(final Path.BeanNode actual) {
         return ValidationAssertions.assertThatBeanNode(actual);
     }
 
@@ -294,7 +294,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractConstructorNodeAssert<?> assertThatConstructorNode(
+    default AbstractConstructorNodeAssert<?> assertThatConstructorNode(
             final Path.ConstructorNode actual) {
         return ValidationAssertions.assertThatConstructorNode(actual);
     }
@@ -306,7 +306,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(
+    default AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(
             final Path.ContainerElementNode actual) {
         return ValidationAssertions.assertThatContainerElementNode(actual);
     }
@@ -318,7 +318,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(
+    default AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(
             final Path.CrossParameterNode actual) {
         return ValidationAssertions.assertThatCrossParameterNode(actual);
     }
@@ -330,7 +330,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
+    default AbstractMethodNodeAssert<?> assertThatMethodNode(final Path.MethodNode actual) {
         return ValidationAssertions.assertThatMethodNode(actual);
     }
 
@@ -341,7 +341,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
+    default AbstractParameterNodeAssert<?> assertThatParameterNode(final Path.ParameterNode actual) {
         return ValidationAssertions.assertThatParameterNode(actual);
     }
 
@@ -352,7 +352,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
+    default AbstractPropertyNodeAssert<?> assertThatPropertyNode(final Path.PropertyNode actual) {
         return ValidationAssertions.assertThatPropertyNode(actual);
     }
 
@@ -363,7 +363,7 @@ public interface WithValidationAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    default AbstractPathAssert.AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(
+    default AbstractReturnValueNodeAssert<?> assertThatReturnValueNode(
             final Path.ReturnValueNode actual) {
         return ValidationAssertions.assertThatReturnValueNode(actual);
     }

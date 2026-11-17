@@ -268,7 +268,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractNodeAssert<?> thenNode(final Path.Node actual) {
+    public static AbstractNodeAssert<?, Path.Node> thenNode(final Path.Node actual) {
         return ValidationAssertions.assertThatNode(actual);
     }
 
@@ -279,7 +279,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractBeanNodeAssert<?> thenBeanNode(final Path.BeanNode actual) {
+    public static AbstractBeanNodeAssert<?> thenBeanNode(final Path.BeanNode actual) {
         return ValidationAssertions.assertThatBeanNode(actual);
     }
 
@@ -290,7 +290,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractConstructorNodeAssert<?> thenConstructorNode(
+    public static AbstractConstructorNodeAssert<?> thenConstructorNode(
             final Path.ConstructorNode actual) {
         return ValidationAssertions.assertThatConstructorNode(actual);
     }
@@ -302,7 +302,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractContainerElementNodeAssert<?> thenContainerElementNode(
+    public static AbstractContainerElementNodeAssert<?> thenContainerElementNode(
             final Path.ContainerElementNode actual) {
         return ValidationAssertions.assertThatContainerElementNode(actual);
     }
@@ -314,7 +314,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractCrossParameterNodeAssert<?> thenCrossParameterNode(
+    public static AbstractCrossParameterNodeAssert<?> thenCrossParameterNode(
             final Path.CrossParameterNode actual) {
         return ValidationAssertions.assertThatCrossParameterNode(actual);
     }
@@ -326,7 +326,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractMethodNodeAssert<?> thenMethodNode(final Path.MethodNode actual) {
+    public static AbstractMethodNodeAssert<?> thenMethodNode(final Path.MethodNode actual) {
         return ValidationAssertions.assertThatMethodNode(actual);
     }
 
@@ -337,7 +337,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractParameterNodeAssert<?> thenParameterNode(final Path.ParameterNode actual) {
+    public static AbstractParameterNodeAssert<?> thenParameterNode(final Path.ParameterNode actual) {
         return ValidationAssertions.assertThatParameterNode(actual);
     }
 
@@ -348,7 +348,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractPropertyNodeAssert<?> thenPropertyNode(final Path.PropertyNode actual) {
+    public static AbstractPropertyNodeAssert<?> thenPropertyNode(final Path.PropertyNode actual) {
         return ValidationAssertions.assertThatPropertyNode(actual);
     }
 
@@ -359,7 +359,7 @@ public final class ValidationBDDAssertions {
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
-    public static AbstractPathAssert.AbstractReturnValueNodeAssert<?> thenReturnValueNode(
+    public static AbstractReturnValueNodeAssert<?> thenReturnValueNode(
             final Path.ReturnValueNode actual) {
         return ValidationAssertions.assertThatReturnValueNode(actual);
     }

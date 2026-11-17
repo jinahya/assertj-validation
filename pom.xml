@@ -86,7 +86,7 @@
          jinahya-validation test utilities, which are test-scope only, like the implementation above -->
     <!-- https://github.com/jinahya/jinahyaee-bom -->
     <!-- https://central.sonatype.com/artifact/io.github.jinahya/jinahyaee-bom-11/versions -->
-    <version.io.github.jinahya.jinahyaee-bom>0.0.2</version.io.github.jinahya.jinahyaee-bom>
+    <version.io.github.jinahya.jinahyaee-bom>0.0.3</version.io.github.jinahya.jinahyaee-bom>
 
     <version.ch.qos.logback>1.6.5</version.ch.qos.logback>
     <!-- the other API this module extends, compiled against at 3.x: the line every consumer can run, and the one this

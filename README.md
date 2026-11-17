@@ -193,5 +193,20 @@ an AssertJ package that AssertJ does not export:
 
 [`.ci/jpms`](.ci/jpms) runs a module-path consumer on every push.
 
+## Migrating from 0.6
+
+0.7.0 renames types; no assertion behaves differently. Code which only chains from `assertThat*(..)` and
+`extracting*(..)` compiles unchanged, but must be recompiled.
+
+- The concrete classes lose their `Default` prefix: `DefaultBeanAssert` is `BeanAssert`, `DefaultPathAssert` is
+  `PathAssert`, and so on.
+- The node assertions are top-level types: `AbstractPathAssert.AbstractMethodNodeAssert` is
+  `AbstractMethodNodeAssert`, and `DefaultPathAssert.DefaultNodeAssert.DefaultMethodNodeAssert` is `MethodNodeAssert`.
+  The same holds for `HasContainerClass`, `HasTypeArgumentIndex`, `HasParameterTypes` and `HasParameterIndex`.
+- `AbstractNodeAssert` takes the node type as a second type argument, as `AbstractObjectAssert` does: the assertion
+  `assertThatNode(..)` returns is an `AbstractNodeAssert<?, Path.Node>`.
+- `extractingInvalidValue()`, `extractingExecutableReturnValue()` and `extractingLeafBean()` return
+  `AbstractObjectAssert<?, Object>`.
+
 More in the [wiki](https://github.com/jinahya/assertj-validation/wiki) and
 the [package-info](https://javadoc.io/doc/io.github.jinahya/assertj-validation/latest/com/github/jinahya/assertj/validation/package-summary.html).

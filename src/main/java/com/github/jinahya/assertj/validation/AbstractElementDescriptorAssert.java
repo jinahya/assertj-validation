@@ -66,6 +66,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @return a boolean assertion for the {@code actual} descriptor's has-constraints flag.
      * @see ElementDescriptor#hasConstraints()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingHasConstraints() {
         return isNotNull()
                 .extracting(ElementDescriptor::hasConstraints, InstanceOfAssertFactories.BOOLEAN);
@@ -103,6 +104,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @return a collection assertion for the {@code actual} descriptor's constraint descriptors.
      * @see ElementDescriptor#getConstraintDescriptors()
      */
+    @CheckReturnValue
     public CollectionAssert<ConstraintDescriptor<?>> extractingConstraintDescriptors() {
         return isNotNull()
                 .extracting(ElementDescriptor::getConstraintDescriptors, CollectionAssert::new);
@@ -117,6 +119,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @see ElementDescriptor#findConstraints()
      * @see ElementDescriptor.ConstraintFinder
      */
+    @CheckReturnValue
     public CollectionAssert<ConstraintDescriptor<?>> extractingConstraintDescriptors(
             final UnaryOperator<ElementDescriptor.ConstraintFinder> configurer) {
         Objects.requireNonNull(configurer, "configurer is null");
@@ -134,6 +137,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @return a class assertion for the {@code actual} descriptor's element class.
      * @see ElementDescriptor#getElementClass()
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingElementClass() {
         return isNotNull()
                 .extracting(ElementDescriptor::getElementClass, InstanceOfAssertFactories.CLASS);
@@ -147,7 +151,7 @@ public abstract class AbstractElementDescriptorAssert<
      * @see ElementDescriptor#getElementClass()
      */
     public SELF hasElementClass(final Class<?> expectedElementClass) {
-        extractingElementClass().isEqualTo(expectedElementClass);
+        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass").isEqualTo(expectedElementClass);
         return myself;
     }
 }

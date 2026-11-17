@@ -22,14 +22,17 @@ package com.github.jinahya.assertj.validation.example.service;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
+import org.assertj.core.error.ShouldBeEmpty;
+import org.assertj.core.error.ShouldHaveSize;
+import org.assertj.core.error.ShouldHaveSizeGreaterThan;
+import org.assertj.core.error.ShouldHaveSizeLessThan;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,17 +47,15 @@ class PathAssert_Size_Test {
      */
     private static Path methodParameterPath() throws NoSuchMethodException {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            final ConstraintViolation<Greeter> violation = factory.getValidator().forExecutables()
-                    .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
-                    .iterator().next();
-            return violation.getPropertyPath();
-        }
+        final ConstraintViolation<Greeter> violation = applyValidator(v -> v.forExecutables()
+                .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
+                .iterator().next());
+        return violation.getPropertyPath();
     }
 
     @DisplayName("the size assertions pass when the node count matches")
     @Test
-    void sizes__Pass() throws Exception {
+    void should_pass_if_the_node_count_matches() throws Exception {
         final Path path = methodParameterPath();
         assertThatCode(() -> {
             assertThatPath(path)
@@ -73,17 +74,20 @@ class PathAssert_Size_Test {
 
     @DisplayName("the size assertions fail as assertions when the node count does not match")
     @Test
-    void sizes__Fail() throws Exception {
+    void should_fail_if_the_node_count_differs() throws Exception {
         final Path path = methodParameterPath();
-        assertThatThrownBy(() -> assertThatPath(path).isEmpty()).isInstanceOf(AssertionError.class);
+        // the messages are AssertJ's own, built by the same factories assertj-core's tests compare against
+        assertThatThrownBy(() -> assertThatPath(path).isEmpty())
+                .hasMessage(ShouldBeEmpty.shouldBeEmpty(path).create());
         assertThatThrownBy(() -> assertThatPath(path).isNullOrEmpty()).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(path).hasSize(3))
-                .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("3");
-        assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThan(2)).isInstanceOf(AssertionError.class);
+                .hasMessage(ShouldHaveSize.shouldHaveSize(path, 2, 3).create());
+        assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThan(2))
+                .hasMessage(ShouldHaveSizeGreaterThan.shouldHaveSizeGreaterThan(path, 2, 2).create());
         assertThatThrownBy(() -> assertThatPath(path).hasSizeGreaterThanOrEqualTo(3))
                 .isInstanceOf(AssertionError.class);
-        assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThan(2)).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThan(2))
+                .hasMessage(ShouldHaveSizeLessThan.shouldHaveSizeLessThan(path, 2, 2).create());
         assertThatThrownBy(() -> assertThatPath(path).hasSizeLessThanOrEqualTo(1))
                 .isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(path).hasSizeBetween(3, 4)).isInstanceOf(AssertionError.class);
@@ -94,7 +98,7 @@ class PathAssert_Size_Test {
 
     @DisplayName("the size assertions fail as assertions on a null path")
     @Test
-    void sizes__FailOnNull() {
+    void should_fail_on_a_null_path() {
         assertThatThrownBy(() -> assertThatPath(null).hasSize(0)).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> assertThatPath(null).isEmpty()).isInstanceOf(AssertionError.class);
     }

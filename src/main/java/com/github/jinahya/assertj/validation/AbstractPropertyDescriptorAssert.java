@@ -53,6 +53,7 @@ public abstract class AbstractPropertyDescriptorAssert<SELF extends AbstractProp
      * @return a string assertion for the {@code actual} descriptor's property name.
      * @see PropertyDescriptor#getPropertyName()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingPropertyName() {
         return isNotNull()
                 .extracting(PropertyDescriptor::getPropertyName, InstanceOfAssertFactories.STRING);
@@ -66,7 +67,7 @@ public abstract class AbstractPropertyDescriptorAssert<SELF extends AbstractProp
      * @see PropertyDescriptor#getPropertyName()
      */
     public SELF hasPropertyName(final String expectedPropertyName) {
-        extractingPropertyName().isEqualTo(expectedPropertyName);
+        ValidationAssertMessages.describedAsAttribute(extractingPropertyName(), "propertyName").isEqualTo(expectedPropertyName);
         return myself;
     }
 }

@@ -21,12 +21,11 @@ package com.github.jinahya.assertj.validation.example.user;
  */
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintViolations;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,9 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConstraintViolations_Test {
 
     private static Set<ConstraintViolation<User>> validate(final User user) {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator().validate(user);
-        }
+        return applyValidator(v -> v.validate(user));
     }
 
     @Test
@@ -65,5 +62,28 @@ class ConstraintViolations_Test {
                 .isNotEmpty()
                 .first()
                 .isNotNull();
+    }
+
+    /**
+     * Filtering creates a new iterable assertion through {@code newAbstractIterableAssert}; the result must still be a
+     * violation assertion, navigating to typed element assertions.
+     */
+    @Test
+    void __filteredOn_keepsTypedNavigation() {
+        final var violations = validate(User.of(null, -1));
+        assertThatConstraintViolations(violations)
+                .hasSize(2)
+                .filteredOn(v -> v.getPropertyPath().toString().equals(User.PROPERTY_NAME_NAME))
+                .hasSize(1)
+                .first()
+                .hasMessageTemplate("{jakarta.validation.constraints.NotBlank.message}");
+    }
+
+    @Test
+    void __filteredOn_noMatch() {
+        final var violations = validate(User.of(null, -1));
+        assertThatConstraintViolations(violations)
+                .filteredOn(v -> v.getPropertyPath().toString().equals("unknown"))
+                .isEmpty();
     }
 }

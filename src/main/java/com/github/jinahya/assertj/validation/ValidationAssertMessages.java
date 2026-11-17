@@ -21,6 +21,8 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assert;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -52,6 +54,29 @@ final class ValidationAssertMessages {
         return IntStream.range(0, violations.size())
                 .mapToObj(i -> String.format("-> %1$s", format(iterator.next())))
                 .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    /**
+     * Describes specified assertion, navigated to an attribute, by the name of the attribute, so that its failure says
+     * which attribute differed.
+     * <p>
+     * A description the assertion already carries, set by the caller on the assertion it navigated from, is kept and
+     * followed by the attribute name: {@code [case 42: invalidValue]}.
+     *
+     * @param navigated the assertion navigated to the attribute.
+     * @param attribute the name of the attribute.
+     * @param <A>       assertion type parameter
+     * @return {@code navigated}, described.
+     */
+    static <A extends Assert<?, ?>> A describedAsAttribute(final A navigated, final String attribute) {
+        Objects.requireNonNull(navigated, "navigated is null");
+        Objects.requireNonNull(attribute, "attribute is null");
+        final String description = navigated instanceof AbstractAssert<?, ?>
+                                   ? ((AbstractAssert<?, ?>) navigated).descriptionText()
+                                   : null;
+        // the text goes in as an argument, so that a '%' in the caller's description is not a format specifier
+        navigated.as("%s", description == null || description.isEmpty() ? attribute : description + ": " + attribute);
+        return navigated;
     }
 
     private ValidationAssertMessages() {

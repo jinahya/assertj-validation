@@ -24,13 +24,12 @@ import com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ElementKind;
 import jakarta.validation.Path;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatMethodNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatParameterNode;
@@ -48,11 +47,9 @@ class NodeEntryPointsAndFactories_Test {
 
     private static ConstraintViolation<Greeter> parameterViolation() throws NoSuchMethodException {
         final Method method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator().forExecutables()
-                    .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
-                    .iterator().next();
-        }
+        return applyValidator(v -> v.forExecutables()
+                .validateParameters(new Greeter("Jane"), method, new Object[]{"  ", 1})
+                .iterator().next());
     }
 
     // ------------------------------------------------------------------------------- standalone node entry points
@@ -98,28 +95,60 @@ class NodeEntryPointsAndFactories_Test {
 
     @Test
     void factory__metadataDescriptors() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            final var bean = factory.getValidator().getConstraintsForClass(Greeter.class);
-            assertThat((Object) bean.getConstraintsForMethod(Greeter.METHOD_NAME_GREET, String.class, int.class))
-                    .asInstanceOf(METHOD_DESCRIPTOR)
-                    .hasName(Greeter.METHOD_NAME_GREET);
-            assertThat((Object) bean.getConstraintsForProperty("name"))
-                    .asInstanceOf(PROPERTY_DESCRIPTOR)
-                    .hasPropertyName("name");
-        }
+        final var bean = applyValidator(v -> v.getConstraintsForClass(Greeter.class));
+        assertThat((Object) bean.getConstraintsForMethod(Greeter.METHOD_NAME_GREET, String.class, int.class))
+                .asInstanceOf(METHOD_DESCRIPTOR)
+                .hasName(Greeter.METHOD_NAME_GREET);
+        assertThat((Object) bean.getConstraintsForProperty("name"))
+                .asInstanceOf(PROPERTY_DESCRIPTOR)
+                .hasPropertyName("name");
     }
 
     @Test
     void factory__everyConstantIsPresentAndNonNull() throws Exception {
-        // guards against a constant being dropped: 10 node/path + 9 metadata
+        // guards against a constant being dropped: 10 node/path + 9 metadata + 1 exception
         final var fields = java.util.Arrays.stream(ValidationInstanceOfAssertFactories.class.getFields())
                 .filter(f -> java.lang.reflect.Modifier.isStatic(f.getModifiers()))
                 .filter(f -> f.getType() == org.assertj.core.api.InstanceOfAssertFactory.class)
                 .toList();
-        assertThat(fields).hasSize(19);
+        assertThat(fields).hasSize(20);
         for (final var f : fields) {
             assertThat(f.get(null)).as(f.getName()).isNotNull();
         }
+    }
+
+    @Test
+    void factory__typedNodeFactoriesAcceptNull() throws Exception {
+        // as AssertJ's own factories do: the assertion is built over null, and fails only when asked to
+        for (final var f : ValidationInstanceOfAssertFactories.class.getFields()) {
+            if (!f.getName().endsWith("_NODE")) {
+                continue;
+            }
+            final var factory = (org.assertj.core.api.InstanceOfAssertFactory<?, ?>) f.get(null);
+            final Object nothing = null;
+            final var assertion = factory.createAssert(nothing);
+            assertThat(assertion).as(f.getName()).isNotNull();
+            assertThatThrownBy(assertion::isNotNull).as(f.getName()).isInstanceOf(AssertionError.class);
+        }
+    }
+
+    @Test
+    void factory__wrongKindFailsAtOnce() throws Exception {
+        final Path.Node parameter = parameterViolation().getPropertyPath().iterator().next(); // the method node
+        assertThatThrownBy(() -> assertThat((Object) parameter).asInstanceOf(
+                ValidationInstanceOfAssertFactories.PROPERTY_NODE))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("PROPERTY");
+    }
+
+    @Test
+    void navigation__wrongKindFailureCarriesTheDescription() throws Exception {
+        final Path path = parameterViolation().getPropertyPath();
+        assertThatThrownBy(() -> com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath(path)
+                .as("case 42")
+                .extractingPropertyNode(0))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageStartingWith("[case 42]");
     }
 
     @Test

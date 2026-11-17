@@ -20,6 +20,49 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-class ConstraintViolationAssert_ExecutableParameters_Test {
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+class ConstraintViolationAssert_ExecutableParameters_Test
+        extends ConstraintViolationAssert__Base {
+
+    @Test
+    void should_pass_if_executable_parameters_are_equal() {
+        final var actual = violation();
+        when(actual.getExecutableParameters()).thenReturn(new Object[]{"a", 1});
+        assertThatCode(() -> assertion(actual).hasExecutableParameters(new Object[]{"a", 1}))
+                .doesNotThrowAnyException();
+        returnsSelf(assertion(actual), a -> a.hasExecutableParameters(new Object[]{"a", 1}));
+    }
+
+    @Test
+    void should_fail_naming_the_attribute_if_executable_parameters_differ() {
+        final var actual = violation();
+        when(actual.getExecutableParameters()).thenReturn(new Object[]{"a", 1});
+        assertThatThrownBy(() -> assertion(actual).hasExecutableParameters(new Object[]{"a", 2}))
+                .hasMessageStartingWith("[executableParameters]");
+    }
+
+    @Test
+    void should_pass_if_there_are_no_executable_parameters() {
+        assertThatCode(() -> assertion(violation()).hasNoExecutableParameters()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void should_extract_the_executable_parameters() {
+        final var actual = violation();
+        when(actual.getExecutableParameters()).thenReturn(new Object[]{"a", 1});
+        assertThatCode(() -> assertion(actual).extractingExecutableParameters().containsExactly("a", 1))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void should_fail_if_actual_is_null() {
+        assertThatThrownBy(() -> assertion(null).hasNoExecutableParameters())
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting actual not to be null");
+    }
 }

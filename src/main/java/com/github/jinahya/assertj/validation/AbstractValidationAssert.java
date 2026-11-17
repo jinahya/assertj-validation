@@ -26,10 +26,13 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.groups.Default;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.presentation.Representation;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -43,6 +46,15 @@ import static java.util.Collections.unmodifiableSet;
  * factory of its own. Assertions which merely inspect what validation produced &mdash; a {@link ConstraintViolation}, a
  * {@link jakarta.validation.Path}, a metadata descriptor &mdash; do not extend this class, because there is nothing
  * left for them to validate.
+ * <p>
+ * Every assertion method of a subclass which takes a {@link Consumer} of the resulting constraint violations calls it
+ * <em>before</em> checking them, with an unmodifiable view of the set, which may be empty. So the consumer sees the
+ * violations also when the assertion then fails, and cannot change what is checked. Anything it throws propagates
+ * unchanged, and the assertion is not checked.
+ * <p>
+ * The assertion methods of subclasses are not {@code final}, so that AssertJ's soft assertions can intercept them.
+ * On AssertJ 3.x and 4.0.0-M1, a chain navigating from a proxied assertion into a nested one, such as
+ * {@code extractingPropertyPath()}, is not soft; wrap such a chain in {@code softly.check(..)}.
  *
  * @param <SELF>   self type parameter
  * @param <ACTUAL> actual type parameter
@@ -197,6 +209,57 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     protected final <T> void acceptViolations(final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                                               final Set<ConstraintViolation<T>> violations) {
         consumer.accept(unmodifiableSet(violations));
+    }
+
+    /**
+     * Validates with specified function, accepts the resulting violations to specified consumer, and verifies that
+     * they are empty, or not empty, failing through this assertion object.
+     * <p>
+     * The consumer is called <em>before</em> the check, with an unmodifiable view, as
+     * {@link #acceptViolations(Consumer, Set)} does.
+     * <p>
+     * The failure is raised by {@link #failure(String, Object...)}, so it honours what the caller configured on this
+     * assertion object: a description set with {@code as(...)} prefixes the message, and a message set with
+     * {@code withFailMessage(...)} or {@code overridingErrorMessage(...)}, eager or lazy, replaces the default one. The
+     * values of {@code subject}, and the groups, are formatted with this assertion object's representation.
+     *
+     * @param validation    the function validating with a validator and the targeted groups; must be not
+     *                      {@code null}.
+     * @param consumer      the consumer to accept the violations; must be not {@code null}.
+     * @param expectedEmpty {@code true} when the violations should be empty; {@code false} when they should not.
+     * @param subject       what was validated, as pairs of a label and a value, e.g. {@code "actual", actual}.
+     * @param <T>           root bean type parameter
+     * @throws AssertionError when the violations are not as expected.
+     */
+    protected final <T> void validate(
+            final BiFunction<? super Validator, ? super Class<?>[], ? extends Set<ConstraintViolation<T>>> validation,
+            final Consumer<? super Set<ConstraintViolation<T>>> consumer, final boolean expectedEmpty,
+            final Object... subject) {
+        Objects.requireNonNull(validation, "validation is null");
+        Objects.requireNonNull(consumer, "consumer is null");
+        if (subject.length % 2 != 0) {
+            throw new IllegalArgumentException("subject is not of label/value pairs: " + subject.length);
+        }
+        final Class<?>[] groups = groups();
+        final Set<ConstraintViolation<T>> violations = applyValidator(v -> validation.apply(v, groups));
+        acceptViolations(consumer, violations);
+        if (violations.isEmpty() == expectedEmpty) {
+            return;
+        }
+        final Representation representation = info.representation();
+        final StringBuilder message = new StringBuilder(
+                String.format("%nThe set of constraint violations resulted while validating%n"));
+        for (int i = 0; i < subject.length; i += 2) {
+            message.append(String.format("\t%1$s: %2$s%n", subject[i], representation.toStringOf(subject[i + 1])));
+        }
+        message.append(String.format("targeting%n\tgroups: %1$s%n",
+                                     representation.toStringOf(Arrays.asList(groups))));
+        message.append(expectedEmpty
+                       ? String.format("expected to be empty but contains %1$d element(s)%n%2$s",
+                                       violations.size(), ValidationAssertMessages.format(violations))
+                       : "expected to be not empty but empty");
+        // the completed text goes in as an argument, so that a '%' in a value or a message is not a format specifier
+        throw failure("%s", message);
     }
 
     // -----------------------------------------------------------------------------------------------------------

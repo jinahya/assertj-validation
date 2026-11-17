@@ -20,13 +20,19 @@ package com.github.jinahya.assertj.validation.example.service;
  * #L%
  */
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBean;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -124,6 +130,54 @@ class ExecutableValidation_Test {
         final var constructor = constructor();
         // the spec makes a null created instance an IllegalArgumentException, not a constraint violation;
         // the assertion must propagate it rather than report a failed assertion.
+        assertThatThrownBy(() -> assertThatConstructor(constructor).hasValidReturnValue(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    // ------------------------------------------------ validateConstructorReturnValue, standard constraints only
+
+    /**
+     * A fixture whose constructor return value is checked through standard constraints alone: {@code @NotNull} on the
+     * constructor, and {@code @NotBlank} on a field, reached by cascading with {@code @Valid}.
+     */
+    public static class Account {
+
+        @NotNull
+        @Valid
+        public Account(final String id) {
+            this.id = id;
+        }
+
+        @NotBlank
+        private final String id;
+    }
+
+    private static Constructor<Account> accountConstructor() throws NoSuchMethodException {
+        return Account.class.getConstructor(String.class);
+    }
+
+    @Test
+    void constructorReturnValue_standard__valid() throws Exception {
+        final var constructor = accountConstructor();
+        final var violations = new AtomicReference<Set<?>>();
+        assertThatCode(() -> assertThatConstructor(constructor).hasValidReturnValue(new Account("1"), violations::set))
+                .doesNotThrowAnyException();
+        assertThat(violations.get()).isEmpty();
+    }
+
+    @Test
+    void constructorReturnValue_standard__invalidThroughCascading() throws Exception {
+        final var constructor = accountConstructor();
+        final var blank = new Account(" ");
+        assertThatThrownBy(() -> assertThatConstructor(constructor).hasValidReturnValue(blank))
+                .isInstanceOf(AssertionError.class);
+        assertThatCode(() -> assertThatConstructor(constructor).doesNotHaveValidReturnValue(blank))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void constructorReturnValue_standard__nullIsAProviderContractError() throws Exception {
+        final var constructor = accountConstructor();
         assertThatThrownBy(() -> assertThatConstructor(constructor).hasValidReturnValue(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }

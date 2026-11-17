@@ -54,6 +54,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @return an integer assertion for the {@code actual} descriptor's index.
      * @see ParameterDescriptor#getIndex()
      */
+    @CheckReturnValue
     public AbstractIntegerAssert<?> extractingIndex() {
         return isNotNull()
                 .extracting(ParameterDescriptor::getIndex, InstanceOfAssertFactories.INTEGER);
@@ -67,7 +68,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @see ParameterDescriptor#getIndex()
      */
     public SELF hasIndex(final int expectedIndex) {
-        extractingIndex().isEqualTo(expectedIndex);
+        ValidationAssertMessages.describedAsAttribute(extractingIndex(), "index").isEqualTo(expectedIndex);
         return myself;
     }
 
@@ -77,6 +78,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @return a string assertion for the {@code actual} descriptor's name.
      * @see ParameterDescriptor#getName()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingName() {
         return isNotNull()
                 .extracting(ParameterDescriptor::getName, InstanceOfAssertFactories.STRING);
@@ -90,7 +92,7 @@ public abstract class AbstractParameterDescriptorAssert<SELF extends AbstractPar
      * @see ParameterDescriptor#getName()
      */
     public SELF hasName(final String expectedName) {
-        extractingName().isEqualTo(expectedName);
+        ValidationAssertMessages.describedAsAttribute(extractingName(), "name").isEqualTo(expectedName);
         return myself;
     }
 }

@@ -20,6 +20,31 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-class ConstraintViolationAssert_ConstraintDescriptor_Test {
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+class ConstraintViolationAssert_ConstraintDescriptor_Test
+        extends ConstraintViolationAssert__Base {
+
+    @Test
+    void should_fail_if_there_is_no_constraint_descriptor() {
+        assertThatThrownBy(() -> assertion(violation()).extractingConstraintDescriptor().isNotNull())
+                .isInstanceOf(AssertionError.class);
+    }
+
+    @Test
+    void should_carry_the_description_to_the_constraint_descriptor() {
+        assertThatThrownBy(() -> assertion(violation()).as("case 42").extractingConstraintDescriptor().isNotNull())
+                .hasMessageStartingWith("[case 42]");
+    }
+
+    @Test
+    void should_fail_if_actual_is_null() {
+        assertThatThrownBy(() -> assertion(null).extractingConstraintDescriptor())
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting actual not to be null");
+    }
 }

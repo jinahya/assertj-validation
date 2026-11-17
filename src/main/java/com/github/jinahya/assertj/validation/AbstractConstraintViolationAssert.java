@@ -26,12 +26,13 @@ import jakarta.validation.metadata.ConstraintDescriptor;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectArrayAssert;
-import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.ObjectAssert;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -79,6 +80,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getConstraintDescriptor()
      */
+    @CheckReturnValue
     public <D extends ConstraintDescriptor<?>, A extends AbstractConstraintDescriptorAssert<?, ? extends D, ?>>
     A extractingConstraintDescriptor(
             final Function<? super ACTUAL, ? extends D> descriptorExtractor,
@@ -93,6 +95,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an assertion for the {@code actual} constraint violation's constraint descriptor.
      * @see ConstraintViolation#getConstraintDescriptor()
      */
+    @CheckReturnValue
     public AbstractConstraintDescriptorAssert<?, ?, ?> extractingConstraintDescriptor() {
         return extractingConstraintDescriptor(
                 ConstraintViolation::getConstraintDescriptor,
@@ -115,6 +118,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getExecutableParameters()
      */
+    @CheckReturnValue
     public <A extends AbstractObjectArrayAssert<?, ? extends E>, E> A extractingExecutableParameters(
             final Function<? super ACTUAL, ? extends E[]> parametersExtractor,
             final AssertFactory<? super E[], ? extends A> assertFactory) {
@@ -129,6 +133,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an object array assertion for the {@code actual} constraint violation's executable parameters.
      * @see ConstraintViolation#getExecutableParameters()
      */
+    @CheckReturnValue
     public ObjectArrayAssert<Object> extractingExecutableParameters() {
         return extractingExecutableParameters(ConstraintViolation::getExecutableParameters,
                                               InstanceOfAssertFactories.ARRAY);
@@ -144,7 +149,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #extractingExecutableParameters()
      */
     public SELF hasExecutableParameters(final Object[] expectedExecutableParameters) {
-        extractingExecutableParameters().isEqualTo(expectedExecutableParameters);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableParameters(), "executableParameters").isEqualTo(expectedExecutableParameters);
         return myself;
     }
 
@@ -175,6 +180,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getExecutableReturnValue()
      */
+    @CheckReturnValue
     public <V, A extends AbstractAssert<?, ? extends V>> A extractingExecutableReturnValue(
             final Function<? super ACTUAL, ? extends V> valueExtractor,
             final AssertFactory<? super V, ? extends A> assertFactory) {
@@ -188,10 +194,11 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an assertion for the {@code actual} constraint violation's executable return value.
      * @see ConstraintViolation#getExecutableReturnValue()
      */
-    public Assert<?, Object> extractingExecutableReturnValue() {
+    @CheckReturnValue
+    public AbstractObjectAssert<?, Object> extractingExecutableReturnValue() {
         return extractingExecutableReturnValue(
                 ConstraintViolation::getExecutableReturnValue,
-                new ObjectAssertFactory<>()
+                ObjectAssert::new
         );
     }
 
@@ -206,7 +213,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getExecutableReturnValue()
      */
     public SELF hasExecutableReturnValue(final Object expectedExecutableReturnValue) {
-        extractingExecutableReturnValue().isEqualTo(expectedExecutableReturnValue);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableReturnValue(), "executableReturnValue").isEqualTo(expectedExecutableReturnValue);
         return myself;
     }
 
@@ -236,6 +243,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getInvalidValue()
      */
+    @CheckReturnValue
     public <V, A extends AbstractAssert<?, ? extends V>> A extractingInvalidValue(
             final Function<? super ACTUAL, ? extends V> valueExtractor,
             final AssertFactory<? super V, ? extends A> assertFactory) {
@@ -250,8 +258,9 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an assertion for the {@code actual} constraint violation's invalid value.
      * @see ConstraintViolation#getInvalidValue()
      */
-    public Assert<?, Object> extractingInvalidValue() {
-        return extractingInvalidValue(ConstraintViolation::getInvalidValue, new ObjectAssertFactory<>());
+    @CheckReturnValue
+    public AbstractObjectAssert<?, Object> extractingInvalidValue() {
+        return extractingInvalidValue(ConstraintViolation::getInvalidValue, ObjectAssert::new);
     }
 
     /**
@@ -264,7 +273,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getInvalidValue()
      */
     public SELF hasInvalidValue(final Object expectedInvalidValue) {
-        extractingInvalidValue().isEqualTo(expectedInvalidValue);
+        ValidationAssertMessages.describedAsAttribute(extractingInvalidValue(), "invalidValue").isEqualTo(expectedInvalidValue);
         return myself;
     }
 
@@ -281,6 +290,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getLeafBean()
      */
+    @CheckReturnValue
     public <B, A extends AbstractAssert<?, ? extends B>> A extractingLeafBean(
             final Function<? super ACTUAL, ? extends B> beanExtractor,
             final AssertFactory<? super B, ? extends A> assertFactory) {
@@ -301,6 +311,7 @@ public abstract class AbstractConstraintViolationAssert<
     @SuppressWarnings({
             "unchecked"
     })
+    @CheckReturnValue
     public <B, A extends AbstractAssert<?, ? extends B>> A extractingLeafBean(
             final AssertFactory<? super B, ? extends A> assertFactory) {
         return extractingLeafBean(a -> (B) a.getLeafBean(), assertFactory);
@@ -313,9 +324,10 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an assert for verifying the {@code actual} constraint violation's
      * {@link ConstraintViolation#getLeafBean() leafBean}.
      */
-    public Assert<?, ?> extractingLeafBean() {
+    @CheckReturnValue
+    public AbstractObjectAssert<?, Object> extractingLeafBean() {
         return isNotNull()
-                .extracting(ConstraintViolation::getLeafBean, new ObjectAssertFactory<>());
+                .extracting(ConstraintViolation::getLeafBean, ObjectAssert::new);
     }
 
     /**
@@ -327,7 +339,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #extractingLeafBean()
      */
     public SELF hasLeafBean(final Object expectedLeafBean) {
-        extractingLeafBean().isEqualTo(expectedLeafBean);
+        ValidationAssertMessages.describedAsAttribute(extractingLeafBean(), "leafBean").isEqualTo(expectedLeafBean);
         return myself;
     }
 
@@ -351,9 +363,10 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getMessage()
      */
     public SELF hasMessage(final String expectedMessage) {
-        isNotNull()
-                .extracting(ConstraintViolation::getMessage, InstanceOfAssertFactories.STRING)
-                .isEqualTo(expectedMessage);
+        ValidationAssertMessages.describedAsAttribute(
+                isNotNull().extracting(ConstraintViolation::getMessage, InstanceOfAssertFactories.STRING),
+                "message"
+        ).isEqualTo(expectedMessage);
         return myself;
     }
 
@@ -369,6 +382,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#getMessageTemplate()
      */
+    @CheckReturnValue
     public <A extends AbstractStringAssert<?>> A extractingMessageTemplate(
             final AssertFactory<? super String, ? extends A> assertFactory) {
         return isNotNull()
@@ -382,6 +396,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return a string assertion for the {@code actual} constraint violation's message template.
      * @see ConstraintViolation#getMessageTemplate()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingMessageTemplate() {
         return extractingMessageTemplate(InstanceOfAssertFactories.STRING);
     }
@@ -400,7 +415,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #hasMessage(String)
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        extractingMessageTemplate().isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -417,6 +432,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link A}.
      * @see ConstraintViolation#unwrap(Class)
      */
+    @CheckReturnValue
     public <U, A extends AbstractAssert<?, ? extends U>> A extractingAsUnwrapped(
             final Class<U> type,
             final AssertFactory<? super U, ? extends A> assertFactory) {
@@ -436,7 +452,8 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        extractingAsUnwrapped(type, new ObjectAssertFactory<>())
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
+                                                      "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }
@@ -452,6 +469,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link ASSERT}.
      * @see ConstraintViolation#getPropertyPath()
      */
+    @CheckReturnValue
     public <ASSERT extends AbstractPathAssert<?>>
     ASSERT extractingPropertyPath(final AssertFactory<? super Path, ? extends ASSERT> assertFactory) {
         return isNotNull()
@@ -465,8 +483,9 @@ public abstract class AbstractConstraintViolationAssert<
      * @return a path assertion for the {@code actual} constraint violation's property path.
      * @see ConstraintViolation#getPropertyPath()
      */
+    @CheckReturnValue
     public AbstractPathAssert<?> extractingPropertyPath() {
-        return extractingPropertyPath(pp -> new DefaultPathAssert(pp));
+        return extractingPropertyPath(pp -> new PathAssert(pp));
     }
 
     // -------------------------------------------------------------------------------------------------------- rootBean
@@ -480,6 +499,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an instance of {@link ASSERT}.
      * @see ConstraintViolation#getRootBean()
      */
+    @CheckReturnValue
     public <ASSERT extends AbstractAssert<?, T>> ASSERT extractingRootBean(
             final AssertFactory<? super T, ? extends ASSERT> assertFactory) {
         return isNotNull()
@@ -493,8 +513,9 @@ public abstract class AbstractConstraintViolationAssert<
      * @return an assertion for the {@code actual} constraint violation's root bean.
      * @see ConstraintViolation#getRootBean()
      */
+    @CheckReturnValue
     public AbstractAssert<?, T> extractingRootBean() {
-        return extractingRootBean(new ObjectAssertFactory<>());
+        return extractingRootBean(ObjectAssert::new);
     }
 
     /**
@@ -505,7 +526,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getRootBean()
      */
     public SELF hasRootBean(final T expectedRootBean) {
-        extractingRootBean().isEqualTo(expectedRootBean);
+        ValidationAssertMessages.describedAsAttribute(extractingRootBean(), "rootBean").isEqualTo(expectedRootBean);
         return myself;
     }
 
@@ -528,6 +549,7 @@ public abstract class AbstractConstraintViolationAssert<
      * @param <ASSERT>      assert type parameter
      * @return in instance of {@link ASSERT}.
      */
+    @CheckReturnValue
     public <ASSERT extends AbstractClassAssert<?>> ASSERT extractingRootBeanClass(
             final AssertFactory<? super Class<T>, ? extends ASSERT> assertFactory) {
         Objects.requireNonNull(assertFactory, "assertFactory is null");
@@ -540,6 +562,7 @@ public abstract class AbstractConstraintViolationAssert<
      *
      * @return a class assert.
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingRootBeanClass() {
         return extractingRootBeanClass(InstanceOfAssertFactories.CLASS);
     }
@@ -554,7 +577,7 @@ public abstract class AbstractConstraintViolationAssert<
      */
     public SELF hasRootBeanClass(final Class<T> expectedRootBeanClass) {
         Objects.requireNonNull(expectedRootBeanClass, "expectedRootBeanClass is null");
-        extractingRootBeanClass().isEqualTo(expectedRootBeanClass);
+        ValidationAssertMessages.describedAsAttribute(extractingRootBeanClass(), "rootBeanClass").isEqualTo(expectedRootBeanClass);
         return myself;
     }
 }

@@ -35,7 +35,7 @@ import org.assertj.core.api.CollectionAssert;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
-import org.assertj.core.api.ObjectAssertFactory;
+import org.assertj.core.api.ObjectAssert;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;
@@ -79,6 +79,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ConstraintDescriptor#getAnnotation()
      */
+    @CheckReturnValue
     public <A extends AbstractAssert<?, T>> A extractingAnnotation(
             final Function<? super ACTUAL, ? extends T> extractor,
             final AssertFactory<? super T, ? extends A> factory) {
@@ -93,8 +94,9 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an assertion for the {@code actual} constraint descriptor's annotation.
      * @see ConstraintDescriptor#getAnnotation()
      */
+    @CheckReturnValue
     public Assert<?, T> extractingAnnotation() {
-        return extractingAnnotation(ConstraintDescriptor::getAnnotation, new ObjectAssertFactory<>());
+        return extractingAnnotation(ConstraintDescriptor::getAnnotation, ObjectAssert::new);
     }
 
     // ------------------------------------------------------------------------------------------------------ attributes
@@ -106,6 +108,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a map assertion for the {@code actual} constraint descriptor's attributes.
      * @see ConstraintDescriptor#getAttributes()
      */
+    @CheckReturnValue
     public MapAssert<String, Object> extractingAttributes() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getAttributes, MapAssert<String, Object>::new);
@@ -135,6 +138,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's composing constraints.
      * @see ConstraintDescriptor#getComposingConstraints()
      */
+    @CheckReturnValue
     public CollectionAssert<ConstraintDescriptor<?>> extractingComposingConstraints() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getComposingConstraints, CollectionAssert::new);
@@ -161,6 +165,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a list assertion for the {@code actual} constraint descriptor's constraint validator classes.
      * @see ConstraintDescriptor#getConstraintValidatorClasses()
      */
+    @CheckReturnValue
     public ListAssert<Class<? extends ConstraintValidator<T, ?>>> extractingConstraintValidatorClasses() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getConstraintValidatorClasses, ListAssert::new);
@@ -189,6 +194,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's groups.
      * @see ConstraintDescriptor#getGroups()
      */
+    @CheckReturnValue
     public CollectionAssert<Class<?>> extractingGroups() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getGroups, CollectionAssert::new);
@@ -203,6 +209,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a string assertion for the {@code actual} constraint descriptor's message template.
      * @see ConstraintDescriptor#getMessageTemplate()
      */
+    @CheckReturnValue
     public AbstractStringAssert<?> extractingMessageTemplate() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getMessageTemplate, InstanceOfAssertFactories.STRING);
@@ -217,7 +224,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#getMessageTemplate()
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        extractingMessageTemplate().isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -230,6 +237,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a collection assertion for the {@code actual} constraint descriptor's payload.
      * @see ConstraintDescriptor#getPayload()
      */
+    @CheckReturnValue
     public CollectionAssert<Class<? extends Payload>> extractingPayload() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getPayload, CollectionAssert::new);
@@ -269,12 +277,27 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @param constraintTarget the expected value of {@code actual.validationAppliesTo}.
      * @return this assertion object.
      * @see ConstraintDescriptor#getValidationAppliesTo()
+     * @see #hasValidationAppliesTo(ConstraintTarget)
      */
     public SELF hostsConstraintTarget(final ConstraintTarget constraintTarget) {
-        isNotNull()
-                .extracting(ConstraintDescriptor::getValidationAppliesTo, new ObjectAssertFactory<>())
-                .isSameAs(constraintTarget);
+        ValidationAssertMessages.describedAsAttribute(
+                isNotNull().extracting(ConstraintDescriptor::getValidationAppliesTo, ObjectAssert::new),
+                "validationAppliesTo"
+        ).isSameAs(constraintTarget);
         return myself;
+    }
+
+    /**
+     * Verifies that the {@code actual} constraint descriptor's
+     * {@link ConstraintDescriptor#getValidationAppliesTo() validationAppliesTo} is same as specified value; an alias of
+     * {@link #hostsConstraintTarget(ConstraintTarget)}, named after the attribute.
+     *
+     * @param expectedValidationAppliesTo the expected value of {@code actual.validationAppliesTo}.
+     * @return this assertion object.
+     * @see ConstraintDescriptor#getValidationAppliesTo()
+     */
+    public SELF hasValidationAppliesTo(final ConstraintTarget expectedValidationAppliesTo) {
+        return hostsConstraintTarget(expectedValidationAppliesTo);
     }
 
     /**
@@ -299,6 +322,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a comparable assertion for the {@code actual} constraint descriptor's value-unwrapping mode.
      * @see ConstraintDescriptor#getValueUnwrapping()
      */
+    @CheckReturnValue
     public AbstractComparableAssert<?, ValidateUnwrappedValue> extractingValueUnwrapping() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::getValueUnwrapping,
@@ -327,6 +351,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return a boolean assertion for the {@code actual} constraint descriptor's report-as-single-violation flag.
      * @see ConstraintDescriptor#isReportAsSingleViolation()
      */
+    @CheckReturnValue
     public AbstractBooleanAssert<?> extractingReportAsSingleViolation() {
         return isNotNull()
                 .extracting(ConstraintDescriptor::isReportAsSingleViolation, InstanceOfAssertFactories.BOOLEAN);
@@ -369,6 +394,7 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @return an instance of {@link A}.
      * @see ConstraintDescriptor#unwrap(Class)
      */
+    @CheckReturnValue
     public <U, A extends AbstractAssert<?, ? extends U>> A extractingAsUnwrapped(
             final Class<U> type,
             final AssertFactory<? super U, ? extends A> assertFactory) {
@@ -388,7 +414,8 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        extractingAsUnwrapped(type, new ObjectAssertFactory<>())
+        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
+                                                      "unwrapped as " + type.getName())
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

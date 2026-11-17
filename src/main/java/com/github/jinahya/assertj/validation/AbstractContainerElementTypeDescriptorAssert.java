@@ -56,6 +56,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @return a class assertion for the {@code actual} descriptor's container class.
      * @see ContainerElementTypeDescriptor#getContainerClass()
      */
+    @CheckReturnValue
     public AbstractClassAssert<?> extractingContainerClass() {
         return isNotNull()
                 .extracting(ContainerElementTypeDescriptor::getContainerClass, InstanceOfAssertFactories.CLASS);
@@ -70,7 +71,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @see ContainerElementTypeDescriptor#getContainerClass()
      */
     public SELF hasContainerClass(final Class<?> expectedContainerClass) {
-        extractingContainerClass().isEqualTo(expectedContainerClass);
+        ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass").isEqualTo(expectedContainerClass);
         return myself;
     }
 
@@ -81,6 +82,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @return an integer assertion for the {@code actual} descriptor's type argument index.
      * @see ContainerElementTypeDescriptor#getTypeArgumentIndex()
      */
+    @CheckReturnValue
     public AbstractIntegerAssert<?> extractingTypeArgumentIndex() {
         return isNotNull()
                 .extracting(ContainerElementTypeDescriptor::getTypeArgumentIndex, InstanceOfAssertFactories.INTEGER);
@@ -95,7 +97,7 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @see ContainerElementTypeDescriptor#getTypeArgumentIndex()
      */
     public SELF hasTypeArgumentIndex(final Integer expectedTypeArgumentIndex) {
-        extractingTypeArgumentIndex().isEqualTo(expectedTypeArgumentIndex);
+        ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex").isEqualTo(expectedTypeArgumentIndex);
         return myself;
     }
 }

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 class ConstraintViolationAssert_RootBean_Test
-        extends ConstraintViolationAssert_$Test {
+        extends ConstraintViolationAssert__Base {
 
     @Test
     void hasRootBean__() {

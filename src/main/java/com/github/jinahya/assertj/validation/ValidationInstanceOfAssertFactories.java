@@ -21,6 +21,7 @@ package com.github.jinahya.assertj.validation;
  */
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.ConstraintDescriptor;
@@ -49,6 +50,13 @@ import java.lang.annotation.Annotation;
  * discriminate them: Hibernate Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so without
  * the kind check {@code asInstanceOf(PROPERTY_NODE)} would accept a method node and fail later, from inside the
  * provider, rather than as an assertion.
+ * <p>
+ * A node factory builds an assertion over a {@code null} node, as AssertJ's own factories do. A node of the wrong
+ * kind fails at once, but that failure cannot carry a description or an overriding message set on the assertion
+ * {@code asInstanceOf} was called on: AssertJ applies that assertion's state only after the factory returns. For a
+ * described failure, navigate from the path instead, e.g.
+ * {@code assertThatPath(path).as("case 42").extractingMethodNode(0)}, whose kind check fails through the path
+ * assertion.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
@@ -63,6 +71,7 @@ public final class ValidationInstanceOfAssertFactories {
      * @return a factory for a constraint violation.
      */
     @SuppressWarnings({"unchecked"})
+    @CheckReturnValue
     public static <T>
     InstanceOfAssertFactory<ConstraintViolation<T>, AbstractConstraintViolationAssert<?, ConstraintViolation<T>, T>>
     constraintViolation() {
@@ -77,12 +86,19 @@ public final class ValidationInstanceOfAssertFactories {
      * @return a factory for a constraint descriptor.
      */
     @SuppressWarnings({"unchecked"})
+    @CheckReturnValue
     public static <T extends Annotation>
     InstanceOfAssertFactory<ConstraintDescriptor<T>, AbstractConstraintDescriptorAssert<?, ?, T>>
     constraintDescriptor() {
         final Class<ConstraintDescriptor<T>> type = (Class<ConstraintDescriptor<T>>) (Object) ConstraintDescriptor.class;
         return new InstanceOfAssertFactory<>(type, ValidationAssertions::assertThatConstraintDescriptor);
     }
+
+    /**
+     * A factory for a {@link ConstraintViolationException}.
+     */
+    public static final InstanceOfAssertFactory<ConstraintViolationException, AbstractConstraintViolationExceptionAssert<?>> CONSTRAINT_VIOLATION_EXCEPTION =
+            new InstanceOfAssertFactory<>(ConstraintViolationException.class, ValidationAssertions::assertThatConstraintViolationException);
 
     /**
      * A factory for a {@link Path}.
@@ -95,13 +111,13 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.Node}.
      */
-    public static final InstanceOfAssertFactory<Path.Node, AbstractPathAssert.AbstractNodeAssert<?>> NODE =
+    public static final InstanceOfAssertFactory<Path.Node, AbstractNodeAssert<?, Path.Node>> NODE =
             new InstanceOfAssertFactory<>(Path.Node.class, ValidationAssertions::assertThatNode);
 
     /**
      * A factory for a {@link Path.BeanNode}.
      */
-    public static final InstanceOfAssertFactory<Path.BeanNode, AbstractPathAssert.AbstractBeanNodeAssert<?>> BEAN_NODE =
+    public static final InstanceOfAssertFactory<Path.BeanNode, AbstractBeanNodeAssert<?>> BEAN_NODE =
             new InstanceOfAssertFactory<>(Path.BeanNode.class,
                                           n -> ValidationAssertions.assertThatBeanNode(
                                                   AbstractPathAssert.requireKind(n, Path.BeanNode.class)));
@@ -109,7 +125,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ConstructorNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ConstructorNode, AbstractPathAssert.AbstractConstructorNodeAssert<?>> CONSTRUCTOR_NODE =
+    public static final InstanceOfAssertFactory<Path.ConstructorNode, AbstractConstructorNodeAssert<?>> CONSTRUCTOR_NODE =
             new InstanceOfAssertFactory<>(Path.ConstructorNode.class,
                                           n -> ValidationAssertions.assertThatConstructorNode(
                                                   AbstractPathAssert.requireKind(n, Path.ConstructorNode.class)));
@@ -117,7 +133,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ContainerElementNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ContainerElementNode, AbstractPathAssert.AbstractContainerElementNodeAssert<?>> CONTAINER_ELEMENT_NODE =
+    public static final InstanceOfAssertFactory<Path.ContainerElementNode, AbstractContainerElementNodeAssert<?>> CONTAINER_ELEMENT_NODE =
             new InstanceOfAssertFactory<>(Path.ContainerElementNode.class,
                                           n -> ValidationAssertions.assertThatContainerElementNode(
                                                   AbstractPathAssert.requireKind(n, Path.ContainerElementNode.class)));
@@ -125,7 +141,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.CrossParameterNode}.
      */
-    public static final InstanceOfAssertFactory<Path.CrossParameterNode, AbstractPathAssert.AbstractCrossParameterNodeAssert<?>> CROSS_PARAMETER_NODE =
+    public static final InstanceOfAssertFactory<Path.CrossParameterNode, AbstractCrossParameterNodeAssert<?>> CROSS_PARAMETER_NODE =
             new InstanceOfAssertFactory<>(Path.CrossParameterNode.class,
                                           n -> ValidationAssertions.assertThatCrossParameterNode(
                                                   AbstractPathAssert.requireKind(n, Path.CrossParameterNode.class)));
@@ -133,7 +149,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.MethodNode}.
      */
-    public static final InstanceOfAssertFactory<Path.MethodNode, AbstractPathAssert.AbstractMethodNodeAssert<?>> METHOD_NODE =
+    public static final InstanceOfAssertFactory<Path.MethodNode, AbstractMethodNodeAssert<?>> METHOD_NODE =
             new InstanceOfAssertFactory<>(Path.MethodNode.class,
                                           n -> ValidationAssertions.assertThatMethodNode(
                                                   AbstractPathAssert.requireKind(n, Path.MethodNode.class)));
@@ -141,7 +157,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ParameterNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ParameterNode, AbstractPathAssert.AbstractParameterNodeAssert<?>> PARAMETER_NODE =
+    public static final InstanceOfAssertFactory<Path.ParameterNode, AbstractParameterNodeAssert<?>> PARAMETER_NODE =
             new InstanceOfAssertFactory<>(Path.ParameterNode.class,
                                           n -> ValidationAssertions.assertThatParameterNode(
                                                   AbstractPathAssert.requireKind(n, Path.ParameterNode.class)));
@@ -149,7 +165,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.PropertyNode}.
      */
-    public static final InstanceOfAssertFactory<Path.PropertyNode, AbstractPathAssert.AbstractPropertyNodeAssert<?>> PROPERTY_NODE =
+    public static final InstanceOfAssertFactory<Path.PropertyNode, AbstractPropertyNodeAssert<?>> PROPERTY_NODE =
             new InstanceOfAssertFactory<>(Path.PropertyNode.class,
                                           n -> ValidationAssertions.assertThatPropertyNode(
                                                   AbstractPathAssert.requireKind(n, Path.PropertyNode.class)));
@@ -157,7 +173,7 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ReturnValueNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ReturnValueNode, AbstractPathAssert.AbstractReturnValueNodeAssert<?>> RETURN_VALUE_NODE =
+    public static final InstanceOfAssertFactory<Path.ReturnValueNode, AbstractReturnValueNodeAssert<?>> RETURN_VALUE_NODE =
             new InstanceOfAssertFactory<>(Path.ReturnValueNode.class,
                                           n -> ValidationAssertions.assertThatReturnValueNode(
                                                   AbstractPathAssert.requireKind(n, Path.ReturnValueNode.class)));

@@ -20,6 +20,38 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-class ConstraintViolationAssert_PropertyPath_Test {
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+class ConstraintViolationAssert_PropertyPath_Test
+        extends ConstraintViolationAssert__Base {
+
+    @Test
+    void should_extract_the_property_path() {
+        final var actual = violation();
+        final var path = org.mockito.Mockito.mock(jakarta.validation.Path.class);
+        when(path.iterator()).thenAnswer(i -> java.util.Collections.emptyIterator());
+        when(actual.getPropertyPath()).thenReturn(path);
+        assertThatCode(() -> assertion(actual).extractingPropertyPath().isEmpty()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void should_carry_the_description_to_the_property_path() {
+        final var actual = violation();
+        final var path = org.mockito.Mockito.mock(jakarta.validation.Path.class);
+        when(path.iterator()).thenAnswer(i -> java.util.Collections.emptyIterator());
+        when(actual.getPropertyPath()).thenReturn(path);
+        assertThatThrownBy(() -> assertion(actual).as("case 42").extractingPropertyPath().isNotEmpty())
+                .hasMessageStartingWith("[case 42]");
+    }
+
+    @Test
+    void should_fail_if_actual_is_null() {
+        assertThatThrownBy(() -> assertion(null).extractingPropertyPath())
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting actual not to be null");
+    }
 }

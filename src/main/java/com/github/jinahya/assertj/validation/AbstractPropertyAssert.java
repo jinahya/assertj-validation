@@ -22,12 +22,10 @@ package com.github.jinahya.assertj.validation;
 
 import jakarta.validation.ConstraintViolation;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract class for verifying a value against a specific property of a specific bean type.
@@ -58,7 +56,7 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      *
      * @param beanType     the bean type; must be not {@code null}.
      * @param propertyName the name of the property; must be not {@code null}.
-     * @param consumer     the consumer accepts the set of constraint violations.
+     * @param consumer     the consumer to accept the violations, as described on {@link AbstractValidationAssert}.
      * @param <T>          type of the object to validate
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is not valid for {@code beanType#propertyName}.
@@ -67,35 +65,13 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * relies.
      * @see #isValidFor(Class, String)
      */
-    public final <T> SELF isValidFor(final Class<T> beanType, final String propertyName,
+    public <T> SELF isValidFor(final Class<T> beanType, final String propertyName,
                                      final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<T>> violations =
-                applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
-        acceptViolations(consumer, violations);
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "\tagainst%n"
-                    + "\t\tbeanType: %s%n"
-                    + "\t\tproperty: '%s'%n"
-                    + "\tfor%n"
-                    + "\t\tgroups: %s%n",
-                    actual,
-                    beanType,
-                    propertyName,
-                    Arrays.asList(groups)
-                )
-                .withFailMessage(() -> String.format(
-                        "%nexpected to be empty but contains %1$d element(s)%n"
-                        + "%2$s",
-                        violations.size(),
-                        ValidationAssertMessages.format(violations)
-                ))
-                .isEmpty();
+        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), consumer, true,
+                 "actual", actual, "beanType", beanType, "property", propertyName);
         return myself;
     }
 
@@ -132,7 +108,7 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * relies.
      * @see #isValidFor(Class, String, Consumer)
      */
-    public final <T> SELF isValidFor(final Class<T> beanType, final String propertyName) {
+    public <T> SELF isValidFor(final Class<T> beanType, final String propertyName) {
         return isValidFor(
                 beanType,
                 propertyName,
@@ -169,33 +145,18 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * @param propertyName the name of the property; must be not {@code null}.
      * @param <T>          type of the object to validate
      * @return this assertion object.
-     * @throws AssertionError when the {@code actual} is not valid for {@code beanType#propertyName}.
+     * @throws AssertionError when the {@code actual} is <em>valid</em> for {@code beanType#propertyName}.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      * {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this method
      * relies.
      * @see #isValidFor(Class, String, Consumer)
      */
-    public final <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
+    public <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
-        final Class<?>[] groups = groups();
-        final Set<ConstraintViolation<T>> violations =
-                applyValidator(v -> v.validateValue(beanType, propertyName, actual, groups));
-        assertThat(violations)
-                .as("%nThe set of constraint violations resulted while validating%n"
-                    + "\tactual: %s%n"
-                    + "\tagainst%n"
-                    + "\t\tbeanType: %s%n"
-                    + "\t\tproperty: '%s'%n"
-                    + "\tfor%n"
-                    + "\t\tgroups: %s%n",
-                    actual,
-                    beanType,
-                    propertyName,
-                    Arrays.asList(groups)
-                )
-                .withFailMessage("%nexpected to be not empty but empty")
-                .isNotEmpty();
+        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), s -> {
+        }, false,
+                 "actual", actual, "beanType", beanType, "property", propertyName);
         return myself;
     }
 }

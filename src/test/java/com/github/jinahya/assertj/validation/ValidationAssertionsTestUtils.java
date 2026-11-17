@@ -20,19 +20,47 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
+import io.github.jinahya.validation.test.util.JinahyaValidationTestUtils;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.assertj.core.api.ThrowableAssert;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.spy;
 
 public final class ValidationAssertionsTestUtils {
+
+    /**
+     * The supplier of the validator factory shared by the tests; one instance, so that the factory is built once.
+     */
+    private static final Supplier<ValidatorFactory> VALIDATOR_FACTORY_SUPPLIER =
+            Validation::buildDefaultValidatorFactory;
+
+    /**
+     * Applies the specified function to a validator of the default validator factory, which is built once, shared by
+     * the tests, and closed when the JVM exits.
+     *
+     * @param function the function to apply.
+     * @param <R>      the type of the result.
+     * @return the result of the {@code function}.
+     */
+    public static <R> R applyValidator(final Function<? super Validator, ? extends R> function) {
+        Objects.requireNonNull(function, "function is null");
+        return JinahyaValidationTestUtils.applyCachedValidatorFactory(
+                VALIDATOR_FACTORY_SUPPLIER,
+                f -> function.apply(f.getValidator())
+        );
+    }
 
     public static <T> Consumer<? super Set<ConstraintViolation<T>>> violationsConsumerEmpty() {
         return s -> {

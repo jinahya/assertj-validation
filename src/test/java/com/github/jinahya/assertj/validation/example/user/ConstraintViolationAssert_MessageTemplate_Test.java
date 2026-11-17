@@ -21,10 +21,9 @@ package com.github.jinahya.assertj.validation.example.user;
  */
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintViolation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,11 +34,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ConstraintViolationAssert_MessageTemplate_Test {
 
     private static ConstraintViolation<User> blankNameViolation() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator()
-                    .validateValue(User.class, User.PROPERTY_NAME_NAME, null)
-                    .iterator().next();
-        }
+        return applyValidator(v -> v
+                .validateValue(User.class, User.PROPERTY_NAME_NAME, null)
+                .iterator().next());
     }
 
     @Test

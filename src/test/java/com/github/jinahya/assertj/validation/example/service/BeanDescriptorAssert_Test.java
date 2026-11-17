@@ -21,11 +21,12 @@ package com.github.jinahya.assertj.validation.example.service;
  */
 
 import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.MethodType;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Test;
 
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBeanDescriptor;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,9 +38,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class BeanDescriptorAssert_Test {
 
     private static BeanDescriptor descriptor() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            return factory.getValidator().getConstraintsForClass(Greeter.class);
-        }
+        return applyValidator(v -> v.getConstraintsForClass(Greeter.class));
     }
 
     @Test
@@ -145,5 +144,52 @@ class BeanDescriptorAssert_Test {
                 .isInstanceOf(AssertionError.class);
         assertThatCode(() -> assertThatBeanDescriptor(descriptor()).isBeanConstrained())
                 .doesNotThrowAnyException();
+    }
+
+    // ----------------------------------------------------------------------------------------- absent parameters
+
+    public static class Clock {
+
+        @NotNull
+        public String now() {
+            return "now";
+        }
+    }
+
+    @Test
+    void __absentParameter_atSize() {
+        assertThatThrownBy(() -> assertThatBeanDescriptor(descriptor())
+                .extractingConstraintsForMethod(Greeter.METHOD_NAME_GREET, String.class, int.class)
+                .extractingParameterDescriptor(2))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Expecting a parameter at index 2 of")
+                .hasMessageContaining(Greeter.METHOD_NAME_GREET)
+                .hasMessageContaining("but it has 2 parameter(s)");
+    }
+
+    @Test
+    void __absentParameter_noParameters() {
+        assertThatThrownBy(() -> assertThatBeanDescriptor(applyValidator(v -> v.getConstraintsForClass(Clock.class)))
+                .extractingConstraintsForMethod("now")
+                .extractingParameterDescriptor(0))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("but it has 0 parameter(s)");
+    }
+
+    @Test
+    void __absentParameter_keepsDescription() {
+        assertThatThrownBy(() -> assertThatBeanDescriptor(descriptor())
+                .extractingConstraintsForMethod(Greeter.METHOD_NAME_GREET, String.class, int.class)
+                .as("case 42")
+                .extractingParameterDescriptor(3))
+                .hasMessageContaining("[case 42]");
+    }
+
+    @Test
+    void __negativeParameterIndex() {
+        assertThatThrownBy(() -> assertThatBeanDescriptor(descriptor())
+                .extractingConstraintsForMethod(Greeter.METHOD_NAME_GREET, String.class, int.class)
+                .extractingParameterDescriptor(-1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

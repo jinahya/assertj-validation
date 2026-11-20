@@ -24,21 +24,19 @@ import jakarta.validation.ConstraintViolation;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assert;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 final class ValidationAssertMessages {
 
     static String format(final ConstraintViolation<?> violation) {
         Objects.requireNonNull(violation, "violation is null");
         return String.format(
-                "\tmessage        : %1$s%n" +
-                "\tpropertyPath   : %2$s%n" +
-                "\trootBeanClass  : %3$s%n" +
-                "\tmessageTemplate: %4$s",
+                "message        : %1$s%n" +
+                "propertyPath   : %2$s%n" +
+                "rootBeanClass  : %3$s%n" +
+                "messageTemplate: %4$s",
                 violation.getMessage(),
                 violation.getPropertyPath(),
                 violation.getRootBeanClass(),
@@ -50,9 +48,9 @@ final class ValidationAssertMessages {
         if (Objects.requireNonNull(violations, "violations is null").isEmpty()) {
             throw new IllegalArgumentException("empty violations");
         }
-        final Iterator<? extends ConstraintViolation<?>> iterator = violations.iterator();
-        return IntStream.range(0, violations.size())
-                .mapToObj(i -> String.format("-> %1$s", format(iterator.next())))
+        // each entry is bulleted, and its following lines are indented to the width of the bullet, so they line up
+        return violations.stream()
+                .map(v -> format(v).lines().collect(Collectors.joining(System.lineSeparator() + "\t   ", "\t-> ", "")))
                 .collect(Collectors.joining(System.lineSeparator()));
     }
 

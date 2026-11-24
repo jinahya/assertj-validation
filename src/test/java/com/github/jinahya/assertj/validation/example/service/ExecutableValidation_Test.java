@@ -70,8 +70,11 @@ class ExecutableValidation_Test {
     @Test
     void methodParameters__acceptsViolations() throws Exception {
         final var greeter = new Greeter("Jane");
-        assertThatBean(greeter).hasValidParameters(greet(), new Object[]{"world", 1},
-                                                   s -> org.assertj.core.api.Assertions.assertThat(s).isEmpty());
+        assertThatBean(greeter).hasValidParameters(
+                greet(),
+                new Object[]{"world", 1},
+                s -> org.assertj.core.api.Assertions.assertThat(s).isEmpty()
+        );
     }
 
     // ------------------------------------------------------------------------------ validateReturnValue

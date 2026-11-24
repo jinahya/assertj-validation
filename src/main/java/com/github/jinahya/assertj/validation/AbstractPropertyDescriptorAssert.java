@@ -67,7 +67,8 @@ public abstract class AbstractPropertyDescriptorAssert<SELF extends AbstractProp
      * @see PropertyDescriptor#getPropertyName()
      */
     public SELF hasPropertyName(final String expectedPropertyName) {
-        ValidationAssertMessages.describedAsAttribute(extractingPropertyName(), "propertyName").isEqualTo(expectedPropertyName);
+        ValidationAssertMessages.describedAsAttribute(extractingPropertyName(), "propertyName")
+                .isEqualTo(expectedPropertyName);
         return myself;
     }
 }

@@ -33,6 +33,7 @@ import jakarta.validation.metadata.MethodDescriptor;
 import jakarta.validation.metadata.ParameterDescriptor;
 import jakarta.validation.metadata.PropertyDescriptor;
 import jakarta.validation.metadata.ReturnValueDescriptor;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.Set;
@@ -51,7 +52,7 @@ public final class ValidationBDDAssertions {
     /**
      * Delegates to {@link ValidationAssertions#assertThatBean(Object)}.
      *
-     * @param actual the value to verify.
+     * @param actual   the value to verify.
      * @param <ACTUAL> type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
@@ -63,7 +64,7 @@ public final class ValidationBDDAssertions {
     /**
      * Delegates to {@link ValidationAssertions#assertThatProperty(Object)}.
      *
-     * @param actual the value to verify.
+     * @param actual   the value to verify.
      * @param <ACTUAL> type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
@@ -76,7 +77,7 @@ public final class ValidationBDDAssertions {
      * Delegates to {@link ValidationAssertions#assertThatConstraintDescriptor(ConstraintDescriptor)}.
      *
      * @param actual the value to verify.
-     * @param <T> type parameter
+     * @param <T>    type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
@@ -89,7 +90,7 @@ public final class ValidationBDDAssertions {
      * Delegates to {@link ValidationAssertions#assertThatConstraintViolation(ConstraintViolation)}.
      *
      * @param actual the value to verify.
-     * @param <T> type parameter
+     * @param <T>    type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
@@ -102,7 +103,7 @@ public final class ValidationBDDAssertions {
      * Delegates to {@link ValidationAssertions#assertThatIterableOfConstraintViolations(Iterable)}.
      *
      * @param actual the value to verify.
-     * @param <T> type parameter
+     * @param <T>    type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
@@ -115,7 +116,7 @@ public final class ValidationBDDAssertions {
      * Delegates to {@link ValidationAssertions#assertThatConstraintViolations(Set)}.
      *
      * @param actual the value to verify.
-     * @param <T> type parameter
+     * @param <T>    type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
@@ -151,7 +152,7 @@ public final class ValidationBDDAssertions {
      * Delegates to {@link ValidationAssertions#assertThatConstructor(Constructor)}.
      *
      * @param actual the value to verify.
-     * @param <T> type parameter
+     * @param <T>    type parameter
      * @return a new assertion object for verifying {@code actual}.
      */
     @CheckReturnValue
@@ -238,7 +239,8 @@ public final class ValidationBDDAssertions {
     }
 
     /**
-     * Delegates to {@link ValidationAssertions#assertThatContainerElementTypeDescriptor(ContainerElementTypeDescriptor)}.
+     * Delegates to
+     * {@link ValidationAssertions#assertThatContainerElementTypeDescriptor(ContainerElementTypeDescriptor)}.
      *
      * @param actual the value to verify.
      * @return a new assertion object for verifying {@code actual}.

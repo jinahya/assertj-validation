@@ -24,8 +24,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.metadata.ValidateUnwrappedValue;
 import org.junit.jupiter.api.Test;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintDescriptor;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**

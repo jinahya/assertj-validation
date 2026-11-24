@@ -141,10 +141,10 @@ The set of constraint violations resulted while validating
 targeting
 	groups: [jakarta.validation.groups.Default]
 expected to be empty but contains 1 element(s)
--> 	message        : must not be blank
-	propertyPath   : name
-	rootBeanClass  : class User
-	messageTemplate: {jakarta.validation.constraints.NotBlank.message}
+	-> message        : must not be blank
+	   propertyPath   : name
+	   rootBeanClass  : class User
+	   messageTemplate: {jakarta.validation.constraints.NotBlank.message}
 ```
 
 ### Validators

@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-
 /**
  * An abstract class for verifying a value against a specific property of a specific bean type.
  *
@@ -61,17 +60,26 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is not valid for {@code beanType#propertyName}.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
-     * {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this method
-     * relies.
+     *         {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this
+     *         method relies.
      * @see #isValidFor(Class, String)
      */
     public <T> SELF isValidFor(final Class<T> beanType, final String propertyName,
-                                     final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
+                               final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
-        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), consumer, true,
-                 "actual", actual, "beanType", beanType, "property", propertyName);
+        validate(
+                (v, g) -> v.validateValue(beanType, propertyName, actual, g),
+                consumer,
+                true,
+                "actual",
+                actual,
+                "beanType",
+                beanType,
+                "property",
+                propertyName
+        );
         return myself;
     }
 
@@ -87,13 +95,18 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
      * // @highlight region substring="fail" type=highlighted
      * assertThatProperty("Jane").isValidFor(User.class, "name"); // should pass
-     * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
-     * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)' type=highlighted
-     * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)' type=highlighted
+     * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)"
+     * type=highlighted
+     * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)'
+     * type=highlighted
+     * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)'
+     * type=highlighted
      * assertThatProperty(     0).isValidFor(User.class,  "age"); // should pass
      * assertThatProperty(    28).isValidFor(User.class,  "age"); // should pass
-     * assertThatProperty(    -1).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
-     * assertThatProperty(   300).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
+     * assertThatProperty(    -1).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)"
+     * type=highlighted
+     * assertThatProperty(   300).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)"
+     * type=highlighted
      * // @end
      * // @end
      *}
@@ -104,8 +117,8 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is not valid for {@code beanType#propertyName}.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
-     * {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this method
-     * relies.
+     *         {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this
+     *         method relies.
      * @see #isValidFor(Class, String, Consumer)
      */
     public <T> SELF isValidFor(final Class<T> beanType, final String propertyName) {
@@ -130,13 +143,18 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
      * // @highlight region substring="pass" type=highlighted
      * assertThatProperty("Jane").isNotValidFor(User.class, "name"); // should fail
-     * assertThatProperty(  null).isNotValidFor(User.class, "name"); // should pass // @highlight regex="\-?(null|name)" type=highlighted
-     * assertThatProperty(    "").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\"|name)' type=highlighted
-     * assertThatProperty(   " ").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\s\"|name)' type=highlighted
+     * assertThatProperty(  null).isNotValidFor(User.class, "name"); // should pass // @highlight regex="\-?
+     * (null|name)" type=highlighted
+     * assertThatProperty(    "").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\"|name)'
+     * type=highlighted
+     * assertThatProperty(   " ").isNotValidFor(User.class, "name"); // should pass // @highlight regex='
+     * (\"\s\"|name)' type=highlighted
      * assertThatProperty(     0).isNotValidFor(User.class,  "age"); // should fail
      * assertThatProperty(    28).isNotValidFor(User.class,  "age"); // should fail
-     * assertThatProperty(    -1).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)" type=highlighted
-     * assertThatProperty(   300).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)" type=highlighted
+     * assertThatProperty(    -1).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)
+     * " type=highlighted
+     * assertThatProperty(   300).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)
+     * " type=highlighted
      * // @end
      * // @end
      *}
@@ -147,16 +165,25 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * @return this assertion object.
      * @throws AssertionError when the {@code actual} is <em>valid</em> for {@code beanType#propertyName}.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
-     * {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this method
-     * relies.
+     *         {@link jakarta.validation.Validator#validateValue(Class, String, Object, Class[])} method on which this
+     *         method relies.
      * @see #isValidFor(Class, String, Consumer)
      */
     public <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
-        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), s -> {
-        }, false,
-                 "actual", actual, "beanType", beanType, "property", propertyName);
+        validate(
+                (v, g) -> v.validateValue(beanType, propertyName, actual, g),
+                s -> {
+                },
+                false,
+                "actual",
+                actual,
+                "beanType",
+                beanType,
+                "property",
+                propertyName
+        );
         return myself;
     }
 }

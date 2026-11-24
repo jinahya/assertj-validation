@@ -34,21 +34,27 @@
  * <h2>Verifying values against properties</h2>
  * {@snippet lang = "java" id = "assertThatProperty":
  * // @highlight region substring="fail" type=highlighted
- * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
+ * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
+ * .ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
  * // @link region substring="targetingGroups" target="AbstractValidationAssert#targetingGroups(Class[])"
  * // @link region substring=".isValid()" target="AbstractBeanAssert#isValid()"
  * // @link region substring="isValidFor" target="AbstractPropertyAssert#isValidFor(Class, String)"
  * // @link region substring="isNotValidFor" target="AbstractPropertyAssert#isNotValidFor(Class, String)"
  * assertThatProperty("Jane").isValidFor(User.class, "name"); // should pass
- * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
- * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)' type=highlighted
- * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)' type=highlighted
+ * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)"
+ * type=highlighted
+ * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)'
+ * type=highlighted
+ * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)'
+ * type=highlighted
  *
  * assertThatProperty(  0).isValidFor(User.class, "age"); // should pass
  * assertThatProperty( 28).isValidFor(User.class, "age"); // should pass
- * assertThatProperty( -1).isValidFor(User.class, "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
- * assertThatProperty(300).isValidFor(User.class, "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
+ * assertThatProperty( -1).isValidFor(User.class, "age"); // should fail // @highlight regex="\-?(\d+|age)"
+ * type=highlighted
+ * assertThatProperty(300).isValidFor(User.class, "age"); // should fail // @highlight regex="\-?(\d+|age)"
+ * type=highlighted
  *
  * assertThatProperty( 59)               .isValidFor   (User.class, "age")
  *         .targetingGroups(Junior.class).isValidFor   (User.class, "age")
@@ -68,7 +74,8 @@
  * <h2>Verifying beans</h2>
  * {@snippet lang = "java" id = "assertThatBean":
  * // @highlight region substring="fail" type=highlighted
- * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
+ * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
+ * .ValidationAssertions#assertThatBean(Object)"
  * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
  * // @link region substring="targetingGroups" target="AbstractValidationAssert#targetingGroups(Class[])"
  * // @link region substring=".isValid()" target="AbstractBeanAssert#isValid()"
@@ -76,10 +83,12 @@
  * // @link region substring="isNotValidFor" target="AbstractPropertyAssert#isNotValidFor(Class, String)"
  * assertThatBean(new User("Jane", 28)).hasValidProperty("name"); // should pass
  * assertThatBean(new User("Jane", 28)).hasValidProperty( "age"); // should pass
- * assertThatBean(new User(  null,  0)).hasValidProperty("name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
+ * assertThatBean(new User(  null,  0)).hasValidProperty("name"); // should fail // @highlight regex="\-?(null|name)"
+ * type=highlighted
  * assertThatBean(new User(  null,  0)).hasValidProperty( "age"); // should pass
  * assertThatBean(new User("John", -1)).hasValidProperty("name"); // should pass
- * assertThatBean(new User("Jane", -1)).hasValidProperty( "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
+ * assertThatBean(new User("Jane", -1)).hasValidProperty( "age"); // should fail // @highlight regex="\-?(\d+|age)"
+ * type=highlighted
  *
  * assertThatBean(new User("Jane", 28))
  *         .isValid()                                       // should pass

@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatMethodNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatNode;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatParameterNode;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.METHOD_DESCRIPTOR;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.METHOD_NODE;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.PATH;

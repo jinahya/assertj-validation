@@ -42,8 +42,8 @@ public class IterableOfConstraintViolationsAssert<T>
     /**
      * Creates an assertion for specified element.
      * <p>
-     * AssertJ 4 declares this method, and builds every element assertion through it; on AssertJ 3 it overrides
-     * nothing and serves {@link #toAssert(ConstraintViolation, String)}.
+     * AssertJ 4 declares this method, and builds every element assertion through it; on AssertJ 3 it overrides nothing
+     * and serves {@link #toAssert(ConstraintViolation, String)}.
      *
      * @param value the element.
      * @return an assertion for {@code value}.

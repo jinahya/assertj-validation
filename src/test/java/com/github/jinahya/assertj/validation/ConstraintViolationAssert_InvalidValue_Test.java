@@ -79,8 +79,10 @@ class ConstraintViolationAssert_InvalidValue_Test
         final var actual = violation();
         when(actual.getInvalidValue()).thenReturn("xyz");
         assertThatCode(() -> assertion(actual)
-                .extractingInvalidValue(jakarta.validation.ConstraintViolation::getInvalidValue,
-                                        org.assertj.core.api.InstanceOfAssertFactories.STRING)
+                .extractingInvalidValue(
+                        jakarta.validation.ConstraintViolation::getInvalidValue,
+                        org.assertj.core.api.InstanceOfAssertFactories.STRING
+                )
                 .startsWith("x"))
                 .doesNotThrowAnyException();
     }

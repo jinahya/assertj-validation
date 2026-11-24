@@ -10,7 +10,7 @@
 
   <groupId>io.github.jinahya</groupId>
   <artifactId>assertj-validation</artifactId>
-  <version>0.7.0</version>
+  <version>0.7.1</version>
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
@@ -38,7 +38,7 @@
 
   <scm>
     <url>https://github.com/jinahya/${project.artifactId}</url>
-    <tag>0.7.0</tag>
+    <tag>0.7.1</tag>
   </scm>
   <issueManagement>
     <system>GitHub</system>
@@ -53,7 +53,7 @@
     <maven.compiler.testTarget>${maven.compiler.testSource}</maven.compiler.testTarget>
     <maven.compiler.testRelease>${maven.compiler.testSource}</maven.compiler.testRelease>
     <version.maven.compiler>3.16.0</version.maven.compiler>
-    <version.maven.surefire>3.6.0</version.maven.surefire>
+    <version.maven.surefire>3.6.1</version.maven.surefire>
     <version.maven.failsafe>${version.maven.surefire}</version.maven.failsafe>
     <!-- pinned here: neither jinahya-parent nor its parents manage it, so Maven would otherwise warn and fall back to
          the version its lifecycle happens to bind -->
@@ -107,7 +107,6 @@
     <version.org.mockito>5.24.0</version.org.mockito>
     <!-- test-scope only, and on the annotation processor path of the test compilation alone; see <build> -->
     <version.org.projectlombok>1.18.48</version.org.projectlombok>
-    <version.org.slf4j>2.0.20</version.org.slf4j>
   </properties>
 
   <dependencyManagement>
@@ -148,13 +147,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-bom</artifactId>
         <version>${version.org.mockito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-bom</artifactId>
-        <version>${version.org.slf4j}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -245,14 +237,17 @@
     </dependency>
   </dependencies>
 
-  <build><!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
+  <build>
+    <!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
          safe where declaration order carries no meaning, and here it carries none: Maven falls back to POM
          order for executions bound to the SAME phase, and no two plugins below share one — compiler is at
-         compile/test-compile, surefire at test, jar at package, and versions declares no execution at all.
+         compile/test-compile/pre-site, enforcer at validate, surefire at test, jar at package, and versions
+         declares no execution at all.
          Add an execution that collides with an existing phase and the order stops being free, so pin the
          pair's relative position then and say why.
-         None of these carry a <version> they do not need: versions-maven-plugin, and maven-javadoc-plugin under
-         <pluginManagement>, merge their configuration onto the parent's declaration, which already pins them. -->
+         None of these carry a <version> they do not need: maven-enforcer-plugin, versions-maven-plugin, and
+         maven-javadoc-plugin under <pluginManagement>, merge their configuration onto the parent's declaration,
+         which already pins them. -->
     <!-- maven-javadoc-plugin is configured here rather than under <plugins>, because <pluginManagement> is the
          one place both of its uses read from: a goal run from the command line, or bound by the parent, such
          as javadoc:jar, and the javadoc report under <reporting>, which inherits nothing from <build><plugins>.
@@ -320,6 +315,67 @@
                   <version>${version.org.projectlombok}</version>
                 </path>
               </annotationProcessorPaths>
+            </configuration>
+          </execution>
+          <!-- the javadoc report finds this module's name in target/classes/module-info.class, not in the sources,
+               and the site lifecycle compiles nothing on its own: run as a bare `mvn site`, with no prior build,
+               the report sees no descriptor, takes the project for an unnamed module, and fails with "Aggregator
+               report contains named and unnamed modules". Compiling the main sources at pre-site gives it one;
+               after a build, as in `mvn verify site`, the compiler finds nothing stale and does no work. -->
+          <execution>
+            <id>pre-site-compile</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- what this build needs of its environment, stated here rather than left to the parents. The two
+             executions the parents already declare keep their ids, so they are merged rather than run twice:
+             enforce-maven from central-parent, whose [3.9.0,4) is there because central-publishing-maven-plugin
+             does not run on Maven 4, and enforce-dependency-convergence from jinahya-parent. enforce-java is this
+             module's own: main compiles to 17, but the tests compile to ${maven.compiler.testRelease}, so an older
+             JDK would fail at test-compile with an error that says less than this rule does. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.9.0,4)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${maven.compiler.testRelease}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-dependency-convergence</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <dependencyConvergence />
+              </rules>
             </configuration>
           </execution>
         </executions>

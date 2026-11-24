@@ -119,7 +119,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      *
      * @param propertyName the name of the property; must be not {@code null}.
      * @return a property-descriptor assertion; its {@code actual} is {@code null} when the property has no constraint
-     * and is not cascaded.
+     *         and is not cascaded.
      * @see BeanDescriptor#getConstraintsForProperty(String)
      */
     @CheckReturnValue
@@ -231,7 +231,7 @@ public abstract class AbstractBeanDescriptorAssert<SELF extends AbstractBeanDesc
      *
      * @param parameterTypes the parameter types of the constructor.
      * @return a constructor-descriptor assertion; its {@code actual} is {@code null} when the constructor is
-     * unconstrained.
+     *         unconstrained.
      * @see BeanDescriptor#getConstraintsForConstructor(Class[])
      */
     @CheckReturnValue

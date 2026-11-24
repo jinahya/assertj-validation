@@ -39,7 +39,8 @@ class User_UsingValidatorFactory_Test {
 
     private static ValidatorFactory counting(final ValidatorFactory delegate, final AtomicInteger count) {
         return (ValidatorFactory) java.lang.reflect.Proxy.newProxyInstance(
-                ValidatorFactory.class.getClassLoader(), new Class<?>[]{ValidatorFactory.class},
+                ValidatorFactory.class.getClassLoader(),
+                new Class<?>[]{ValidatorFactory.class},
                 (proxy, method, args) -> {
                     if ("getValidator".equals(method.getName())) {
                         count.incrementAndGet();
@@ -48,7 +49,8 @@ class User_UsingValidatorFactory_Test {
                         throw new AssertionError("the assertion must not close a caller's factory");
                     }
                     return method.invoke(delegate, args);
-                });
+                }
+        );
     }
 
     @DisplayName("usingValidatorFactory(null) falls back to the per-assertion default")

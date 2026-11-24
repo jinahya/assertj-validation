@@ -51,7 +51,8 @@ class User_UsingValidator_Test {
      */
     private static ValidatorFactory closeAware(final ValidatorFactory delegate, final AtomicBoolean closed) {
         return (ValidatorFactory) Proxy.newProxyInstance(
-                ValidatorFactory.class.getClassLoader(), new Class<?>[]{ValidatorFactory.class},
+                ValidatorFactory.class.getClassLoader(),
+                new Class<?>[]{ValidatorFactory.class},
                 (proxy, method, args) -> {
                     if ("close".equals(method.getName())) {
                         closed.set(true);
@@ -60,7 +61,8 @@ class User_UsingValidator_Test {
                     if ("getValidator".equals(method.getName())) {
                         final Validator validator = delegate.getValidator();
                         return Proxy.newProxyInstance(
-                                Validator.class.getClassLoader(), new Class<?>[]{Validator.class},
+                                Validator.class.getClassLoader(),
+                                new Class<?>[]{Validator.class},
                                 (p, m, a) -> {
                                     if (closed.get()) {
                                         throw new IllegalStateException("validator used after its factory closed");
@@ -70,10 +72,12 @@ class User_UsingValidator_Test {
                                     } catch (final InvocationTargetException ite) {
                                         throw ite.getCause();
                                     }
-                                });
+                                }
+                        );
                     }
                     return method.invoke(delegate, args);
-                });
+                }
+        );
     }
 
     @DisplayName("usingValidator(null) falls back to the per-assertion default")

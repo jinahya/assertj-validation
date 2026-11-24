@@ -71,7 +71,8 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @see ContainerElementTypeDescriptor#getContainerClass()
      */
     public SELF hasContainerClass(final Class<?> expectedContainerClass) {
-        ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass").isEqualTo(expectedContainerClass);
+        ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass")
+                .isEqualTo(expectedContainerClass);
         return myself;
     }
 
@@ -97,7 +98,8 @@ public abstract class AbstractContainerElementTypeDescriptorAssert<
      * @see ContainerElementTypeDescriptor#getTypeArgumentIndex()
      */
     public SELF hasTypeArgumentIndex(final Integer expectedTypeArgumentIndex) {
-        ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex").isEqualTo(expectedTypeArgumentIndex);
+        ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex")
+                .isEqualTo(expectedTypeArgumentIndex);
         return myself;
     }
 }

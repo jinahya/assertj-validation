@@ -95,7 +95,8 @@ public abstract class AbstractElementDescriptorAssert<
         return myself;
     }
 
-    // ----------------------------------------------------------------------------------------------- constraintDescriptors
+    // -----------------------------------------------------------------------------------------------
+    // constraintDescriptors
 
     /**
      * Extracts an assertion for verifying the {@code actual} descriptor's
@@ -124,8 +125,10 @@ public abstract class AbstractElementDescriptorAssert<
             final UnaryOperator<ElementDescriptor.ConstraintFinder> configurer) {
         Objects.requireNonNull(configurer, "configurer is null");
         return isNotNull()
-                .extracting(a -> configurer.apply(a.findConstraints()).getConstraintDescriptors(),
-                            CollectionAssert::new);
+                .extracting(
+                        a -> configurer.apply(a.findConstraints()).getConstraintDescriptors(),
+                        CollectionAssert::new
+                );
     }
 
     // --------------------------------------------------------------------------------------------------- elementClass
@@ -151,7 +154,8 @@ public abstract class AbstractElementDescriptorAssert<
      * @see ElementDescriptor#getElementClass()
      */
     public SELF hasElementClass(final Class<?> expectedElementClass) {
-        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass").isEqualTo(expectedElementClass);
+        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass")
+                .isEqualTo(expectedElementClass);
         return myself;
     }
 }

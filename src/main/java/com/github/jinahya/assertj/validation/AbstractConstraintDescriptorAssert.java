@@ -224,7 +224,8 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#getMessageTemplate()
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate")
+                .isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -305,8 +306,8 @@ public abstract class AbstractConstraintDescriptorAssert<
      * {@link ConstraintDescriptor#getValidationAppliesTo() constraint target}.
      *
      * @return this assertion object.
-     * @apiNote This method invokes {@link #hostsConstraintTarget(ConstraintTarget)} method with {@code null}, and
-     * returns the result.
+     * @apiNote This method invokes {@link #hostsConstraintTarget(ConstraintTarget)} method with {@code null},
+     *         and returns the result.
      * @see ConstraintDescriptor#getValidationAppliesTo()
      */
     public SELF doesNotHostAnyConstraintTarget() {
@@ -325,8 +326,10 @@ public abstract class AbstractConstraintDescriptorAssert<
     @CheckReturnValue
     public AbstractComparableAssert<?, ValidateUnwrappedValue> extractingValueUnwrapping() {
         return isNotNull()
-                .extracting(ConstraintDescriptor::getValueUnwrapping,
-                            InstanceOfAssertFactories.comparable(ValidateUnwrappedValue.class));
+                .extracting(
+                        ConstraintDescriptor::getValueUnwrapping,
+                        InstanceOfAssertFactories.comparable(ValidateUnwrappedValue.class)
+                );
     }
 
     /**
@@ -414,8 +417,10 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
-                                                      "unwrapped as " + type.getName())
+        ValidationAssertMessages.describedAsAttribute(
+                        extractingAsUnwrapped(type, ObjectAssert::new),
+                        "unwrapped as " + type.getName()
+                )
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

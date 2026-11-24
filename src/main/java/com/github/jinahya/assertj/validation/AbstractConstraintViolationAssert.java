@@ -135,8 +135,10 @@ public abstract class AbstractConstraintViolationAssert<
      */
     @CheckReturnValue
     public ObjectArrayAssert<Object> extractingExecutableParameters() {
-        return extractingExecutableParameters(ConstraintViolation::getExecutableParameters,
-                                              InstanceOfAssertFactories.ARRAY);
+        return extractingExecutableParameters(
+                ConstraintViolation::getExecutableParameters,
+                InstanceOfAssertFactories.ARRAY
+        );
     }
 
     /**
@@ -149,7 +151,8 @@ public abstract class AbstractConstraintViolationAssert<
      * @see #extractingExecutableParameters()
      */
     public SELF hasExecutableParameters(final Object[] expectedExecutableParameters) {
-        ValidationAssertMessages.describedAsAttribute(extractingExecutableParameters(), "executableParameters").isEqualTo(expectedExecutableParameters);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableParameters(), "executableParameters")
+                .isEqualTo(expectedExecutableParameters);
         return myself;
     }
 
@@ -158,8 +161,8 @@ public abstract class AbstractConstraintViolationAssert<
      * {@link ConstraintViolation#getExecutableParameters() executableParameters}.
      *
      * @return this assertion object.
-     * @apiNote This method invokes {@link #hasExecutableParameters(Object[])} method with {@code null}, and returns the
-     * result.
+     * @apiNote This method invokes {@link #hasExecutableParameters(Object[])} method with {@code null}, and
+     *         returns the result.
      * @see ConstraintViolation#getExecutableParameters()
      */
     public SELF hasNoExecutableParameters() {
@@ -213,7 +216,8 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getExecutableReturnValue()
      */
     public SELF hasExecutableReturnValue(final Object expectedExecutableReturnValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingExecutableReturnValue(), "executableReturnValue").isEqualTo(expectedExecutableReturnValue);
+        ValidationAssertMessages.describedAsAttribute(extractingExecutableReturnValue(), "executableReturnValue")
+                .isEqualTo(expectedExecutableReturnValue);
         return myself;
     }
 
@@ -222,8 +226,8 @@ public abstract class AbstractConstraintViolationAssert<
      * {@code null}.
      *
      * @return this assertion object.
-     * @apiNote This method invokes {@link #hasExecutableReturnValue(Object)} method with {@code null}, and returns the
-     * result.
+     * @apiNote This method invokes {@link #hasExecutableReturnValue(Object)} method with {@code null}, and
+     *         returns the result.
      * @see ConstraintViolation#getExecutableReturnValue()
      */
     public SELF hasNoExecutableReturnValue() {
@@ -273,7 +277,8 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#getInvalidValue()
      */
     public SELF hasInvalidValue(final Object expectedInvalidValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingInvalidValue(), "invalidValue").isEqualTo(expectedInvalidValue);
+        ValidationAssertMessages.describedAsAttribute(extractingInvalidValue(), "invalidValue")
+                .isEqualTo(expectedInvalidValue);
         return myself;
     }
 
@@ -322,7 +327,7 @@ public abstract class AbstractConstraintViolationAssert<
      * {@link ConstraintViolation#getLeafBean() leafBean}.
      *
      * @return an assert for verifying the {@code actual} constraint violation's
-     * {@link ConstraintViolation#getLeafBean() leafBean}.
+     *         {@link ConstraintViolation#getLeafBean() leafBean}.
      */
     @CheckReturnValue
     public AbstractObjectAssert<?, Object> extractingLeafBean() {
@@ -347,7 +352,8 @@ public abstract class AbstractConstraintViolationAssert<
      * Verifies that the {@code actual} constraint violation has no {@link ConstraintViolation#getLeafBean() leafBean}.
      *
      * @return this assertion object.
-     * @apiNote This method invokes {@link #hasLeafBean(Object)} method with {@code null}, and returns the result.
+     * @apiNote This method invokes {@link #hasLeafBean(Object)} method with {@code null}, and returns the
+     *         result.
      */
     public SELF doesNotHaveLeafBean() {
         return hasLeafBean(null);
@@ -408,14 +414,15 @@ public abstract class AbstractConstraintViolationAssert<
      * @param expectedMessageTemplate the expected value of {@code actual.messageTemplate}, e.g.
      *                                {@code "{jakarta.validation.constraints.NotNull.message}"}.
      * @return this assertion object.
-     * @apiNote Unlike {@link #hasMessage(String)}, which asserts the <em>interpolated</em> message and is therefore
-     * sensitive to the default locale and to any {@link jakarta.validation.MessageInterpolator}, this method asserts
-     * the raw template as declared on the constraint.
+     * @apiNote Unlike {@link #hasMessage(String)}, which asserts the <em>interpolated</em> message and is
+     *         therefore sensitive to the default locale and to any {@link jakarta.validation.MessageInterpolator}, this
+     *         method asserts the raw template as declared on the constraint.
      * @see ConstraintViolation#getMessageTemplate()
      * @see #hasMessage(String)
      */
     public SELF hasMessageTemplate(final String expectedMessageTemplate) {
-        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate").isEqualTo(expectedMessageTemplate);
+        ValidationAssertMessages.describedAsAttribute(extractingMessageTemplate(), "messageTemplate")
+                .isEqualTo(expectedMessageTemplate);
         return myself;
     }
 
@@ -452,8 +459,10 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
-                                                      "unwrapped as " + type.getName())
+        ValidationAssertMessages.describedAsAttribute(
+                        extractingAsUnwrapped(type, ObjectAssert::new),
+                        "unwrapped as " + type.getName()
+                )
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }
@@ -534,7 +543,8 @@ public abstract class AbstractConstraintViolationAssert<
      * Verifies that the {@code actual} constraint violation has no {@link ConstraintViolation#getRootBean() rootBean}.
      *
      * @return this assertion object.
-     * @apiNote This method invokes {@link #hasRootBean(Object)} method with {@code null}, and returns the result.
+     * @apiNote This method invokes {@link #hasRootBean(Object)} method with {@code null}, and returns the
+     *         result.
      */
     public SELF doesNotHaveRootBean() {
         return hasRootBean(null);
@@ -577,7 +587,8 @@ public abstract class AbstractConstraintViolationAssert<
      */
     public SELF hasRootBeanClass(final Class<T> expectedRootBeanClass) {
         Objects.requireNonNull(expectedRootBeanClass, "expectedRootBeanClass is null");
-        ValidationAssertMessages.describedAsAttribute(extractingRootBeanClass(), "rootBeanClass").isEqualTo(expectedRootBeanClass);
+        ValidationAssertMessages.describedAsAttribute(extractingRootBeanClass(), "rootBeanClass")
+                .isEqualTo(expectedRootBeanClass);
         return myself;
     }
 }

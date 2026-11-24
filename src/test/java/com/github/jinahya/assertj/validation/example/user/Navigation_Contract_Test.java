@@ -65,21 +65,27 @@ class Navigation_Contract_Test {
     static Stream<Arguments> navigations() {
         final ConstraintViolation<User> violation = violation();
         return Stream.of(
-                Arguments.of("violation -> propertyPath",
-                             (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
-                                     ((com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert<?, ?, ?>)
-                                             c.apply(assertThatConstraintViolation(violation)))
-                                             .extractingPropertyPath().hasSize(9)),
-                Arguments.of("violation -> constraintDescriptor",
-                             (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
-                                     ((com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert<?, ?, ?>)
-                                             c.apply(assertThatConstraintViolation(violation)))
-                                             .extractingConstraintDescriptor().isNull()),
-                Arguments.of("path -> node",
-                             (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
-                                     ((com.github.jinahya.assertj.validation.AbstractPathAssert<?>)
-                                             c.apply(assertThatPath(violation.getPropertyPath())))
-                                             .extractingNode(0).isNull())
+                Arguments.of(
+                        "violation -> propertyPath",
+                        (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
+                                ((com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert<?, ?, ?>)
+                                        c.apply(assertThatConstraintViolation(violation)))
+                                        .extractingPropertyPath().hasSize(9)
+                ),
+                Arguments.of(
+                        "violation -> constraintDescriptor",
+                        (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
+                                ((com.github.jinahya.assertj.validation.AbstractConstraintViolationAssert<?, ?, ?>)
+                                        c.apply(assertThatConstraintViolation(violation)))
+                                        .extractingConstraintDescriptor().isNull()
+                ),
+                Arguments.of(
+                        "path -> node",
+                        (Function<UnaryOperator<AbstractAssert<?, ?>>, Runnable>) c -> () ->
+                                ((com.github.jinahya.assertj.validation.AbstractPathAssert<?>)
+                                        c.apply(assertThatPath(violation.getPropertyPath())))
+                                        .extractingNode(0).isNull()
+                )
         );
     }
 

@@ -93,9 +93,22 @@ class ValidationAssertMessages_Test {
         final var violations = validate(new Bean("  ", 100));
         assertThat(violations).as("the fixture must produce two violations").hasSize(2);
         final var formatted = ValidationAssertMessages.format(violations);
-        assertThat(formatted.lines().filter(l -> l.startsWith("-> ")).count())
+        assertThat(formatted.lines().filter(l -> l.startsWith("\t-> ")).count())
                 .as("one bullet per violation")
                 .isEqualTo(2);
+    }
+
+    @DisplayName("format(set) aligns every field of an entry, the first one after the bullet included")
+    @Test
+    void formatSet__Aligned() {
+        final var violations = validate(new Bean("  ", 100));
+        final var formatted = ValidationAssertMessages.format(violations);
+        assertThat(formatted.lines())
+                .hasSize(8)
+                .allSatisfy(l -> assertThat(l).matches("\t(-> |   )\\w+ *: .*"))
+                .extracting(l -> l.indexOf(':'))
+                .as("the colons line up")
+                .containsOnly("\t-> messageTemplate".length());
     }
 
     @DisplayName("format(set) separates entries with real line separators")

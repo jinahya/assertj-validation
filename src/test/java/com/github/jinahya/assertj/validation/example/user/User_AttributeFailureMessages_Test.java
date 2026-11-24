@@ -61,7 +61,8 @@ class User_AttributeFailureMessages_Test {
                 .hasMessageStartingWith("[case 42: invalidValue]");
     }
 
-    @DisplayName("a message overridden by the caller replaces the default one, prefixed by the description as AssertJ does")
+    @DisplayName(
+            "a message overridden by the caller replaces the default one, prefixed by the description as AssertJ does")
     @Test
     void should_keep_the_overriding_message() {
         assertThatThrownBy(() -> assertThatConstraintViolation(violation()).withFailMessage("OVERRIDE")

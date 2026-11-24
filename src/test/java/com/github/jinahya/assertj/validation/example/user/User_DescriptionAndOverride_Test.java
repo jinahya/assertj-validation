@@ -95,7 +95,8 @@ class User_DescriptionAndOverride_Test {
     @DisplayName("hasValidProperty(..) and doesNotHaveValidProperty(..) keep the description")
     @Test
     void beanProperty() {
-        assertThatThrownBy(() -> assertThatBean(User.of(null, 0)).as("case 42").hasValidProperty(User.PROPERTY_NAME_NAME))
+        assertThatThrownBy(
+                () -> assertThatBean(User.of(null, 0)).as("case 42").hasValidProperty(User.PROPERTY_NAME_NAME))
                 .hasMessageStartingWith("[case 42]");
         assertThatThrownBy(() -> assertThatBean(User.newValidUser()).withFailMessage("valid name")
                 .doesNotHaveValidProperty(User.PROPERTY_NAME_NAME))

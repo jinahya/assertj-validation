@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 // Implemented by node assertion classes which share no base beyond AbstractNodeAssert. Java has no multiple class
 // inheritance, so, unlike every other assertion contract in this package, this cannot be an abstract class. It is
 // self-bounded, the way assertj-core bounds its own mixins such as org.assertj.core.api.NumberAssert.
+
 /**
  * An interface for node assertions whose actual value has a {@code typeArgumentIndex}.
  *
@@ -103,7 +104,8 @@ public interface HasTypeArgumentIndex<SELF extends HasTypeArgumentIndex<SELF>> {
             "unchecked"
     })
     default SELF hasTypeArgumentIndex(final Integer expectedTypeArgumentIndex) {
-        ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex").isEqualTo(expectedTypeArgumentIndex);
+        ValidationAssertMessages.describedAsAttribute(extractingTypeArgumentIndex(), "typeArgumentIndex")
+                .isEqualTo(expectedTypeArgumentIndex);
         return (SELF) this;
     }
 

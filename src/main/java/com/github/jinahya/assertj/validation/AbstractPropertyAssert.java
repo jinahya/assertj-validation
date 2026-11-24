@@ -95,18 +95,13 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
      * // @highlight region substring="fail" type=highlighted
      * assertThatProperty("Jane").isValidFor(User.class, "name"); // should pass
-     * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)"
-     * type=highlighted
-     * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)'
-     * type=highlighted
-     * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)'
-     * type=highlighted
+     * assertThatProperty(  null).isValidFor(User.class, "name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
+     * assertThatProperty(    "").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\"|name)' type=highlighted
+     * assertThatProperty(   " ").isValidFor(User.class, "name"); // should fail // @highlight regex='(\"\s\"|name)' type=highlighted
      * assertThatProperty(     0).isValidFor(User.class,  "age"); // should pass
      * assertThatProperty(    28).isValidFor(User.class,  "age"); // should pass
-     * assertThatProperty(    -1).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)"
-     * type=highlighted
-     * assertThatProperty(   300).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)"
-     * type=highlighted
+     * assertThatProperty(    -1).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
+     * assertThatProperty(   300).isValidFor(User.class,  "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
      * // @end
      * // @end
      *}
@@ -143,18 +138,13 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
      * // @link region substring="assertThatProperty" target="ValidationAssertions#assertThatProperty(Object)"
      * // @highlight region substring="pass" type=highlighted
      * assertThatProperty("Jane").isNotValidFor(User.class, "name"); // should fail
-     * assertThatProperty(  null).isNotValidFor(User.class, "name"); // should pass // @highlight regex="\-?
-     * (null|name)" type=highlighted
-     * assertThatProperty(    "").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\"|name)'
-     * type=highlighted
-     * assertThatProperty(   " ").isNotValidFor(User.class, "name"); // should pass // @highlight regex='
-     * (\"\s\"|name)' type=highlighted
+     * assertThatProperty(  null).isNotValidFor(User.class, "name"); // should pass // @highlight regex="\-?(null|name)" type=highlighted
+     * assertThatProperty(    "").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\"|name)' type=highlighted
+     * assertThatProperty(   " ").isNotValidFor(User.class, "name"); // should pass // @highlight regex='(\"\s\"|name)' type=highlighted
      * assertThatProperty(     0).isNotValidFor(User.class,  "age"); // should fail
      * assertThatProperty(    28).isNotValidFor(User.class,  "age"); // should fail
-     * assertThatProperty(    -1).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)
-     * " type=highlighted
-     * assertThatProperty(   300).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)
-     * " type=highlighted
+     * assertThatProperty(    -1).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)" type=highlighted
+     * assertThatProperty(   300).isNotValidFor(User.class,  "age"); // should pass // @highlight regex="\-?(\d+|age)" type=highlighted
      * // @end
      * // @end
      *}

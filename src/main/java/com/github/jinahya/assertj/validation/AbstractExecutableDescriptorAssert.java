@@ -119,8 +119,12 @@ public abstract class AbstractExecutableDescriptorAssert<
         isNotNull();
         final List<ParameterDescriptor> parameters = actual.getParameterDescriptors();
         if (index >= parameters.size()) {
-            failWithMessage("%nExpecting a parameter at index %1$d of%n  <%2$s>%nbut it has %3$d parameter(s)",
-                            index, actual.getName(), parameters.size());
+            failWithMessage(
+                    "%nExpecting a parameter at index %1$d of%n  <%2$s>%nbut it has %3$d parameter(s)",
+                    index,
+                    actual.getName(),
+                    parameters.size()
+            );
         }
         return extracting(a -> a.getParameterDescriptors().get(index), factory);
     }

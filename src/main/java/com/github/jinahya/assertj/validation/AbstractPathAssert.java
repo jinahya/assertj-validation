@@ -111,8 +111,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @return the failure message.
      */
     private static String noNodeAt(final Iterable<? extends Path.Node> iterable, final int index, final int size) {
-        return String.format("%nExpecting a node at index %1$d of%n  <%2$s>%nbut it has %3$d node(s)",
-                             index, iterable, size);
+        return String.format(
+                "%nExpecting a node at index %1$d of%n  <%2$s>%nbut it has %3$d node(s)",
+                index,
+                iterable,
+                size
+        );
     }
 
     /**
@@ -180,7 +184,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
                 + "  <%3$s>%n"
                 + "so that it can be narrowed to <%4$s>, but its kind is%n"
                 + "  <%5$s>",
-                description.get(), node, expected, nodeType.getSimpleName(), node.getKind());
+                description.get(),
+                node,
+                expected,
+                nodeType.getSimpleName(),
+                node.getKind()
+        );
     }
 
     /**
@@ -787,7 +796,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
         if (higherBoundary < lowerBoundary) {
             throw new IllegalArgumentException(String.format(
                     "The higher boundary <%1$s> must be greater than the lower boundary <%2$s>.",
-                    higherBoundary, lowerBoundary));
+                    higherBoundary,
+                    lowerBoundary
+            ));
         }
         final int size = sizeOfNonNull();
         if (size < lowerBoundary || size > higherBoundary) {

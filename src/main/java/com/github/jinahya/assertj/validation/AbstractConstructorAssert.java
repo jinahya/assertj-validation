@@ -66,8 +66,13 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
                             final boolean expectedEmpty) {
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        validate((v, g) -> validation.apply(v.forExecutables(), g), consumer, expectedEmpty,
-                 what + " of constructor", actual);
+        validate(
+                (v, g) -> validation.apply(v.forExecutables(), g),
+                consumer,
+                expectedEmpty,
+                what + " of constructor",
+                actual
+        );
         return myself;
     }
 
@@ -83,9 +88,12 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      */
     public SELF hasValidParameters(final Object[] parameterValues,
                                    final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
-        return validating("parameters",
-                          (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
-                          consumer, true);
+        return validating(
+                "parameters",
+                (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
+                consumer,
+                true
+        );
     }
 
     /**
@@ -111,10 +119,13 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @see ExecutableValidator#validateConstructorParameters(Constructor, Object[], Class[])
      */
     public SELF doesNotHaveValidParameters(final Object... parameterValues) {
-        return validating("parameters",
-                          (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
-                          s -> {
-                          }, false);
+        return validating(
+                "parameters",
+                (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
+                s -> {
+                },
+                false
+        );
     }
 
     /**
@@ -129,9 +140,12 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      */
     public SELF hasValidReturnValue(final T createdObject,
                                     final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
-        return validating("return value",
-                          (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
-                          consumer, true);
+        return validating(
+                "return value",
+                (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
+                consumer,
+                true
+        );
     }
 
     /**
@@ -157,9 +171,12 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @see ExecutableValidator#validateConstructorReturnValue(Constructor, Object, Class[])
      */
     public SELF doesNotHaveValidReturnValue(final T createdObject) {
-        return validating("return value",
-                          (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
-                          s -> {
-                          }, false);
+        return validating(
+                "return value",
+                (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
+                s -> {
+                },
+                false
+        );
     }
 }

@@ -125,8 +125,10 @@ public abstract class AbstractElementDescriptorAssert<
             final UnaryOperator<ElementDescriptor.ConstraintFinder> configurer) {
         Objects.requireNonNull(configurer, "configurer is null");
         return isNotNull()
-                .extracting(a -> configurer.apply(a.findConstraints()).getConstraintDescriptors(),
-                            CollectionAssert::new);
+                .extracting(
+                        a -> configurer.apply(a.findConstraints()).getConstraintDescriptors(),
+                        CollectionAssert::new
+                );
     }
 
     // --------------------------------------------------------------------------------------------------- elementClass

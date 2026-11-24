@@ -69,8 +69,17 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
-        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), consumer, true,
-                 "actual", actual, "beanType", beanType, "property", propertyName);
+        validate(
+                (v, g) -> v.validateValue(beanType, propertyName, actual, g),
+                consumer,
+                true,
+                "actual",
+                actual,
+                "beanType",
+                beanType,
+                "property",
+                propertyName
+        );
         return myself;
     }
 
@@ -163,9 +172,18 @@ public abstract class AbstractPropertyAssert<SELF extends AbstractPropertyAssert
     public <T> SELF isNotValidFor(final Class<T> beanType, final String propertyName) {
         Objects.requireNonNull(beanType, "beanType is null");
         Objects.requireNonNull(propertyName, "propertyName is null");
-        validate((v, g) -> v.validateValue(beanType, propertyName, actual, g), s -> {
-                 }, false,
-                 "actual", actual, "beanType", beanType, "property", propertyName);
+        validate(
+                (v, g) -> v.validateValue(beanType, propertyName, actual, g),
+                s -> {
+                },
+                false,
+                "actual",
+                actual,
+                "beanType",
+                beanType,
+                "property",
+                propertyName
+        );
         return myself;
     }
 }

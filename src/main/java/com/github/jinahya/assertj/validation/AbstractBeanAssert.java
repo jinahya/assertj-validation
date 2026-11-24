@@ -179,8 +179,15 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         Objects.requireNonNull(propertyName, "propertyName is null");
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        validate((v, g) -> v.validateProperty(actual, propertyName, g), consumer, true,
-                 "actual", actual, "property", propertyName);
+        validate(
+                (v, g) -> v.validateProperty(actual, propertyName, g),
+                consumer,
+                true,
+                "actual",
+                actual,
+                "property",
+                propertyName
+        );
         return myself;
     }
 
@@ -314,8 +321,15 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
         Objects.requireNonNull(method, "method is null");
         Objects.requireNonNull(consumer, "consumer is null");
         isNotNull();
-        validate((v, g) -> validation.apply(v.forExecutables(), g), consumer, expectedEmpty,
-                 "actual", actual, what + " of method", method);
+        validate(
+                (v, g) -> validation.apply(v.forExecutables(), g),
+                consumer,
+                expectedEmpty,
+                "actual",
+                actual,
+                what + " of method",
+                method
+        );
         return myself;
     }
 
@@ -332,9 +346,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      */
     public SELF hasValidParameters(final Method method, final Object[] parameterValues,
                                    final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
-        return executable("parameters", method,
-                          (v, g) -> v.validateParameters(actual, method, parameterValues, g),
-                          consumer, true);
+        return executable(
+                "parameters",
+                method,
+                (v, g) -> v.validateParameters(actual, method, parameterValues, g),
+                consumer,
+                true
+        );
     }
 
     /**
@@ -363,10 +381,14 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see ExecutableValidator#validateParameters(Object, Method, Object[], Class[])
      */
     public SELF doesNotHaveValidParameters(final Method method, final Object... parameterValues) {
-        return executable("parameters", method,
-                          (v, g) -> v.validateParameters(actual, method, parameterValues, g),
-                          s -> {
-                          }, false);
+        return executable(
+                "parameters",
+                method,
+                (v, g) -> v.validateParameters(actual, method, parameterValues, g),
+                s -> {
+                },
+                false
+        );
     }
 
     /**
@@ -382,9 +404,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      */
     public SELF hasValidReturnValue(final Method method, final Object returnValue,
                                     final Consumer<? super Set<ConstraintViolation<ACTUAL>>> consumer) {
-        return executable("return value", method,
-                          (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
-                          consumer, true);
+        return executable(
+                "return value",
+                method,
+                (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
+                consumer,
+                true
+        );
     }
 
     /**
@@ -412,9 +438,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @see ExecutableValidator#validateReturnValue(Object, Method, Object, Class[])
      */
     public SELF doesNotHaveValidReturnValue(final Method method, final Object returnValue) {
-        return executable("return value", method,
-                          (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
-                          s -> {
-                          }, false);
+        return executable(
+                "return value",
+                method,
+                (v, g) -> v.validateReturnValue(actual, method, returnValue, g),
+                s -> {
+                },
+                false
+        );
     }
 }

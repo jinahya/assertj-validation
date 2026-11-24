@@ -87,13 +87,15 @@ public abstract class AbstractConstraintViolationExceptionAssert<
         final Set<ConstraintViolation<?>> violations = actual.getConstraintViolations();
         if (violations == null
             || violations.stream().noneMatch(v -> expectedPropertyPath.equals(String.valueOf(v.getPropertyPath())))) {
-            failWithMessage("%nExpecting%n  %s%nto have a constraint violation on%n  %s%nbut had violations on%n  %s",
-                            actual,
-                            expectedPropertyPath,
-                            violations == null
-                                    ? "(none)"
-                                    : violations.stream().map(v -> String.valueOf(v.getPropertyPath())).sorted()
-                                    .toList());
+            failWithMessage(
+                    "%nExpecting%n  %s%nto have a constraint violation on%n  %s%nbut had violations on%n  %s",
+                    actual,
+                    expectedPropertyPath,
+                    violations == null
+                            ? "(none)"
+                            : violations.stream().map(v -> String.valueOf(v.getPropertyPath())).sorted()
+                            .toList()
+            );
         }
         return myself;
     }

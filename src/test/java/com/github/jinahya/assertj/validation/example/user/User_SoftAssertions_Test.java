@@ -61,8 +61,11 @@ class User_SoftAssertions_Test {
         softly.proxy(BeanAssert.class, Object.class, User.newValidUser()).isNotValid();
         softly.proxy(PropertyAssert.class, Object.class, null).isValidFor(User.class, User.PROPERTY_NAME_NAME);
         softly.proxy(BeanAssert.class, Object.class, new Greeter("Jane"))
-                .hasValidParameters(Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class),
-                                    " ", 1);
+                .hasValidParameters(
+                        Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class),
+                        " ",
+                        1
+                );
         softly.proxy(ConstructorAssert.class, Constructor.class, Greeter.class.getConstructor(String.class))
                 .hasValidParameters((Object) " ");
         assertThat(softly.errorsCollected()).hasSize(6);

@@ -326,8 +326,10 @@ public abstract class AbstractConstraintDescriptorAssert<
     @CheckReturnValue
     public AbstractComparableAssert<?, ValidateUnwrappedValue> extractingValueUnwrapping() {
         return isNotNull()
-                .extracting(ConstraintDescriptor::getValueUnwrapping,
-                            InstanceOfAssertFactories.comparable(ValidateUnwrappedValue.class));
+                .extracting(
+                        ConstraintDescriptor::getValueUnwrapping,
+                        InstanceOfAssertFactories.comparable(ValidateUnwrappedValue.class)
+                );
     }
 
     /**
@@ -415,8 +417,10 @@ public abstract class AbstractConstraintDescriptorAssert<
      * @see ConstraintDescriptor#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
-                                                      "unwrapped as " + type.getName())
+        ValidationAssertMessages.describedAsAttribute(
+                extractingAsUnwrapped(type, ObjectAssert::new),
+                "unwrapped as " + type.getName()
+        )
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

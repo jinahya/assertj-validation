@@ -135,8 +135,10 @@ public abstract class AbstractConstraintViolationAssert<
      */
     @CheckReturnValue
     public ObjectArrayAssert<Object> extractingExecutableParameters() {
-        return extractingExecutableParameters(ConstraintViolation::getExecutableParameters,
-                                              InstanceOfAssertFactories.ARRAY);
+        return extractingExecutableParameters(
+                ConstraintViolation::getExecutableParameters,
+                InstanceOfAssertFactories.ARRAY
+        );
     }
 
     /**
@@ -457,8 +459,10 @@ public abstract class AbstractConstraintViolationAssert<
      * @see ConstraintViolation#unwrap(Class)
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
-        ValidationAssertMessages.describedAsAttribute(extractingAsUnwrapped(type, ObjectAssert::new),
-                                                      "unwrapped as " + type.getName())
+        ValidationAssertMessages.describedAsAttribute(
+                extractingAsUnwrapped(type, ObjectAssert::new),
+                "unwrapped as " + type.getName()
+        )
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

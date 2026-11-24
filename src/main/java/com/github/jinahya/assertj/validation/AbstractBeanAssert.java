@@ -88,8 +88,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * }
      *
      * // @highlight region substring="fail" type=highlighted
-     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
-     * .ValidationAssertions#assertThatBean(Object)"
+     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
      * assertThatBean(new User("Jane", 28)).isValid(); // should pass
      * assertThatBean(new User(  null,  0)).isValid(); // should fail // @highlight regex="\-?null" type=highlighted
      * assertThatBean(new User("John", -1)).isValid(); // should fail // @highlight regex="\-?\d+" type=highlighted
@@ -120,8 +119,7 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * }
      *
      * // @highlight region substring="pass" type=highlighted
-     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
-     * .ValidationAssertions#assertThatBean(Object)"
+     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
      * assertThatBean(new User("Jane", 28)).isNotValid(); // should fail
      * assertThatBean(new User(  null,  0)).isNotValid(); // should pass // @highlight regex="\-?null" type=highlighted
      * assertThatBean(new User("John", -1)).isNotValid(); // should pass // @highlight regex="\-?\d+" type=highlighted
@@ -168,9 +166,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *                        not valid.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
-     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
-     *         3.0)</a>.
+     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
+     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
      * @see #hasValidProperty(String)
      * @see #doesNotHaveValidProperty(String)
      */
@@ -201,16 +198,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *     @Max(0x7F) @PositiveOrZero int age;
      * }
      * // @highlight region substring="fail" type=highlighted
-     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
-     * .ValidationAssertions#assertThatBean(Object)"
+     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
      * assertThatBean(new User("Jane", 28)).hasValidProperty("name"); // should pass
      * assertThatBean(new User("John", 28)).hasValidProperty( "age"); // should pass
-     * assertThatBean(new User(  null,  0)).hasValidProperty("name"); // should fail // @highlight regex="\-?
-     * (null|name)" type=highlighted
+     * assertThatBean(new User(  null,  0)).hasValidProperty("name"); // should fail // @highlight regex="\-?(null|name)" type=highlighted
      * assertThatBean(new User(  null,  0)).hasValidProperty( "age"); // should pass
      * assertThatBean(new User("John", -1)).hasValidProperty("name"); // should pass
-     * assertThatBean(new User("John", -1)).hasValidProperty( "age"); // should fail // @highlight regex="\-?
-     * (\d+|age)" type=highlighted
+     * assertThatBean(new User("John", -1)).hasValidProperty( "age"); // should fail // @highlight regex="\-?(\d+|age)" type=highlighted
      * // @end
      * // @end
      *}
@@ -221,9 +215,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *                        is not valid.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
-     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
-     *         3.0)</a>.
+     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
+     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
      * @see #hasValidProperty(String, Consumer)
      * @see #doesNotHaveValidProperty(String)
      */
@@ -246,16 +239,13 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *     @Max(0x7F) @PositiveOrZero int age;
      * }
      * // @highlight region substring="pass" type=highlighted
-     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation
-     * .ValidationAssertions#assertThatBean(Object)"
+     * // @link region substring="assertThatBean" target="com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object)"
      * assertThatBean(new User("Jane", 28)).doesNotHaveValidProperty("name"); // should fail
      * assertThatBean(new User("John", 28)).doesNotHaveValidProperty( "age"); // should fail
-     * assertThatBean(new User(  null,  0)).doesNotHaveValidProperty("name"); // should pass // @highlight regex="\-?
-     * (null|name)" type=highlighted
+     * assertThatBean(new User(  null,  0)).doesNotHaveValidProperty("name"); // should pass // @highlight regex="\-?(null|name)" type=highlighted
      * assertThatBean(new User(  null,  0)).doesNotHaveValidProperty( "age"); // should fail
      * assertThatBean(new User("John", -1)).doesNotHaveValidProperty("name"); // should fail
-     * assertThatBean(new User("John", -1)).doesNotHaveValidProperty( "age"); // should pass // @highlight regex="\-?
-     * (\d+|age)" type=highlighted
+     * assertThatBean(new User("John", -1)).doesNotHaveValidProperty( "age"); // should pass // @highlight regex="\-?(\d+|age)" type=highlighted
      * // @end
      * // @end
      *}
@@ -266,9 +256,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      *                        is <em>valid</em>.
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
-     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
-     *         3.0)</a>.
+     *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html#validationapi-validatorapi-validationmethods">6.1.1.
+     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
      * @see #hasValidProperty(String, Consumer)
      * @see #hasValidProperty(String)
      */

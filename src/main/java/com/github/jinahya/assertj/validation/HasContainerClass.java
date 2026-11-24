@@ -25,14 +25,13 @@ import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactories;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 // Implemented by node assertion classes which share no base beyond AbstractNodeAssert. Java has no multiple class
 // inheritance, so, unlike every other assertion contract in this package, this cannot be an abstract class. It is
 // self-bounded, the way assertj-core bounds its own mixins such as org.assertj.core.api.NumberAssert.
+
 /**
  * An interface for node assertions whose actual value has a {@code containerClass}.
  *
@@ -52,8 +51,8 @@ public interface HasContainerClass<SELF extends HasContainerClass<SELF>> {
     );
 
     /**
-     * Verifies that the {@code actual} node's {@code containerClass} satisfies specified consumer, using an
-     * assertion created by specified factory.
+     * Verifies that the {@code actual} node's {@code containerClass} satisfies specified consumer, using an assertion
+     * created by specified factory.
      * <p>
      * The consumer receives an <em>assertion</em> on the container class, carrying this assertion's description and
      * representation, not the value itself, e.g. {@code hasContainerClassSatisfying(a -> a.isNotNull())}.
@@ -105,7 +104,8 @@ public interface HasContainerClass<SELF extends HasContainerClass<SELF>> {
             "unchecked"
     })
     default SELF hasContainerClass(final Class<?> expectedContainerClass) {
-        ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass").isEqualTo(expectedContainerClass);
+        ValidationAssertMessages.describedAsAttribute(extractingContainerClass(), "containerClass")
+                .isEqualTo(expectedContainerClass);
         return (SELF) this;
     }
 
@@ -115,8 +115,8 @@ public interface HasContainerClass<SELF extends HasContainerClass<SELF>> {
      *
      * @return this assertion object.
      * @apiNote The specification defines {@code getContainerClass()} as returning the container's type &quot;if
-     * contained in a container type such as {@code Optional}, {@code List} or {@code Map}, {@code null}
-     * otherwise&quot;, so {@code null} is a meaningful outcome rather than an exceptional one.
+     *         contained in a container type such as {@code Optional}, {@code List} or {@code Map}, {@code null}
+     *         otherwise&quot;, so {@code null} is a meaningful outcome rather than an exceptional one.
      */
     default SELF doesNotHaveContainerClass() {
         return hasContainerClassSatisfying(AbstractAssert::isNull);

@@ -51,8 +51,8 @@ import java.lang.annotation.Annotation;
  * the kind check {@code asInstanceOf(PROPERTY_NODE)} would accept a method node and fail later, from inside the
  * provider, rather than as an assertion.
  * <p>
- * A node factory builds an assertion over a {@code null} node, as AssertJ's own factories do. A node of the wrong
- * kind fails at once, but that failure cannot carry a description or an overriding message set on the assertion
+ * A node factory builds an assertion over a {@code null} node, as AssertJ's own factories do. A node of the wrong kind
+ * fails at once, but that failure cannot carry a description or an overriding message set on the assertion
  * {@code asInstanceOf} was called on: AssertJ applies that assertion's state only after the factory returns. For a
  * described failure, navigate from the path instead, e.g.
  * {@code assertThatPath(path).as("case 42").extractingMethodNode(0)}, whose kind check fails through the path
@@ -90,15 +90,19 @@ public final class ValidationInstanceOfAssertFactories {
     public static <T extends Annotation>
     InstanceOfAssertFactory<ConstraintDescriptor<T>, AbstractConstraintDescriptorAssert<?, ?, T>>
     constraintDescriptor() {
-        final Class<ConstraintDescriptor<T>> type = (Class<ConstraintDescriptor<T>>) (Object) ConstraintDescriptor.class;
+        final Class<ConstraintDescriptor<T>> type =
+                (Class<ConstraintDescriptor<T>>) (Object) ConstraintDescriptor.class;
         return new InstanceOfAssertFactory<>(type, ValidationAssertions::assertThatConstraintDescriptor);
     }
 
     /**
      * A factory for a {@link ConstraintViolationException}.
      */
-    public static final InstanceOfAssertFactory<ConstraintViolationException, AbstractConstraintViolationExceptionAssert<?>> CONSTRAINT_VIOLATION_EXCEPTION =
-            new InstanceOfAssertFactory<>(ConstraintViolationException.class, ValidationAssertions::assertThatConstraintViolationException);
+    public static final InstanceOfAssertFactory<ConstraintViolationException,
+            AbstractConstraintViolationExceptionAssert<?>>
+            CONSTRAINT_VIOLATION_EXCEPTION =
+            new InstanceOfAssertFactory<>(ConstraintViolationException.class,
+                                          ValidationAssertions::assertThatConstraintViolationException);
 
     /**
      * A factory for a {@link Path}.
@@ -125,7 +129,8 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ConstructorNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ConstructorNode, AbstractConstructorNodeAssert<?>> CONSTRUCTOR_NODE =
+    public static final InstanceOfAssertFactory<Path.ConstructorNode, AbstractConstructorNodeAssert<?>>
+            CONSTRUCTOR_NODE =
             new InstanceOfAssertFactory<>(Path.ConstructorNode.class,
                                           n -> ValidationAssertions.assertThatConstructorNode(
                                                   AbstractPathAssert.requireKind(n, Path.ConstructorNode.class)));
@@ -133,7 +138,8 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ContainerElementNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ContainerElementNode, AbstractContainerElementNodeAssert<?>> CONTAINER_ELEMENT_NODE =
+    public static final InstanceOfAssertFactory<Path.ContainerElementNode, AbstractContainerElementNodeAssert<?>>
+            CONTAINER_ELEMENT_NODE =
             new InstanceOfAssertFactory<>(Path.ContainerElementNode.class,
                                           n -> ValidationAssertions.assertThatContainerElementNode(
                                                   AbstractPathAssert.requireKind(n, Path.ContainerElementNode.class)));
@@ -141,7 +147,8 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.CrossParameterNode}.
      */
-    public static final InstanceOfAssertFactory<Path.CrossParameterNode, AbstractCrossParameterNodeAssert<?>> CROSS_PARAMETER_NODE =
+    public static final InstanceOfAssertFactory<Path.CrossParameterNode, AbstractCrossParameterNodeAssert<?>>
+            CROSS_PARAMETER_NODE =
             new InstanceOfAssertFactory<>(Path.CrossParameterNode.class,
                                           n -> ValidationAssertions.assertThatCrossParameterNode(
                                                   AbstractPathAssert.requireKind(n, Path.CrossParameterNode.class)));
@@ -173,7 +180,8 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link Path.ReturnValueNode}.
      */
-    public static final InstanceOfAssertFactory<Path.ReturnValueNode, AbstractReturnValueNodeAssert<?>> RETURN_VALUE_NODE =
+    public static final InstanceOfAssertFactory<Path.ReturnValueNode, AbstractReturnValueNodeAssert<?>>
+            RETURN_VALUE_NODE =
             new InstanceOfAssertFactory<>(Path.ReturnValueNode.class,
                                           n -> ValidationAssertions.assertThatReturnValueNode(
                                                   AbstractPathAssert.requireKind(n, Path.ReturnValueNode.class)));
@@ -189,7 +197,8 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link PropertyDescriptor}.
      */
-    public static final InstanceOfAssertFactory<PropertyDescriptor, AbstractPropertyDescriptorAssert<?>> PROPERTY_DESCRIPTOR =
+    public static final InstanceOfAssertFactory<PropertyDescriptor, AbstractPropertyDescriptorAssert<?>>
+            PROPERTY_DESCRIPTOR =
             new InstanceOfAssertFactory<>(PropertyDescriptor.class, ValidationAssertions::assertThatPropertyDescriptor);
 
     /**
@@ -201,38 +210,51 @@ public final class ValidationInstanceOfAssertFactories {
     /**
      * A factory for a {@link ConstructorDescriptor}.
      */
-    public static final InstanceOfAssertFactory<ConstructorDescriptor, AbstractConstructorDescriptorAssert<?>> CONSTRUCTOR_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(ConstructorDescriptor.class, ValidationAssertions::assertThatConstructorDescriptor);
+    public static final InstanceOfAssertFactory<ConstructorDescriptor, AbstractConstructorDescriptorAssert<?>>
+            CONSTRUCTOR_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(ConstructorDescriptor.class,
+                                          ValidationAssertions::assertThatConstructorDescriptor);
 
     /**
      * A factory for a {@link ParameterDescriptor}.
      */
-    public static final InstanceOfAssertFactory<ParameterDescriptor, AbstractParameterDescriptorAssert<?>> PARAMETER_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(ParameterDescriptor.class, ValidationAssertions::assertThatParameterDescriptor);
+    public static final InstanceOfAssertFactory<ParameterDescriptor, AbstractParameterDescriptorAssert<?>>
+            PARAMETER_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(ParameterDescriptor.class,
+                                          ValidationAssertions::assertThatParameterDescriptor);
 
     /**
      * A factory for a {@link ReturnValueDescriptor}.
      */
-    public static final InstanceOfAssertFactory<ReturnValueDescriptor, AbstractReturnValueDescriptorAssert<?>> RETURN_VALUE_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(ReturnValueDescriptor.class, ValidationAssertions::assertThatReturnValueDescriptor);
+    public static final InstanceOfAssertFactory<ReturnValueDescriptor, AbstractReturnValueDescriptorAssert<?>>
+            RETURN_VALUE_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(ReturnValueDescriptor.class,
+                                          ValidationAssertions::assertThatReturnValueDescriptor);
 
     /**
      * A factory for a {@link CrossParameterDescriptor}.
      */
-    public static final InstanceOfAssertFactory<CrossParameterDescriptor, AbstractCrossParameterDescriptorAssert<?>> CROSS_PARAMETER_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(CrossParameterDescriptor.class, ValidationAssertions::assertThatCrossParameterDescriptor);
+    public static final InstanceOfAssertFactory<CrossParameterDescriptor, AbstractCrossParameterDescriptorAssert<?>>
+            CROSS_PARAMETER_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(CrossParameterDescriptor.class,
+                                          ValidationAssertions::assertThatCrossParameterDescriptor);
 
     /**
      * A factory for a {@link ContainerElementTypeDescriptor}.
      */
-    public static final InstanceOfAssertFactory<ContainerElementTypeDescriptor, AbstractContainerElementTypeDescriptorAssert<?>> CONTAINER_ELEMENT_TYPE_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(ContainerElementTypeDescriptor.class, ValidationAssertions::assertThatContainerElementTypeDescriptor);
+    public static final InstanceOfAssertFactory<ContainerElementTypeDescriptor,
+            AbstractContainerElementTypeDescriptorAssert<?>>
+            CONTAINER_ELEMENT_TYPE_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(ContainerElementTypeDescriptor.class,
+                                          ValidationAssertions::assertThatContainerElementTypeDescriptor);
 
     /**
      * A factory for a {@link GroupConversionDescriptor}.
      */
-    public static final InstanceOfAssertFactory<GroupConversionDescriptor, AbstractGroupConversionDescriptorAssert<?>> GROUP_CONVERSION_DESCRIPTOR =
-            new InstanceOfAssertFactory<>(GroupConversionDescriptor.class, ValidationAssertions::assertThatGroupConversionDescriptor);
+    public static final InstanceOfAssertFactory<GroupConversionDescriptor, AbstractGroupConversionDescriptorAssert<?>>
+            GROUP_CONVERSION_DESCRIPTOR =
+            new InstanceOfAssertFactory<>(GroupConversionDescriptor.class,
+                                          ValidationAssertions::assertThatGroupConversionDescriptor);
 
     /**
      * Creates a new instance.

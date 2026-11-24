@@ -64,8 +64,8 @@ import java.util.function.Supplier;
  * and nothing has to be fabricated.
  * <p>
  * The node assertions' {@code has…Satisfying(Consumer)} methods, such as {@code hasNameSatisfying(..)}, hand the
- * consumer an <em>assertion</em> on the attribute, carrying the node assertion's description and
- * representation, not the attribute's value as AssertJ's own {@code hasValueSatisfying(..)} does:
+ * consumer an <em>assertion</em> on the attribute, carrying the node assertion's description and representation, not
+ * the attribute's value as AssertJ's own {@code hasValueSatisfying(..)} does:
  * {@code hasNameSatisfying(a -> a.startsWith("na"))}.
  *
  * @param <SELF> self type parameter
@@ -437,7 +437,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param consumer the consumer verifying the node.
      * @return this assertion object.
      */
-    public SELF hasConstructorNodeSatisfying(final int index, final Consumer<? super AbstractConstructorNodeAssert<?>> consumer) {
+    public SELF hasConstructorNodeSatisfying(final int index,
+                                             final Consumer<? super AbstractConstructorNodeAssert<?>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         consumer.accept(extractingConstructorNode(index));
         return myself;
@@ -472,14 +473,15 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Verifies that the {@link Path.ContainerElementNode node} at specified index satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the container element node, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasContainerElementNodeSatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the container element node, carrying this assertion's description
+     * and representation, not the value itself, e.g. {@code hasContainerElementNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
      * @return this assertion object.
      */
-    public SELF hasContainerElementNodeSatisfying(final int index, final Consumer<? super AbstractContainerElementNodeAssert<?>> consumer) {
+    public SELF hasContainerElementNodeSatisfying(final int index,
+                                                  final Consumer<? super AbstractContainerElementNodeAssert<?>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         consumer.accept(extractingContainerElementNode(index));
         return myself;
@@ -514,14 +516,15 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     /**
      * Verifies that the {@link Path.CrossParameterNode node} at specified index satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the cross parameter node, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasCrossParameterNodeSatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the cross parameter node, carrying this assertion's description
+     * and representation, not the value itself, e.g. {@code hasCrossParameterNodeSatisfying(a -> a.isNotNull())}.
      *
      * @param index    the index of the node.
      * @param consumer the consumer verifying the node.
      * @return this assertion object.
      */
-    public SELF hasCrossParameterNodeSatisfying(final int index, final Consumer<? super AbstractCrossParameterNodeAssert<?>> consumer) {
+    public SELF hasCrossParameterNodeSatisfying(final int index,
+                                                final Consumer<? super AbstractCrossParameterNodeAssert<?>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         consumer.accept(extractingCrossParameterNode(index));
         return myself;
@@ -605,7 +608,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param consumer the consumer verifying the node.
      * @return this assertion object.
      */
-    public SELF hasParameterNodeSatisfying(final int index, final Consumer<? super AbstractParameterNodeAssert<?>> consumer) {
+    public SELF hasParameterNodeSatisfying(final int index,
+                                           final Consumer<? super AbstractParameterNodeAssert<?>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         consumer.accept(extractingParameterNode(index));
         return myself;
@@ -647,7 +651,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param consumer the consumer verifying the node.
      * @return this assertion object.
      */
-    public SELF hasReturnValueNodeSatisfying(final int index, final Consumer<? super AbstractReturnValueNodeAssert<?>> consumer) {
+    public SELF hasReturnValueNodeSatisfying(final int index,
+                                             final Consumer<? super AbstractReturnValueNodeAssert<?>> consumer) {
         Objects.requireNonNull(consumer, "consumer is null");
         consumer.accept(extractingReturnValueNode(index));
         return myself;
@@ -825,9 +830,9 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      * @param customComparator ignored.
      * @return never returns.
      * @throws UnsupportedOperationException always.
-     * @implNote A {@link Path} has no element-comparison semantics to customize, and nothing here compares nodes to one
-     * another. Use {@link #nodes()} and configure the comparator on the resulting list assertion instead.
-     * {@code AbstractCharSequenceAssert} refuses the same pair for the same reason.
+     * @implNote A {@link Path} has no element-comparison semantics to customize, and nothing here compares
+     *         nodes to one another. Use {@link #nodes()} and configure the comparator on the resulting list assertion
+     *         instead. {@code AbstractCharSequenceAssert} refuses the same pair for the same reason.
      */
     @Override
     public SELF usingElementComparator(final Comparator<? super Path.Node> customComparator) {

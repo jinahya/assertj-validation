@@ -32,9 +32,9 @@ import static com.github.jinahya.assertj.validation.ValidationAssertions.assertT
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Pins the text of the failures, which is what this module is for. Only stable fragments are asserted: the
- * description of what was validated, the violation count, and the per-violation fields which do not depend on the
- * locale or on the order of the violations.
+ * Pins the text of the failures, which is what this module is for. Only stable fragments are asserted: the description
+ * of what was validated, the violation count, and the per-violation fields which do not depend on the locale or on the
+ * order of the violations.
  */
 class User_FailureMessages_Test {
 
@@ -105,7 +105,8 @@ class User_FailureMessages_Test {
                 .hasMessageContaining("messageTemplate: " + NOT_BLANK);
     }
 
-    @DisplayName("an executable assertion names what of the executable it validated, alike for methods and constructors")
+    @DisplayName(
+            "an executable assertion names what of the executable it validated, alike for methods and constructors")
     @Test
     void should_name_what_of_the_executable_was_validated() throws Exception {
         final var method = Greeter.class.getMethod(Greeter.METHOD_NAME_GREET, String.class, int.class);

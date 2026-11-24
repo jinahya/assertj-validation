@@ -127,8 +127,8 @@ public final class ValidationAssertions {
     }
 
     /**
-     * Creates a new assertion object for verifying specified constraint violation exception, which is what a
-     * framework throws when it, rather than the test, triggers validation.
+     * Creates a new assertion object for verifying specified constraint violation exception, which is what a framework
+     * throws when it, rather than the test, triggers validation.
      *
      * @param actual the constraint violation exception to verify.
      * @return a new assertion instance for {@code actual}.
@@ -319,7 +319,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingContainerElementNode(int)
      */
     @CheckReturnValue
-    public static AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(final Path.ContainerElementNode actual) {
+    public static AbstractContainerElementNodeAssert<?> assertThatContainerElementNode(
+            final Path.ContainerElementNode actual) {
         return new ContainerElementNodeAssert(actual);
     }
 
@@ -331,7 +332,8 @@ public final class ValidationAssertions {
      * @see AbstractPathAssert#extractingCrossParameterNode(int)
      */
     @CheckReturnValue
-    public static AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(final Path.CrossParameterNode actual) {
+    public static AbstractCrossParameterNodeAssert<?> assertThatCrossParameterNode(
+            final Path.CrossParameterNode actual) {
         return new CrossParameterNodeAssert(actual);
     }
 

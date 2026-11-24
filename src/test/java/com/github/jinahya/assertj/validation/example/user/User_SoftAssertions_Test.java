@@ -35,9 +35,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatConstraintViolation;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -109,8 +109,9 @@ class User_SoftAssertions_Test {
     }
 
     /**
-     * Released AssertJ re-proxies only the results of its own navigation methods ({@code extracting}, {@code asInstanceOf},
-     * ...), so a chain navigating into a nested assertion of this module is collected through {@code check(...)}.
+     * Released AssertJ re-proxies only the results of its own navigation methods ({@code extracting},
+     * {@code asInstanceOf}, ...), so a chain navigating into a nested assertion of this module is collected through
+     * {@code check(...)}.
      */
     @DisplayName("a navigating chain is collected through check(...)")
     @Test

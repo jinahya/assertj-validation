@@ -95,7 +95,8 @@ public abstract class AbstractElementDescriptorAssert<
         return myself;
     }
 
-    // ----------------------------------------------------------------------------------------------- constraintDescriptors
+    // -----------------------------------------------------------------------------------------------
+    // constraintDescriptors
 
     /**
      * Extracts an assertion for verifying the {@code actual} descriptor's
@@ -151,7 +152,8 @@ public abstract class AbstractElementDescriptorAssert<
      * @see ElementDescriptor#getElementClass()
      */
     public SELF hasElementClass(final Class<?> expectedElementClass) {
-        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass").isEqualTo(expectedElementClass);
+        ValidationAssertMessages.describedAsAttribute(extractingElementClass(), "elementClass")
+                .isEqualTo(expectedElementClass);
         return myself;
     }
 }

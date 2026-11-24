@@ -30,8 +30,8 @@ import java.lang.annotation.Target;
  * checks, which match an annotation by this simple name.
  * <p>
  * This module declares its own rather than depend on AssertJ's, which moved between versions: 3.27.x ships
- * {@code org.assertj.core.annotation.CheckReturnValue} and {@code org.assertj.core.util.CheckReturnValue}, 4.0.0-M1 only
- * the latter.
+ * {@code org.assertj.core.annotation.CheckReturnValue} and {@code org.assertj.core.util.CheckReturnValue}, 4.0.0-M1
+ * only the latter.
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE, ElementType.METHOD})

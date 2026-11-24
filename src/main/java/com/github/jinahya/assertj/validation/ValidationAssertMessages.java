@@ -70,8 +70,8 @@ final class ValidationAssertMessages {
         Objects.requireNonNull(navigated, "navigated is null");
         Objects.requireNonNull(attribute, "attribute is null");
         final String description = navigated instanceof AbstractAssert<?, ?>
-                                   ? ((AbstractAssert<?, ?>) navigated).descriptionText()
-                                   : null;
+                ? ((AbstractAssert<?, ?>) navigated).descriptionText()
+                : null;
         // the text goes in as an argument, so that a '%' in the caller's description is not a format specifier
         navigated.as("%s", description == null || description.isEmpty() ? attribute : description + ": " + attribute);
         return navigated;

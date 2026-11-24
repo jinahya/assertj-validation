@@ -52,8 +52,8 @@ import static java.util.Collections.unmodifiableSet;
  * violations also when the assertion then fails, and cannot change what is checked. Anything it throws propagates
  * unchanged, and the assertion is not checked.
  * <p>
- * The assertion methods of subclasses are not {@code final}, so that AssertJ's soft assertions can intercept them.
- * On AssertJ 3.x and 4.0.0-M1, a chain navigating from a proxied assertion into a nested one, such as
+ * The assertion methods of subclasses are not {@code final}, so that AssertJ's soft assertions can intercept them. On
+ * AssertJ 3.x and 4.0.0-M1, a chain navigating from a proxied assertion into a nested one, such as
  * {@code extractingPropertyPath()}, is not soft; wrap such a chain in {@code softly.check(..)}.
  *
  * @param <SELF>   self type parameter
@@ -105,10 +105,11 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      *
      * @param validator the validator to use; {@code null} to fall back to a per-assertion default.
      * @return this assertion object.
-     * @apiNote This accepts a {@link Validator} rather than only a {@link ValidatorFactory} because the conversion runs
-     * one way only. A factory yields a validator through {@link ValidatorFactory#getValidator()}, but a validator
-     * cannot yield a factory &mdash; and a validator customized through {@link ValidatorFactory#usingContext()}, one
-     * injected by a framework, or a test double has no factory to offer.
+     * @apiNote This accepts a {@link Validator} rather than only a {@link ValidatorFactory} because the
+     *         conversion runs one way only. A factory yields a validator through
+     *         {@link ValidatorFactory#getValidator()}, but a validator cannot yield a factory &mdash; and a validator
+     *         customized through {@link ValidatorFactory#usingContext()}, one injected by a framework, or a test double
+     *         has no factory to offer.
      * @see #usingValidatorFactory(ValidatorFactory)
      */
     public final SELF usingValidator(final Validator validator) {
@@ -137,8 +138,8 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      *                fall back to a per-assertion default.
      * @return this assertion object.
      * @apiNote This assertion object does not take ownership of {@code factory} and will not call
-     * {@link ValidatorFactory#close()} on it. Closing it also ends the life of every {@link Validator} taken from it:
-     * the specification forbids using those afterwards.
+     *         {@link ValidatorFactory#close()} on it. Closing it also ends the life of every {@link Validator} taken
+     *         from it: the specification forbids using those afterwards.
      * @see #usingValidator(Validator)
      * @see ValidatorFactory#close()
      */
@@ -154,7 +155,7 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * Returns the groups targeted for validation.
      *
      * @return the targeted groups; never {@code null}, and never empty &mdash; {@link Default} when none was
-     * configured.
+     *         configured.
      */
     protected final Class<?>[] groups() {
         if (groups.isEmpty()) {
@@ -179,8 +180,8 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * @param function the function to apply the validator to; must be not {@code null}.
      * @param <R>      result type parameter
      * @return the result of applying {@code function}.
-     * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite which
-     * minds that configures a validator or a factory of its own and keeps the lifecycle.
+     * @apiNote Building a factory costs a classpath scan plus a {@code META-INF/validation.xml} parse. A suite
+     *         which minds that configures a validator or a factory of its own and keeps the lifecycle.
      */
     protected final <R> R applyValidator(final Function<? super Validator, ? extends R> function) {
         Objects.requireNonNull(function, "function is null");
@@ -201,10 +202,10 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * @param consumer   the consumer; must be not {@code null}.
      * @param violations the violations to accept.
      * @param <T>        root bean type parameter
-     * @implNote Anything the consumer throws propagates unchanged. {@link Consumer#accept(Object)} declares no checked
-     * exception, so wrapping could only ever re-wrap an unchecked one and lose its type &mdash; and the throwable that
-     * matters most here, an {@link AssertionError} from an assertion made inside the consumer, is an {@link Error} and
-     * was never caught anyway.
+     * @implNote Anything the consumer throws propagates unchanged. {@link Consumer#accept(Object)} declares no
+     *         checked exception, so wrapping could only ever re-wrap an unchecked one and lose its type &mdash; and the
+     *         throwable that matters most here, an {@link AssertionError} from an assertion made inside the consumer,
+     *         is an {@link Error} and was never caught anyway.
      */
     protected final <T> void acceptViolations(final Consumer<? super Set<ConstraintViolation<T>>> consumer,
                                               final Set<ConstraintViolation<T>> violations) {
@@ -212,8 +213,8 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
     }
 
     /**
-     * Validates with specified function, accepts the resulting violations to specified consumer, and verifies that
-     * they are empty, or not empty, failing through this assertion object.
+     * Validates with specified function, accepts the resulting violations to specified consumer, and verifies that they
+     * are empty, or not empty, failing through this assertion object.
      * <p>
      * The consumer is called <em>before</em> the check, with an unmodifiable view, as
      * {@link #acceptViolations(Consumer, Set)} does.
@@ -223,8 +224,7 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
      * {@code withFailMessage(...)} or {@code overridingErrorMessage(...)}, eager or lazy, replaces the default one. The
      * values of {@code subject}, and the groups, are formatted with this assertion object's representation.
      *
-     * @param validation    the function validating with a validator and the targeted groups; must be not
-     *                      {@code null}.
+     * @param validation    the function validating with a validator and the targeted groups; must be not {@code null}.
      * @param consumer      the consumer to accept the violations; must be not {@code null}.
      * @param expectedEmpty {@code true} when the violations should be empty; {@code false} when they should not.
      * @param subject       what was validated, as pairs of a label and a value, e.g. {@code "actual", actual}.
@@ -255,9 +255,9 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
         message.append(String.format("targeting%n\tgroups: %1$s%n",
                                      representation.toStringOf(Arrays.asList(groups))));
         message.append(expectedEmpty
-                       ? String.format("expected to be empty but contains %1$d element(s)%n%2$s",
-                                       violations.size(), ValidationAssertMessages.format(violations))
-                       : "expected to be not empty but empty");
+                               ? String.format("expected to be empty but contains %1$d element(s)%n%2$s",
+                                               violations.size(), ValidationAssertMessages.format(violations))
+                               : "expected to be not empty but empty");
         // the completed text goes in as an argument, so that a '%' in a value or a message is not a format specifier
         throw failure("%s", message);
     }

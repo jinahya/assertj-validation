@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-
 /**
  * An abstract assertion class for verifying constructor parameters and constructor return values.
  * <p>
@@ -83,7 +82,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @see ExecutableValidator#validateConstructorParameters(Constructor, Object[], Class[])
      */
     public SELF hasValidParameters(final Object[] parameterValues,
-                                         final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
+                                   final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("parameters",
                           (v, g) -> v.validateConstructorParameters(actual, parameterValues, g),
                           consumer, true);
@@ -129,7 +128,7 @@ public abstract class AbstractConstructorAssert<SELF extends AbstractConstructor
      * @see ExecutableValidator#validateConstructorReturnValue(Constructor, Object, Class[])
      */
     public SELF hasValidReturnValue(final T createdObject,
-                                          final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
+                                    final Consumer<? super Set<ConstraintViolation<T>>> consumer) {
         return validating("return value",
                           (v, g) -> v.validateConstructorReturnValue(actual, createdObject, g),
                           consumer, true);

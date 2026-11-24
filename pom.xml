@@ -237,7 +237,8 @@
     </dependency>
   </dependencies>
 
-  <build><!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
+  <build>
+    <!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
          safe where declaration order carries no meaning, and here it carries none: Maven falls back to POM
          order for executions bound to the SAME phase, and no two plugins below share one — compiler is at
          compile/test-compile/pre-site, enforcer at validate, surefire at test, jar at package, and versions

@@ -22,9 +22,7 @@ package com.github.jinahya.assertj.validation;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 class ConstraintViolationAssert_ConstraintDescriptor_Test
         extends ConstraintViolationAssert__Base {

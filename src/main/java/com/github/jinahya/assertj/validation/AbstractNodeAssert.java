@@ -185,8 +185,8 @@ public abstract class AbstractNodeAssert<
     /**
      * Verifies that the {@code actual} value's {@code key} satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and representation,
+     * not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
      *
      * @param <KEY>     key type parameter
      * @param <ASSERT>  assertion type parameter
@@ -218,8 +218,8 @@ public abstract class AbstractNodeAssert<
     /**
      * Verifies that the {@code actual} value's {@code key} satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the key, carrying this assertion's description and representation,
+     * not the value itself, e.g. {@code hasKeySatisfying(a -> a.isNotNull())}.
      *
      * @param consumer the consumer accepting the extracted assertion.
      * @return this assertion object.
@@ -244,7 +244,8 @@ public abstract class AbstractNodeAssert<
      * Verifies that {@link Path.Node#getKey() actual.key} is {@code null}.
      *
      * @return this assertion object.
-     * @implSpec This method invokes the {@link #hasKey(Object)} method with {@code null}, and returns the result.
+     * @implSpec This method invokes the {@link #hasKey(Object)} method with {@code null}, and returns the
+     *         result.
      * @see #hasKey(Object)
      */
     public SELF doesNotHaveKey() {
@@ -394,9 +395,9 @@ public abstract class AbstractNodeAssert<
      * Verifies that {@link Path.Node#getName() actual.name} is {@code null}.
      *
      * @return this assertion object.
-     * @apiNote A node's name is {@code null} only for a leaf node representing an entity, in particular the node
-     * representing the root object. Every other kind has a name, including the literals {@code <cross-parameter>},
-     * {@code <return value>} and {@code <list element>}.
+     * @apiNote A node's name is {@code null} only for a leaf node representing an entity, in particular the
+     *         node representing the root object. Every other kind has a name, including the literals
+     *         {@code <cross-parameter>}, {@code <return value>} and {@code <list element>}.
      * @see Path.Node#getName()
      */
     public SELF doesNotHaveName() {
@@ -422,8 +423,8 @@ public abstract class AbstractNodeAssert<
     /**
      * Verifies that the {@code actual} value's {@code inIterable} satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description
+     * and representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
      *
      * @param <ASSERT> assertion type parameter
      * @param factory  the assertion factory.
@@ -451,8 +452,8 @@ public abstract class AbstractNodeAssert<
     /**
      * Verifies that the {@code actual} value's {@code inIterable} satisfies specified consumer.
      * <p>
-     * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description and
-     * representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
+     * The consumer receives an <em>assertion</em> on the {@code inIterable} flag, carrying this assertion's description
+     * and representation, not the value itself, e.g. {@code hasInIterableSatisfying(a -> a.isNotNull())}.
      *
      * @param consumer the consumer accepting the extracted assertion.
      * @return this assertion object.

@@ -20,14 +20,13 @@ package com.github.jinahya.assertj.validation.example.service;
  * #L%
  */
 
-import jakarta.validation.Validation;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.MethodType;
-import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Test;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatBeanDescriptor;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

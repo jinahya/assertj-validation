@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class User_ViolationConsumer_Test {
 
     /**
-     * Runs specified assertion with a recording consumer, checks that the consumer was called once with an
-     * unmodifiable set, and returns that set.
+     * Runs specified assertion with a recording consumer, checks that the consumer was called once with an unmodifiable
+     * set, and returns that set.
      */
     private static Set<?> recorded(final Function<Consumer<Object>, ThrowingCallable> assertion,
                                    final boolean expectFailure) {
@@ -79,9 +79,9 @@ class User_ViolationConsumer_Test {
     void should_see_the_violations_of_hasValidProperty_also_on_failure() {
         final var invalid = User.of(null, 0);
         assertThat(recorded(c -> () -> assertThatBean(invalid).hasValidProperty(User.PROPERTY_NAME_NAME, c), true)
-                           ).hasSize(1);
+        ).hasSize(1);
         assertThat(recorded(c -> () -> assertThatBean(invalid).hasValidProperty(User.PROPERTY_NAME_AGE, c), false)
-                           ).isEmpty();
+        ).isEmpty();
     }
 
     @DisplayName("isValidFor(type, name, consumer) sees the violations, also when it fails")

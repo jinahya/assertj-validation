@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.METHOD_NODE;
 import static com.github.jinahya.assertj.validation.ValidationInstanceOfAssertFactories.PROPERTY_NODE;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -26,11 +26,11 @@ import jakarta.validation.Path;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 import java.util.Collections;
+import java.util.Set;
 
-import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
+import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

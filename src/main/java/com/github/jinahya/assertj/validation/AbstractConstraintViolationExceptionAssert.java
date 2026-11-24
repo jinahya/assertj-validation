@@ -91,8 +91,9 @@ public abstract class AbstractConstraintViolationExceptionAssert<
                             actual,
                             expectedPropertyPath,
                             violations == null
-                            ? "(none)"
-                            : violations.stream().map(v -> String.valueOf(v.getPropertyPath())).sorted().toList());
+                                    ? "(none)"
+                                    : violations.stream().map(v -> String.valueOf(v.getPropertyPath())).sorted()
+                                    .toList());
         }
         return myself;
     }

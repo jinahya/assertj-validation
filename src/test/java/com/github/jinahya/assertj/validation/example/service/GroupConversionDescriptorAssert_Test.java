@@ -40,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class GroupConversionDescriptorAssert_Test {
 
     public interface Detailed {
+
     }
 
     public static class Child {

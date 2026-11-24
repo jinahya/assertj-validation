@@ -248,7 +248,7 @@
   <build><!-- sorted by groupId, then artifactId, as the two dependency blocks above are. Sorting plugins is only
          safe where declaration order carries no meaning, and here it carries none: Maven falls back to POM
          order for executions bound to the SAME phase, and no two plugins below share one — compiler is at
-         compile/test-compile, surefire at test, jar at package, and versions declares no execution at all.
+         compile/test-compile/pre-site, surefire at test, jar at package, and versions declares no execution at all.
          Add an execution that collides with an existing phase and the order stops being free, so pin the
          pair's relative position then and say why.
          None of these carry a <version> they do not need: versions-maven-plugin, and maven-javadoc-plugin under
@@ -321,6 +321,18 @@
                 </path>
               </annotationProcessorPaths>
             </configuration>
+          </execution>
+          <!-- the javadoc report finds this module's name in target/classes/module-info.class, not in the sources,
+               and the site lifecycle compiles nothing on its own: run as a bare `mvn site`, with no prior build,
+               the report sees no descriptor, takes the project for an unnamed module, and fails with "Aggregator
+               report contains named and unnamed modules". Compiling the main sources at pre-site gives it one;
+               after a build, as in `mvn verify site`, the compiler finds nothing stale and does no work. -->
+          <execution>
+            <id>pre-site-compile</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

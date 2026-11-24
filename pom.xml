@@ -107,7 +107,6 @@
     <version.org.mockito>5.24.0</version.org.mockito>
     <!-- test-scope only, and on the annotation processor path of the test compilation alone; see <build> -->
     <version.org.projectlombok>1.18.48</version.org.projectlombok>
-    <version.org.slf4j>2.0.20</version.org.slf4j>
   </properties>
 
   <dependencyManagement>
@@ -148,13 +147,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-bom</artifactId>
         <version>${version.org.mockito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-bom</artifactId>
-        <version>${version.org.slf4j}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

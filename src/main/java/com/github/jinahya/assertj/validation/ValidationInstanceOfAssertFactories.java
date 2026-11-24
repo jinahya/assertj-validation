@@ -33,6 +33,8 @@ import jakarta.validation.metadata.MethodDescriptor;
 import jakarta.validation.metadata.ParameterDescriptor;
 import jakarta.validation.metadata.PropertyDescriptor;
 import jakarta.validation.metadata.ReturnValueDescriptor;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.InstanceOfAssertFactory;
 
 import java.lang.annotation.Annotation;
@@ -124,85 +126,53 @@ public final class ValidationInstanceOfAssertFactories {
      * A factory for a {@link Path.BeanNode}.
      */
     public static final InstanceOfAssertFactory<Path.BeanNode, AbstractBeanNodeAssert<?>> BEAN_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.BeanNode.class,
-                    n -> ValidationAssertions.assertThatBeanNode(
-                            AbstractPathAssert.requireKind(n, Path.BeanNode.class))
-            );
+            nodeFactory(Path.BeanNode.class, ValidationAssertions::assertThatBeanNode);
 
     /**
      * A factory for a {@link Path.ConstructorNode}.
      */
     public static final InstanceOfAssertFactory<Path.ConstructorNode, AbstractConstructorNodeAssert<?>>
             CONSTRUCTOR_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.ConstructorNode.class,
-                    n -> ValidationAssertions.assertThatConstructorNode(
-                            AbstractPathAssert.requireKind(n, Path.ConstructorNode.class))
-            );
+            nodeFactory(Path.ConstructorNode.class, ValidationAssertions::assertThatConstructorNode);
 
     /**
      * A factory for a {@link Path.ContainerElementNode}.
      */
     public static final InstanceOfAssertFactory<Path.ContainerElementNode, AbstractContainerElementNodeAssert<?>>
             CONTAINER_ELEMENT_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.ContainerElementNode.class,
-                    n -> ValidationAssertions.assertThatContainerElementNode(
-                            AbstractPathAssert.requireKind(n, Path.ContainerElementNode.class))
-            );
+            nodeFactory(Path.ContainerElementNode.class, ValidationAssertions::assertThatContainerElementNode);
 
     /**
      * A factory for a {@link Path.CrossParameterNode}.
      */
     public static final InstanceOfAssertFactory<Path.CrossParameterNode, AbstractCrossParameterNodeAssert<?>>
             CROSS_PARAMETER_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.CrossParameterNode.class,
-                    n -> ValidationAssertions.assertThatCrossParameterNode(
-                            AbstractPathAssert.requireKind(n, Path.CrossParameterNode.class))
-            );
+            nodeFactory(Path.CrossParameterNode.class, ValidationAssertions::assertThatCrossParameterNode);
 
     /**
      * A factory for a {@link Path.MethodNode}.
      */
     public static final InstanceOfAssertFactory<Path.MethodNode, AbstractMethodNodeAssert<?>> METHOD_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.MethodNode.class,
-                    n -> ValidationAssertions.assertThatMethodNode(
-                            AbstractPathAssert.requireKind(n, Path.MethodNode.class))
-            );
+            nodeFactory(Path.MethodNode.class, ValidationAssertions::assertThatMethodNode);
 
     /**
      * A factory for a {@link Path.ParameterNode}.
      */
     public static final InstanceOfAssertFactory<Path.ParameterNode, AbstractParameterNodeAssert<?>> PARAMETER_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.ParameterNode.class,
-                    n -> ValidationAssertions.assertThatParameterNode(
-                            AbstractPathAssert.requireKind(n, Path.ParameterNode.class))
-            );
+            nodeFactory(Path.ParameterNode.class, ValidationAssertions::assertThatParameterNode);
 
     /**
      * A factory for a {@link Path.PropertyNode}.
      */
     public static final InstanceOfAssertFactory<Path.PropertyNode, AbstractPropertyNodeAssert<?>> PROPERTY_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.PropertyNode.class,
-                    n -> ValidationAssertions.assertThatPropertyNode(
-                            AbstractPathAssert.requireKind(n, Path.PropertyNode.class))
-            );
+            nodeFactory(Path.PropertyNode.class, ValidationAssertions::assertThatPropertyNode);
 
     /**
      * A factory for a {@link Path.ReturnValueNode}.
      */
     public static final InstanceOfAssertFactory<Path.ReturnValueNode, AbstractReturnValueNodeAssert<?>>
             RETURN_VALUE_NODE =
-            new InstanceOfAssertFactory<>(
-                    Path.ReturnValueNode.class,
-                    n -> ValidationAssertions.assertThatReturnValueNode(
-                            AbstractPathAssert.requireKind(n, Path.ReturnValueNode.class))
-            );
+            nodeFactory(Path.ReturnValueNode.class, ValidationAssertions::assertThatReturnValueNode);
 
     // ------------------------------------------------------------------------------------------------------ metadata
 
@@ -285,6 +255,14 @@ public final class ValidationInstanceOfAssertFactories {
                     GroupConversionDescriptor.class,
                     ValidationAssertions::assertThatGroupConversionDescriptor
             );
+
+    private static <N extends Path.Node, A extends AbstractAssert<?, ?>> InstanceOfAssertFactory<N, A> nodeFactory(
+            final Class<N> nodeType, final AssertFactory<N, A> delegate) {
+        return new InstanceOfAssertFactory<>(
+                nodeType,
+                node -> delegate.createAssert(PathNodes.narrowForFactory(node, nodeType))
+        );
+    }
 
     /**
      * Creates a new instance.

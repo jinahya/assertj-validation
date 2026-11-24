@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.jinahya.assertj.validation.ValidationAssertions.assertThatPath;
 import static com.github.jinahya.assertj.validation.ValidationAssertionsTestUtils.applyValidator;
@@ -76,6 +77,20 @@ class PathAssert_NodeNavigation_Test {
         assertThatPath(parameterViolation().getPropertyPath())
                 .extractingNode(0)
                 .hasName(Greeter.METHOD_NAME_GREET);
+    }
+
+    @Test
+    void should_find_the_node_in_one_traversal() throws Exception {
+        final Path actual = parameterViolation().getPropertyPath();
+        final var traversals = new AtomicInteger();
+        final Path path = () -> {
+            traversals.incrementAndGet();
+            return actual.iterator();
+        };
+
+        assertThatPath(path).extractingParameterNode(1).hasParameterIndex(0);
+
+        assertThat(traversals).hasValue(1);
     }
 
     @Test

@@ -20,7 +20,6 @@ package com.github.jinahya.assertj.validation;
  * #L%
  */
 
-import jakarta.validation.ElementKind;
 import jakarta.validation.Path;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AssertFactory;
@@ -43,9 +42,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -90,33 +89,8 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     protected static Path.Node nodeAt(final Iterable<? extends Path.Node> iterable, final int index) {
         Objects.requireNonNull(iterable, "iterable is null");
-        if (index < 0) {
-            throw new IllegalArgumentException("negative index: " + index);
-        }
-        int i = 0;
-        for (final Path.Node node : iterable) {
-            if (i++ == index) {
-                return node;
-            }
-        }
-        throw new AssertionError(noNodeAt(iterable, index, i));
-    }
-
-    /**
-     * Returns the message of a failure for a node missing at specified index.
-     *
-     * @param iterable the iterable of nodes.
-     * @param index    the index of the missing node.
-     * @param size     the number of nodes {@code iterable} has.
-     * @return the failure message.
-     */
-    private static String noNodeAt(final Iterable<? extends Path.Node> iterable, final int index, final int size) {
-        return String.format(
-                "%nExpecting a node at index %1$d of%n  <%2$s>%nbut it has %3$d node(s)",
-                index,
-                iterable,
-                size
-        );
+        PathNodes.checkIndex(index);
+        return PathNodes.nodeAt(iterable, index, AssertionError::new);
     }
 
     /**
@@ -130,101 +104,7 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
      */
     protected static <N extends Path.Node> N nodeAt(final Iterable<? extends Path.Node> iterable, final int index,
                                                     final Class<N> nodeType) {
-        final Path.Node node = nodeAt(iterable, index);
-        if (nodeType == Path.Node.class) {
-            @SuppressWarnings({"unchecked"})
-            final N casted = (N) node;
-            return casted;
-        }
-        requireKindOf(node, nodeType, () -> String.format("the node at index %1$d", index));
-        return node.as(nodeType);
-    }
-
-    /**
-     * Verifies that specified node is of the {@link ElementKind} that specified node type represents, failing as an
-     * assertion rather than letting {@link Path.Node#as(Class)} throw.
-     * <p>
-     * {@link Path.Node#as(Class)} is specified to throw a {@link ClassCastException}, and says the kind &quot;should be
-     * checked before by calling {@link Path.Node#getKind()}&quot;. {@link Class#isInstance} is no substitute: Hibernate
-     * Validator's node implements <em>every</em> {@code Path.Node} subtype at once, so an {@code instanceof} test
-     * accepts any node regardless of its kind. {@link Path.Node#getKind()} is the only reliable discriminator.
-     *
-     * @param node        the node to check.
-     * @param nodeType    the node type it is about to be narrowed to.
-     * @param description supplies a description of where the node came from.
-     */
-    private static void requireKindOf(final Path.Node node, final Class<? extends Path.Node> nodeType,
-                                      final Supplier<String> description) {
-        final String mismatch = kindMismatch(node, nodeType, description);
-        if (mismatch != null) {
-            throw new AssertionError(mismatch);
-        }
-    }
-
-    /**
-     * Returns the failure message for specified node not being of the {@link ElementKind} that specified node type
-     * represents.
-     *
-     * @param node        the node to check.
-     * @param nodeType    the node type it is about to be narrowed to.
-     * @param description supplies a description of where the node came from.
-     * @return the failure message; {@code null} when the kind matches.
-     * @see #requireKindOf(Path.Node, Class, Supplier)
-     */
-    private static String kindMismatch(final Path.Node node, final Class<? extends Path.Node> nodeType,
-                                       final Supplier<String> description) {
-        final ElementKind expected = KIND_BY_NODE_TYPE.get(nodeType);
-        if (expected == null || node.getKind() == expected) {
-            return null;
-        }
-        return String.format(
-                "%nExpecting %1$s%n"
-                + "  <%2$s>%n"
-                + "to be of kind%n"
-                + "  <%3$s>%n"
-                + "so that it can be narrowed to <%4$s>, but its kind is%n"
-                + "  <%5$s>",
-                description.get(),
-                node,
-                expected,
-                nodeType.getSimpleName(),
-                node.getKind()
-        );
-    }
-
-    /**
-     * The {@link ElementKind} each {@link Path.Node} subtype represents.
-     */
-    private static final Map<Class<? extends Path.Node>, ElementKind> KIND_BY_NODE_TYPE = Map.of(
-            Path.BeanNode.class, ElementKind.BEAN,
-            Path.PropertyNode.class, ElementKind.PROPERTY,
-            Path.MethodNode.class, ElementKind.METHOD,
-            Path.ConstructorNode.class, ElementKind.CONSTRUCTOR,
-            Path.ParameterNode.class, ElementKind.PARAMETER,
-            Path.CrossParameterNode.class, ElementKind.CROSS_PARAMETER,
-            Path.ReturnValueNode.class, ElementKind.RETURN_VALUE,
-            Path.ContainerElementNode.class, ElementKind.CONTAINER_ELEMENT
-    );
-
-    /**
-     * Verifies that specified node is of the kind specified node type represents, for callers outside the positional
-     * navigation &mdash; the assertion factories in {@link ValidationInstanceOfAssertFactories}, which cannot rely on
-     * {@code instanceof}.
-     *
-     * <p>
-     * A {@code null} node passes as {@code null}, as AssertJ's own factories build an assertion over {@code null}.
-     *
-     * @param node     the node to check; may be {@code null}.
-     * @param nodeType the node type it is about to be narrowed to.
-     * @param <N>      node type parameter
-     * @return {@code node}, narrowed; {@code null} when {@code node} is {@code null}.
-     */
-    static <N extends Path.Node> N requireKind(final Path.Node node, final Class<N> nodeType) {
-        if (node == null) {
-            return null;
-        }
-        requireKindOf(node, nodeType, () -> "the node");
-        return node.as(nodeType);
+        return PathNodes.narrowAt(nodeAt(iterable, index), index, nodeType, AssertionError::new);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -257,26 +137,12 @@ public abstract class AbstractPathAssert<SELF extends AbstractPathAssert<SELF>>
     @CheckReturnValue
     public <A extends AbstractAssert<?, ? extends N>, N extends Path.Node> A extractingNode(
             final int index, final Class<N> nodeType, final AssertFactory<? super N, ? extends A> factory) {
-        if (index < 0) {
-            throw new IllegalArgumentException("negative index: " + index);
-        }
+        PathNodes.checkIndex(index);
         isNotNull();
-        int size = 0;
-        for (final Path.Node ignored : actual) {
-            size++;
-        }
-        // failures go through this assertion object, which keeps its description and overriding message; the text is
-        // preformatted, and passed as an argument since a path may contain a '%'
-        if (index >= size) {
-            throw failure("%s", noNodeAt(actual, index, size));
-        }
-        final Path.Node node = nodeAt(actual, index);
-        final String mismatch = kindMismatch(node, nodeType, () -> String.format("the node at index %1$d", index));
-        if (mismatch != null) {
-            throw failure("%s", mismatch);
-        }
-        @SuppressWarnings({"unchecked"})
-        final N narrowed = nodeType == Path.Node.class ? (N) node : node.as(nodeType);
+        // Use the origin assertion's failure handling for both lookup and narrowing.
+        final Function<String, AssertionError> failure = message -> failure("%s", message);
+        final Path.Node node = PathNodes.nodeAt(actual, index, failure);
+        final N narrowed = PathNodes.narrowAt(node, index, nodeType, failure);
         return inheritInfo(factory.createAssert(narrowed));
     }
 

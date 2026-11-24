@@ -169,8 +169,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1.
-     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
+     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
+     *         3.0)</a>.
      * @see #hasValidProperty(String)
      * @see #doesNotHaveValidProperty(String)
      */
@@ -222,8 +222,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1.
-     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
+     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
+     *         3.0)</a>.
      * @see #hasValidProperty(String, Consumer)
      * @see #doesNotHaveValidProperty(String)
      */
@@ -267,8 +267,8 @@ public abstract class AbstractBeanAssert<SELF extends AbstractBeanAssert<SELF, A
      * @apiNote Note that the {@link jakarta.validation.Valid @Valid} is not honored by the
      *         {@link Validator#validateProperty(Object, String, Class[])} method on which this method relies. See <a
      *         href="https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0
-     *         .html#validationapi-validatorapi-validationmethods">6.1.1.
-     *         Validation methods (Jakarta Bean Validation 3.0)</a>.
+     *         .html#validationapi-validatorapi-validationmethods">6.1.1. Validation methods (Jakarta Bean Validation
+     *         3.0)</a>.
      * @see #hasValidProperty(String, Consumer)
      * @see #hasValidProperty(String)
      */

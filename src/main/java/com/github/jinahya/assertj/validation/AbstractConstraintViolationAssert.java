@@ -460,9 +460,9 @@ public abstract class AbstractConstraintViolationAssert<
      */
     public <U> SELF isEqualToWhenUnwrappedAs(final Class<U> type, final Object expectedUnwrappedValue) {
         ValidationAssertMessages.describedAsAttribute(
-                extractingAsUnwrapped(type, ObjectAssert::new),
-                "unwrapped as " + type.getName()
-        )
+                        extractingAsUnwrapped(type, ObjectAssert::new),
+                        "unwrapped as " + type.getName()
+                )
                 .isEqualTo(expectedUnwrappedValue);
         return myself;
     }

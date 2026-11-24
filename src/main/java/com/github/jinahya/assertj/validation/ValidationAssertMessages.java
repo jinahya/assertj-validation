@@ -23,7 +23,9 @@ package com.github.jinahya.assertj.validation;
 import jakarta.validation.ConstraintViolation;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assert;
+import org.assertj.core.presentation.Representation;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,6 +54,28 @@ final class ValidationAssertMessages {
         return violations.stream()
                 .map(v -> format(v).lines().collect(Collectors.joining(System.lineSeparator() + "\t   ", "\t-> ", "")))
                 .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    static String formatValidationFailure(final Representation representation, final Class<?>[] groups,
+                                          final Set<? extends ConstraintViolation<?>> violations,
+                                          final boolean expectedEmpty, final Object[] subject) {
+        final StringBuilder message = new StringBuilder(
+                String.format("%nThe set of constraint violations resulted while validating%n"));
+        for (int i = 0; i < subject.length; i += 2) {
+            message.append(String.format("\t%1$s: %2$s%n", subject[i], representation.toStringOf(subject[i + 1])));
+        }
+        message.append(String.format(
+                "targeting%n\tgroups: %1$s%n",
+                representation.toStringOf(Arrays.asList(groups))
+        ));
+        message.append(expectedEmpty
+                               ? String.format(
+                "expected to be empty but contains %1$d element(s)%n%2$s",
+                violations.size(),
+                format(violations)
+        )
+                               : "expected to be not empty but empty");
+        return message.toString();
     }
 
     /**

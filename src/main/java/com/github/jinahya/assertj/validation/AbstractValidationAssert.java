@@ -26,9 +26,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.groups.Default;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.presentation.Representation;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -246,23 +244,13 @@ public abstract class AbstractValidationAssert<SELF extends AbstractValidationAs
         if (violations.isEmpty() == expectedEmpty) {
             return;
         }
-        final Representation representation = info.representation();
-        final StringBuilder message = new StringBuilder(
-                String.format("%nThe set of constraint violations resulted while validating%n"));
-        for (int i = 0; i < subject.length; i += 2) {
-            message.append(String.format("\t%1$s: %2$s%n", subject[i], representation.toStringOf(subject[i + 1])));
-        }
-        message.append(String.format(
-                "targeting%n\tgroups: %1$s%n",
-                representation.toStringOf(Arrays.asList(groups))
-        ));
-        message.append(expectedEmpty
-                               ? String.format(
-                                       "expected to be empty but contains %1$d element(s)%n%2$s",
-                                       violations.size(),
-                                       ValidationAssertMessages.format(violations)
-                               )
-                               : "expected to be not empty but empty");
+        final String message = ValidationAssertMessages.formatValidationFailure(
+                info.representation(),
+                groups,
+                violations,
+                expectedEmpty,
+                subject
+        );
         // the completed text goes in as an argument, so that a '%' in a value or a message is not a format specifier
         throw failure("%s", message);
     }

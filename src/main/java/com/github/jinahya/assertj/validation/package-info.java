@@ -111,26 +111,14 @@
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatBean(Object) assertThatBean},
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatProperty(Object)
  *       assertThatProperty} and
- *
- *
- *
- *
- *
- *
- * {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstructor(java.lang.reflect.Constructor)
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstructor(java.lang.reflect.Constructor)
  *       assertThatConstructor}. Method and return-value validation hang off the bean assertion as
  *       {@code hasValidParameters} and {@code hasValidReturnValue}.</li>
  *   <li><b>Inspecting what validation produced</b> &mdash;
  *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolations(java.util.Set)
  *       assertThatConstraintViolations} for the set
  *       {@link jakarta.validation.Validator#validate(Object, Class[]) validate} returns,
- *
- *
- *
- *
- *
- *
- * {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolationException(jakarta.validation.ConstraintViolationException)
+ *       {@link com.github.jinahya.assertj.validation.ValidationAssertions#assertThatConstraintViolationException(jakarta.validation.ConstraintViolationException)
  *       assertThatConstraintViolationException} for the exception a framework throws when it triggers validation, and
  *       {@code assertThatConstraintViolation}, {@code assertThatConstraintDescriptor},
  *       {@code assertThatPath}, and {@code assertThatNode} for any {@link jakarta.validation.Path.Node} with a typed
